@@ -1,10 +1,10 @@
-.grid {
+.gr {
     width: 100%;
     display: block;
     padding: 0;
 }
   
-.grid.wide {
+.gr.wide {
     max-width: 1200px;
     margin: 0 auto;
 }
