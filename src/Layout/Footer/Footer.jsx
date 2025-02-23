@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import facebook from "../../assets/images/facebook.svg";
 import instagram from "../../assets/images/instagram.svg";
 import tiktok from "../../assets/images/tiktok.svg";
-import logo from "../../assets/images/logo.png";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdPhone } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
+import logo from "../../assets/images/logo.png";
 
 const Footer = () => {
   return (

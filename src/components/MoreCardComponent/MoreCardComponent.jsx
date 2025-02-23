@@ -1,14 +1,14 @@
 // import React from "react";
 import { useState } from "react";
 import Slider from "react-slick";
-import NextComponent from "../NextComponent";
-import BackComponent from "../BackComponent";
+import NextComponent from "../NextComponent/NextComponent";
+import BackComponent from "../BackComponent/BackComponent";
 import CardComponent from "../CardComponent/CardComponent";
 
 const MoreCardComponent = ({ sports }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slidesToShow = 3; // Số slides hiển thị
-  const slideCount = 6; // Tổng số slides
+  const slideCount = sports.length; // Tổng số slides
 
   const settings = {
     dots: true,
