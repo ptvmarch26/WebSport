@@ -9,18 +9,24 @@ function App() {
     <Router>
       <Routes>
         {publicRoutes.map((route, index) => {
-          const Layout = route.layout === null ? Fragment : DefaultLayout;
+          const Layout = route.Layout === null ? Fragment : DefaultLayout;
           const Page = route.component;
+          
           return (
             <Route
               key={index}
               path={route.path}
               element={
-                <Layout>
+                Layout ? (
+                  <Layout>
+                    <Page />
+                  </Layout>
+                ) : (
                   <Page />
-                </Layout>
+                )
               }
-            />);
+            />
+          );
         })}
       </Routes>
     </Router>
