@@ -27,18 +27,24 @@ const Footer = () => {
               Cửa hàng đồ dùng thể thao
             </span>
             <div className="flex space-x-3 justify-center">
-              <img
-                src={facebook}
-                className="w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition"
-              />
-              <img
-                src={instagram}
-                className="w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition"
-              />
-              <img
-                src={tiktok}
-                className="w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition"
-              />
+              <Link to="/">
+                <img
+                  src={facebook}
+                  className="w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition"
+                />
+              </Link>
+              <Link to="/">
+                <img
+                  src={instagram}
+                  className="w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition"
+                />
+              </Link>
+              <Link to="/">
+                <img
+                  src={tiktok}
+                  className="w-8 h-8 cursor-pointer opacity-80 hover:opacity-100 transition"
+                />
+              </Link>
             </div>
           </div>
 
