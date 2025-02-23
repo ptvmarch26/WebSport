@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
+
 const Header = () => {
   const [isHovered, setIsHovered] = useState(false);
   const options = [
@@ -20,7 +21,7 @@ const Header = () => {
       <div className="res mx-auto flex justify-between items-center h-full">
         <div className="flex items-center h-full">
           <Link to={"/"}>
-            <img src={logo} className="w-[80px] h-[80px]" />
+            <img src={logo} className="w-[150px] h-[80px]" />
           </Link>
           <div className="group h-full">
             <ul className="text-white flex space-x-6 text-base font-medium ml-4 h-full">
