@@ -8,7 +8,7 @@ const ProductComponent = ({
   name,
   oldPrice,
   newPrice,
-  start,
+  star,
   percent,
 }) => {
   return (
@@ -33,11 +33,11 @@ const ProductComponent = ({
           {/* Hiển thị sao */}
           <div className="flex items-center mb-2">
             {[...Array(5)].map((_, index) => {
-              if (index < Math.floor(start)) {
+              if (index < Math.floor(star)) {
                 return (
                   <IoIosStar key={index} className="text-yellow-400 text-xl" />
                 );
-              } else if (index === Math.floor(start) && start % 1 !== 0) {
+              } else if (index === Math.floor(star) && star % 1 !== 0) {
                 return (
                   <IoIosStarHalf
                     key={index}
@@ -50,7 +50,7 @@ const ProductComponent = ({
                 );
               }
             })}
-            {/* <span className="ml-2 text-sm">{start.toFixed(1)}</span> */}
+            {/* <span className="ml-2 text-sm">{star.toFixed(1)}</span> */}
           </div>
           <div className="text-sm text-[#158857] font-semibold">
             <span>{percent}% Off</span>

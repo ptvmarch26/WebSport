@@ -108,7 +108,7 @@ const ProductPage = () => {
         onSortToggle={() => setSortOpen(!isSortOpen)}
         onSortChange={handleSortChange}
       />
-      <MoreProductsComponent products={products} />
+      <MoreProductsComponent products={products} /> 
 
       <SidebarSortComponent
         isOpen={isSidebarOpen}
