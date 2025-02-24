@@ -9,6 +9,8 @@ const MoreCardComponent = ({ sports }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slidesToShow = 3; // Số slides hiển thị
   const slideCount = sports.length; // Tổng số slides
+  const isDisabledBack = currentSlide === 0;
+  const isDisabledNext = currentSlide >= slideCount - slidesToShow;
 
   const settings = {
     dots: true,
@@ -19,12 +21,28 @@ const MoreCardComponent = ({ sports }) => {
     beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex),
     nextArrow: (
       <NextComponent
-        currentSlide={currentSlide}
-        slideCount={slideCount}
-        slidesToShow={slidesToShow}
+        isDisabled={isDisabledNext}
+        position="absolute"
+        zIndex="1"
+        top="50%"
+        right="10px"
+        transform="translateY(-50%)"
+        fontSize="2rem"
+        color="white"
       />
     ),
-    prevArrow: <BackComponent currentSlide={currentSlide} />,
+    prevArrow: (
+      <BackComponent
+        isDisabled={isDisabledBack}
+        position="absolute"
+        zIndex="1"
+        top="50%"
+        left="10px"
+        transform="translateY(-50%)"
+        fontSize="2rem"
+        color="white"
+      />
+    ),
   };
   return (
     <div className="w-full relative">

@@ -1,19 +1,11 @@
 import { FaChevronRight } from "react-icons/fa";
 
-const NextComponent = ({ onClick, currentSlide, slideCount, slidesToShow }) => {
-  const isDisabled = currentSlide >= slideCount - slidesToShow; 
-
+const NextComponent = ({ onClick, isDisabled, ...props }) => {
   return (
     <div
       onClick={isDisabled ? null : onClick} // Không click nếu bị disable
       style={{
-        position: "absolute",
-        zIndex: 1,
-        top: "50%",
-        right: "10px",
-        transform: "translateY(-50%)",
-        fontSize: "2rem",
-        color: "white",
+        ...props,
         cursor: isDisabled ? "not-allowed" : "pointer",
         opacity: isDisabled ? 0.5 : 1, // Làm mờ nếu disable
       }}

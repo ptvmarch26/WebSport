@@ -1,19 +1,19 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
+import { FaHeart, FaShoppingCart, FaUser, FaSearch } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 
 const Header = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  // const [hoveredOption, setHoveredOption] = useState(null);
+
   const options = [
-    "Hàng mới về",
-    "Nam",
-    "Nữ",
-    "Trẻ em",
-    "Bộ sưu tập",
-    "Giảm giá",
+    { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
+    { name: "Nam", subOptions: ["Giày nam", "Quần áo nam", "Phụ kiện nam"] },
+    { name: "Nữ", subOptions: ["Giày nữ", "Quần áo nữ", "Phụ kiện nữ"] },
+    { name: "Trẻ em", subOptions: ["Giày trẻ em", "Áo trẻ em"] },
+    { name: "Thể thao", subOptions: ["Bóng đá", "Bóng rổ", "Gym"] },
+    { name: "Giảm giá", subOptions: ["Flash Sale", "Mua 1 tặng 1"] },
   ];
 
   return (
@@ -21,49 +21,56 @@ const Header = () => {
       <div className="res mx-auto flex justify-between items-center h-full">
         <div className="flex items-center h-full">
           <Link to={"/"}>
-            <img src={logo} className="w-[150px] h-[80px]" />
+            <img src={logo} className="w-[120px] h-[80px]" />
           </Link>
-          <div className="group h-full">
+          <div className="h-full relative">
             <ul className="text-white flex space-x-6 text-base font-medium ml-4 h-full">
               {options.map((option, index) => (
                 <li
                   key={index}
-                  onMouseEnter={() => setIsHovered(true)} // Khi hover vào
-                  onMouseLeave={() => setIsHovered(false)}
-                  className="h-full uppercase flex items-center relative cursor-pointer transition-all duration-300 ease-in-out
-                   group-hover:opacity-60 hover:!opacity-100
-                   after:content-[''] after:absolute after:left-0 after:right-0 
-                   after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
-                   after:scale-x-0 hover:after:scale-x-100 
-                   after:transition-transform after:duration-300"
+                  className="relative group h-full uppercase flex items-center cursor-pointer transition-all duration-300 ease-in-out
+      hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
+      after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
+      after:scale-x-0 hover:after:scale-x-100 
+      after:transition-transform after:duration-300"
                 >
-                  <Link to={"/"}>{option}</Link>
+                  <Link to={"/"}>{option.name}</Link>
+
+                  {/* Dropdown menu */}
+                  <div
+                    className="absolute left-0 top-[70px] bg-white text-black w-48 shadow-lg p-2 z-10 
+                    opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible
+                    transition-all duration-700"
+                  >
+                    {option.subOptions.map((sub, i) => (
+                      <Link
+                        key={i}
+                        to="/"
+                        className={`block px-4 py-2 hover:bg-gray-200 rounded 
+                        opacity-0 translate-y-2 transition-all duration-300 delay-[${
+                          i * 75
+                        }ms]
+                        group-hover:opacity-100 group-hover:translate-y-0`}
+                      >
+                        {sub}
+                      </Link>
+                    ))}
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
+        {/* Phần bên phải */}
         <div className="flex items-center space-x-2">
-          {/* <div>
-            <button
-              className="flex items-center space-x-2 px-4 py-2 border border-white/50 text-white 
-                     hover:border-white transition"
-            >
-              <FaSearch className="text-base" />
-              <span className="uppercase">Tìm kiếm</span>
-            </button>
-          </div> */}
           <div className="w-full max-w-sm min-w-[200px]">
             <div className="relative">
               <input
                 className="w-full bg-transparent placeholder:text-white text-white text-sm border border-white rounded-md pl-3 pr-28 py-2 transition duration-300 ease focus:outline-none focus:border-opacity-80 hover:border-opacity-80 shadow-sm focus:shadow"
                 placeholder="Tên sản phẩm"
               />
-              <button
-                className="absolute top-2 right-1 flex items-center rounded bg-secondary py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:opacity-80 focus:shadow-none active:opacity-80 hover:opacity-80 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                type="button"
-              >
+              <button className="absolute top-2 right-1 flex items-center rounded bg-secondary py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all">
                 <FaSearch className="h-full" />
               </button>
             </div>
