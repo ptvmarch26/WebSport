@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { publicRoutes } from "./routes/route";
+import { publicRoutes, adminRoutes} from "./routes/route";
 import DefaultLayout from "./Layout/DefaultLayout/DefaultLayout";
 import { Fragment } from "react";
 import './index.css'
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -24,6 +25,24 @@ function App() {
                 ) : (
                   <Page />
                 )
+              }
+            />
+          );
+        })}
+        {/* Admin routes */}
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+        {adminRoutes.map((route, index) => {
+          const Layout = route.Layout || Fragment;
+          const Page = route.component;
+
+          return (
+            <Route
+              key={index}
+              path={route.path}
+              element={
+                <Layout>
+                  <Page />
+                </Layout>
               }
             />
           );
