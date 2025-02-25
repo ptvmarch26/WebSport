@@ -31,7 +31,7 @@ const ProductDetailsPage = () => {
       name: "Nước Hoa Chó Mèo ABURA Khử Mùi Hôi, Nước Tiểu Chó Mèo Hương Thơm Lưu Giữ Lâu, An Toàn",
       oldPrice: 500000,
       newPrice: 400000,
-      start: 1.5,
+      star: 1.5,
       percent: 20,
     },
     {
@@ -40,7 +40,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 600000,
       newPrice: 480000,
-      start: 5,
+      star: 5,
       percent: 20,
     },
     {
@@ -49,7 +49,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 700000,
       newPrice: 560000,
-      start: 4.8,
+      star: 4.8,
       percent: 20,
     },
     {
@@ -58,7 +58,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 800000,
       newPrice: 640000,
-      start: 4.2,
+      star: 4.2,
       percent: 20,
     },
     {
@@ -67,7 +67,7 @@ const ProductDetailsPage = () => {
       name: "Nước Hoa Chó Mèo ABURA Khử Mùi Hôi, Nước Tiểu Chó Mèo Hương Thơm Lưu Giữ Lâu, An Toàn",
       oldPrice: 500000,
       newPrice: 400000,
-      start: 1.5,
+      star: 1.5,
       percent: 20,
     },
     {
@@ -76,7 +76,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 600000,
       newPrice: 480000,
-      start: 5,
+      star: 5,
       percent: 20,
     },
     {
@@ -85,7 +85,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 700000,
       newPrice: 560000,
-      start: 4.8,
+      star: 4.8,
       percent: 20,
     },
     {
@@ -94,7 +94,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 800000,
       newPrice: 640000,
-      start: 4.2,
+      star: 4.2,
       percent: 20,
     },
     {
@@ -103,7 +103,7 @@ const ProductDetailsPage = () => {
       name: "Nike Air Force 1 '07",
       oldPrice: 800000,
       newPrice: 640000,
-      start: 4.2,
+      star: 4.2,
       percent: 20,
     },
   ];

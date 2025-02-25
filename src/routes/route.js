@@ -1,3 +1,5 @@
+import CartPage from "../pages/CartPage/CartPage"
+import CheckOutPage from "../pages/CheckOutPage/CheckOutPage"
 import HomePage from "../pages/HomePage/HomePage"
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage"
 import ProductPage from "../pages/ProductPage/ProductPage"
@@ -25,6 +27,14 @@ const publicRoutes = [
     {
         path: '/product-details',
         component: ProductDetailsPage,
+    },
+    {
+        path: '/cart',
+        component: CartPage,
+    },
+    {
+        path: '/checkout',
+        component: CheckOutPage,
     }
 ]
 
