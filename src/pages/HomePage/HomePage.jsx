@@ -171,7 +171,7 @@ const HomePage = () => {
   // ];
 
   return (
-    <div className="">
+    <div className="mt-24">
       <div className="res my-6">
         <SliderComponent loop autoplay arrSlides={[slider1, slider1, slider1]} />
         <div>
