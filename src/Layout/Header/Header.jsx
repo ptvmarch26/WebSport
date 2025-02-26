@@ -18,16 +18,16 @@ const Header = () => {
     { name: "Giảm giá", subOptions: ["Flash Sale", "Mua 1 tặng 1"] },
   ];
 
-  const { scrollPosition, scrollDirection } = userScrollHandling(); 
+  const { scrollDirection } = userScrollHandling(); 
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    if (scrollPosition > 80 && scrollDirection === "down") {
+    if (scrollDirection === "down") {
       setHidden(true); 
     } else {
       setHidden(false);
     }
-  }, [scrollPosition, scrollDirection]);
+  }, [scrollDirection]);
 
   return (
     <div
