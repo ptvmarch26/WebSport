@@ -61,15 +61,14 @@ const CartPage = () => {
   );
 
   const handleNavigateCheckout = () => {
-    navigate("/checkout", { state: { cart } });  // Truyền cart qua state
+    navigate("/checkout", { state: { cart, subtotal } }); // Truyền cart qua state
   };
-  
 
   return (
     <div className="res min-h-[500px]">
       <div className="p-5 grid grid-cols-3 gap-8">
         <div className="col-span-2">
-          <h1 className="text-2xl font-semibold uppercase mb-4">Giỏ hàng</h1>
+          <h1 className="text-2xl font-bold uppercase mb-4">Giỏ hàng</h1>
           {cart.length === 0 ? (
             <p className="text-center uppercase text-xl font-semibold text-gray-600">
               Hiện không có sản phẩm nào trong giỏ
