@@ -7,7 +7,9 @@ const DefaultLayout = ({ children }) => {
   return (
     <div>
         <Header />
-        {children}
+        <div className='mt-24'>
+          {children}
+        </div>
         <ScrollToTopComponent />
         <Footer />
     </div>

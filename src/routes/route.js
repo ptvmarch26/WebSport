@@ -4,8 +4,8 @@ import FavoriteProductPage from "../pages/FavoriteProductPage/FavoriteProductPag
 import HomePage from "../pages/HomePage/HomePage"
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage"
 import ProductPage from "../pages/ProductPage/ProductPage"
-import SignInSignUp from "../pages/SigninSignup/SignInSignUp"
-
+import SignInSignUp from "../pages/SigninSignup/SignInSignUp";
+import UserPage from "../pages/UserPage/UserPage";
 
 import Dashboard from "../admin/pages/Dashboard";
 import Orders from "../admin/pages/Orders";

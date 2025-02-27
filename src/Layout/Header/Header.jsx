@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { FaHeart, FaShoppingCart, FaUser, FaSearch } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
+import { useEffect, useState } from "react";
+import userScrollHandling from "../../hooks/userScrollHandling";
 
 const Header = () => {
   // const [hoveredOption, setHoveredOption] = useState(null);
@@ -16,8 +18,24 @@ const Header = () => {
     { name: "Giảm giá", subOptions: ["Flash Sale", "Mua 1 tặng 1"] },
   ];
 
+  const { scrollDirection } = userScrollHandling(); 
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    if (scrollDirection === "down") {
+      setHidden(true); 
+    } else {
+      setHidden(false);
+    }
+  }, [scrollDirection]);
+
   return (
-    <div className="w-full h-[100px] bg-primary">
+    <div
+      className={clsx(
+        "w-full h-[80px] bg-primary fixed top-0 left-0 right-0 z-50 shadow-md transition-transform duration-300 ease-in-out",
+        hidden ? "-translate-y-full" : "translate-y-0"
+      )}
+    >
       <div className="res mx-auto flex justify-between items-center h-full">
         <div className="flex items-center h-full">
           <Link to={"/"}>
@@ -29,10 +47,10 @@ const Header = () => {
                 <li
                   key={index}
                   className="relative group h-full uppercase flex items-center cursor-pointer transition-all duration-300 ease-in-out
-      hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
-      after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
-      after:scale-x-0 hover:after:scale-x-100 
-      after:transition-transform after:duration-300"
+                  hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
+                  after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
+                  after:scale-x-0 hover:after:scale-x-100 
+                  after:transition-transform after:duration-300"
                 >
                   <Link to={"/"}>{option.name}</Link>
 
