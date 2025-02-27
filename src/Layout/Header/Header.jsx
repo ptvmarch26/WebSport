@@ -82,7 +82,7 @@ const Header = () => {
               </Link>
             </div>
             <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-              <Link to={"/"}>
+              <Link to={"/cart"}>
                 <FaShoppingCart />
               </Link>
             </div>
