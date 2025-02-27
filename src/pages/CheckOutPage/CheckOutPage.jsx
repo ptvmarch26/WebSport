@@ -108,7 +108,6 @@ function CheckoutPage() {
       ward: "",
       phoneNumber: "",
     });
-    setEditingIndex(null);
   };
 
   const handleApplyVoucher = () => {

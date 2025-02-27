@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AddressFormComponent from "../AddressFormComponent/AddressFormComponent";
 import { Button } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -17,20 +17,48 @@ const AddressOverlayComponent = ({
   handleDeleteAddress,
   handleSelectAddress,
 }) => {
-  if (!isOverlayOpen) return null;
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Bắt sự kiện khi animation hoàn thành để đóng overlay
+  const handleTransitionEnd = () => {
+    if (!isOverlayOpen) {
+      setIsAnimating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOverlayOpen) {
+      setIsAnimating(true);
+    }
+  }, [isOverlayOpen]);
 
   const closeOverlay = () => {
     setIsOverlayOpen(false);
     setEditingIndex(null); // Reset về "Quản lý địa chỉ" khi đóng overlay
+    setNewAddress({
+      firstName: "",
+      lastName: "",
+      streetAddress: "",
+      province: "",
+      district: "",
+      ward: "",
+      phoneNumber: "",
+    });
   };
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10"
+      className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10 transition-opacity duration-300 ${
+        isOverlayOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
       onClick={closeOverlay} // Bấm ngoài overlay để đóng
+      onTransitionEnd={handleTransitionEnd} // Sử dụng sự kiện transitionend
     >
       <div
-        className="bg-white p-6 rounded-lg w-1/2 relative"
+        className={`bg-white p-6 rounded-lg w-1/2 relative transition-transform duration-300 transform ${
+          isOverlayOpen ? "translate-y-0" : "-translate-y-40"
+          // isOverlayOpen ? "" : ""
+        }`}
         onClick={(e) => e.stopPropagation()} // Ngăn đóng khi bấm bên trong
       >
         <div className="flex items-center justify-between mb-4">
