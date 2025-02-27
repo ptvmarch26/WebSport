@@ -1,3 +1,6 @@
+import CartPage from "../pages/CartPage/CartPage"
+import CheckOutPage from "../pages/CheckOutPage/CheckOutPage"
+import FavoriteProductPage from "../pages/FavoriteProductPage/FavoriteProductPage"
 import HomePage from "../pages/HomePage/HomePage"
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage"
 import ProductPage from "../pages/ProductPage/ProductPage"
@@ -15,12 +18,12 @@ const publicRoutes = [
     {
         path: "/login",
         component: SignInSignUp,
-        Layout: null,
+        // Layout: null,
     },
     {
         path: "/signup",
         component: SignInSignUp,
-        Layout: null,
+        // Layout: null,
     },
     {
         path: '/',
@@ -35,8 +38,16 @@ const publicRoutes = [
         component: ProductDetailsPage,
     },
     {
-        path: '/user',
-        component: UserPage,
+        path: '/cart',
+        component: CartPage,
+    },
+    {
+        path: '/checkout',
+        component: CheckOutPage,
+    },
+    {
+        path: '/favorite',
+        component: FavoriteProductPage,
     }
 ]
 

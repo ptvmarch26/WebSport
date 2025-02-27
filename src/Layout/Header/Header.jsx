@@ -94,21 +94,21 @@ const Header = () => {
             </div>
           </div>
           <div className={clsx("flex space-x-4 text-white text-xl")}>
-            <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-              <Link to={"/"}>
+            <Link to={"/favorite"}>
+              <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                 <FaHeart />
-              </Link>
-            </div>
-            <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-              <Link to={"/"}>
+              </div>
+            </Link>
+            <Link to={"/cart"}>
+              <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                 <FaShoppingCart />
-              </Link>
-            </div>
-            <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-              <Link to={"/user"}>
+              </div>
+            </Link>
+            <Link to={"/login"}>
+              <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                 <FaUser />
-              </Link>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
