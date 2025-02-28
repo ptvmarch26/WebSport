@@ -4,7 +4,15 @@ import FavoriteProductPage from "../pages/FavoriteProductPage/FavoriteProductPag
 import HomePage from "../pages/HomePage/HomePage"
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage"
 import ProductPage from "../pages/ProductPage/ProductPage"
-import SignInSignUp from "../pages/SigninSignup/SignInSignUp"
+import SignInSignUp from "../pages/SigninSignup/SignInSignUp";
+import UserPage from "../pages/UserPage/UserPage";
+
+import Dashboard from "../admin/pages/Dashboard";
+import Orders from "../admin/pages/Orders";
+import Products from "../admin/pages/Products";
+import Users from "../admin/pages/Users";
+import AdminLayout from "../admin/layout/AdminLayout";
+import Discount from "../admin/pages/Discount";
 
 const publicRoutes = [
     {
@@ -47,4 +55,32 @@ const privateRoutes = [
     
 ]
 
-export { publicRoutes , privateRoutes }
+const adminRoutes = [
+    {
+        path: "/admin/dashboard",
+        component: Dashboard,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/orders",
+        component: Orders,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/products",
+        component: Products,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/users",
+        component: Users,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/discount",
+        component: Discount,
+        Layout: AdminLayout,
+    },
+];
+
+export { publicRoutes , privateRoutes, adminRoutes }
