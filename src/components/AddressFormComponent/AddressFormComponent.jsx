@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiGetProvinces, apiGetDistricts, apiGetWards } from "./AddressApi";
-import { Select, Option } from "@material-tailwind/react";
+import { apiGetProvinces, apiGetDistricts, apiGetWards } from "../../services/api/AddressApi";
 
 function AddressFormComponent({ newAddress, setNewAddress }) {
   const fieldNames = {
@@ -95,6 +94,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
               errors.firstName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Họ"
+            required
           />
           <label
             htmlFor="firstName"
@@ -120,6 +120,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
               errors.lastName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Tên"
+            required
           />
           <label
             htmlFor="lastName"

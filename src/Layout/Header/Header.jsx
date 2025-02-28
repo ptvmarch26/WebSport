@@ -1,13 +1,24 @@
-// import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { FaHeart, FaShoppingCart, FaUser, FaSearch } from "react-icons/fa";
+import {
+  FaHeart,
+  FaShoppingCart,
+  FaUser,
+  FaSearch,
+  FaTimes,
+} from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
+import { AiOutlineClose } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import userScrollHandling from "../../hooks/userScrollHandling";
 
 const Header = () => {
-  // const [hoveredOption, setHoveredOption] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
 
   const options = [
     { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
@@ -48,27 +59,19 @@ const Header = () => {
                   key={index}
                   className="relative group h-full uppercase flex items-center cursor-pointer transition-all duration-300 ease-in-out
                   hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
-                  after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
+                   after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
                   after:scale-x-0 hover:after:scale-x-100 
                   after:transition-transform after:duration-300"
                 >
                   <Link to={"/"}>{option.name}</Link>
-
-                  {/* Dropdown menu */}
-                  <div
-                    className="absolute left-0 top-[70px] bg-white text-black w-48 shadow-lg p-2 z-10 
-                    opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible
-                    transition-all duration-700"
-                  >
+                  <div className="absolute left-0 top-[70px] bg-white text-black w-48 shadow-lg p-2 z-10 opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-700">
                     {option.subOptions.map((sub, i) => (
                       <Link
                         key={i}
                         to="/"
-                        className={`block px-4 py-2 hover:bg-gray-200 rounded 
-                        opacity-0 translate-y-2 transition-all duration-300 delay-[${
+                        className={`block px-4 py-2 hover:bg-gray-200 rounded opacity-0 translate-y-2 transition-all duration-300 delay-[${
                           i * 75
-                        }ms]
-                        group-hover:opacity-100 group-hover:translate-y-0`}
+                        }ms] group-hover:opacity-100 group-hover:translate-y-0`}
                       >
                         {sub}
                       </Link>
@@ -82,18 +85,16 @@ const Header = () => {
 
         {/* Phần bên phải */}
         <div className="flex items-center space-x-2">
-          <div className="w-full max-w-sm min-w-[200px]">
-            <div className="relative">
-              <input
-                className="w-full bg-transparent placeholder:text-white text-white text-sm border border-white rounded-md pl-3 pr-28 py-2 transition duration-300 ease focus:outline-none focus:border-opacity-80 hover:border-opacity-80 shadow-sm focus:shadow"
-                placeholder="Tên sản phẩm"
-              />
-              <button className="absolute top-2 right-1 flex items-center rounded bg-secondary py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all">
-                <FaSearch className="h-full" />
-              </button>
-            </div>
-          </div>
-          <div className={clsx("flex space-x-4 text-white text-xl")}>
+          <div
+            className={clsx("flex items-center space-x-4 text-white text-xl")}
+          >
+            <button
+              onClick={toggleSearch}
+              className="flex items-center border border-[#676d75] py-2 px-4 text-white uppercase space-x-2 hover:border-white"
+            >
+              <FaSearch className="text-base " />
+              <p className="text-base">Search</p>
+            </button>
             <Link to={"/favorite"}>
               <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                 <FaHeart />
@@ -112,6 +113,29 @@ const Header = () => {
           </div>
         </div>
       </div>
+
+      {/* Ô tìm kiếm và overlay */}
+      {searchOpen && (
+        <>
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-20">
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              className="w-1/2 p-2 border border-gray-300 focus:outline-none"
+            />
+            <button
+              onClick={toggleSearch}
+              className="ml-4"
+            >
+              <AiOutlineClose className="text-2xl text-black hover:opacity-90" />
+            </button>
+          </div>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-10"
+            onClick={toggleSearch}
+          ></div>
+        </>
+      )}
     </div>
   );
 };
