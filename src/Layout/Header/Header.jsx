@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import {
-  FaHeart,
-  FaShoppingCart,
-  FaUser,
-  FaSearch,
-  FaTimes,
-} from "react-icons/fa";
+import { FaHeart, FaShoppingCart, FaUser, FaSearch } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 import { AiOutlineClose } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import userScrollHandling from "../../hooks/userScrollHandling";
 
 const Header = () => {
@@ -29,12 +23,12 @@ const Header = () => {
     { name: "Giảm giá", subOptions: ["Flash Sale", "Mua 1 tặng 1"] },
   ];
 
-  const { scrollDirection } = userScrollHandling(); 
+  const { scrollDirection } = userScrollHandling();
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     if (scrollDirection === "down") {
-      setHidden(true); 
+      setHidden(true);
     } else {
       setHidden(false);
     }
@@ -59,12 +53,12 @@ const Header = () => {
                   key={index}
                   className="relative group h-full uppercase flex items-center cursor-pointer transition-all duration-300 ease-in-out
                   hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
-                   after:h-[2px] after:bg-[#8a7350] after:bottom-[35px] 
+                   after:h-[2px] after:bg-[#8a7350] after:bottom-[26px] 
                   after:scale-x-0 hover:after:scale-x-100 
                   after:transition-transform after:duration-300"
                 >
                   <Link to={"/"}>{option.name}</Link>
-                  <div className="absolute left-0 top-[70px] bg-white text-black w-48 shadow-lg p-2 z-10 opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-700">
+                  <div className="absolute left-0 top-[60px] bg-white text-black w-48 shadow-lg p-2 z-10 opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-700">
                     {option.subOptions.map((sub, i) => (
                       <Link
                         key={i}
@@ -93,7 +87,7 @@ const Header = () => {
               className="flex items-center border border-[#676d75] py-2 px-4 text-white uppercase space-x-2 hover:border-white"
             >
               <FaSearch className="text-base " />
-              <p className="text-base">Search</p>
+              <p className="text-base">Tìm kiếm</p>
             </button>
             <Link to={"/favorite"}>
               <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
@@ -116,25 +110,22 @@ const Header = () => {
 
       {/* Ô tìm kiếm và overlay */}
       {searchOpen && (
-        <>
-          <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-20">
+        <div>
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-10">
             <input
               type="text"
               placeholder="Tìm kiếm"
               className="w-1/2 p-2 border border-gray-300 focus:outline-none"
             />
-            <button
-              onClick={toggleSearch}
-              className="ml-4"
-            >
+            <button onClick={toggleSearch} className="ml-4">
               <AiOutlineClose className="text-2xl text-black hover:opacity-90" />
             </button>
           </div>
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-10"
+            className="fixed bottom-0 left-0 right-0 top-0 bg-black opacity-50 z-20"
             onClick={toggleSearch}
           ></div>
-        </>
+        </div>
       )}
     </div>
   );

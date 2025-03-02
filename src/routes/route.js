@@ -5,7 +5,7 @@ import HomePage from "../pages/HomePage/HomePage"
 import ProductDetailsPage from "../pages/ProductDetailsPage/ProductDetailsPage"
 import ProductPage from "../pages/ProductPage/ProductPage"
 import SignInSignUp from "../pages/SigninSignup/SignInSignUp";
-import UserPage from "../pages/UserPage/UserPage";
+import OrderStatusPage from "../pages/OrderStatusPage/OrderStatusPage"
 
 import Dashboard from "../admin/pages/Dashboard";
 import Orders from "../admin/pages/Orders";
@@ -13,6 +13,8 @@ import Products from "../admin/pages/Products";
 import Users from "../admin/pages/Users";
 import AdminLayout from "../admin/layout/AdminLayout";
 import Discount from "../admin/pages/Discount";
+import OrderDetailsPage from "../pages/OrderDetailsPage/OrderDetailsPage"
+import NotFoundPage from "../pages/NotFouldPage/NotFouldPage"
 
 const publicRoutes = [
     {
@@ -48,6 +50,19 @@ const publicRoutes = [
     {
         path: '/favorite',
         component: FavoriteProductPage,
+    },
+    {
+        path: '/orders',
+        component: OrderStatusPage,
+    },
+    {
+        path: '/order-details',
+        component: OrderDetailsPage,
+    },
+    {
+        path: "*",
+        component: NotFoundPage,
+        Layout: null
     }
 ]
 
