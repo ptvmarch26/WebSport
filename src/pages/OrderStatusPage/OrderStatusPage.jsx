@@ -4,32 +4,23 @@ import { Button } from "@material-tailwind/react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const OrderStatusPage = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("all");  // Sử dụng 'all' để hiển thị tất cả
   const navigate = useNavigate();
   const location = useLocation();
 
   const tabs = [
     { id: "all", label: "Tất cả" },
-    { id: "pending", label: "Chờ xác nhận" },
-    { id: "shipping", label: "Đang giao" },
-    { id: "completed", label: "Hoàn thành" },
-    { id: "canceled", label: "Hủy hàng" },
-    { id: "returned", label: "Hoàn hàng" },
+    { id: "Chờ xác nhận", label: "Chờ xác nhận" },
+    { id: "Đang giao", label: "Đang giao" },
+    { id: "Hoàn thành", label: "Hoàn thành" },
+    { id: "Hủy hàng", label: "Hủy hàng" },
+    { id: "Hoàn hàng", label: "Hoàn hàng" },
   ];
-
-  const statusMapping = {
-    all: "Tất cả",
-    pending: "Chờ xác nhận",
-    shipping: "Đang giao",
-    completed: "Hoàn thành",
-    canceled: "Hủy hàng",
-    returned: "Hoàn hàng",
-  };
 
   const orders = [
     {
       id: 1,
-      status: "canceled",
+      status: "Hủy hàng", 
       products: [
         {
           name: "Gel vệ sinh răng miệng đánh bay mảng bám cao răng",
@@ -44,7 +35,7 @@ const OrderStatusPage = () => {
     },
     {
       id: 2,
-      status: "completed",
+      status: "Hoàn thành", 
       products: [
         {
           name: "Dầu gội dưỡng ẩm cho thú cưng",
@@ -55,11 +46,20 @@ const OrderStatusPage = () => {
           image:
             "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
         },
+        {
+          name: "Bàn chải đánh răng cho thú cưng",
+          size: "M",
+          quantity: 2,
+          price: 50000,
+          oldPrice: 60000,
+          image:
+            "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
+        },
       ],
     },
     {
       id: 3,
-      status: "pending",
+      status: "Chờ xác nhận", 
       products: [
         {
           name: "Bàn chải đánh răng cho thú cưng",
@@ -83,6 +83,7 @@ const OrderStatusPage = () => {
     },
   ];
 
+  // Lọc đơn hàng theo trạng thái, nếu chọn "Tất cả" thì không lọc
   const filteredOrders =
     activeTab === "all"
       ? orders
@@ -95,7 +96,6 @@ const OrderStatusPage = () => {
     );
   };
 
-  // Hàm cập nhật tab từ query params
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const tab = searchParams.get("tab");
@@ -111,18 +111,23 @@ const OrderStatusPage = () => {
 
   const handleProductClick = (order) => {
     const totalPrice = calculateTotalPrice(order.products);
-    
-    // Pass all the necessary details
-    navigate(`/order-details`, { 
-      state: { 
+
+    navigate(`order-details`, {
+      state: {
         products: order.products,
         totalPrice: totalPrice,
         orderStatus: order.status,
-        statusMapping: statusMapping
-      } 
+      },
     });
   };
-  
+
+  const handleFeedback = (order) => {
+    navigate("order-feedback", {
+      state: {
+        products: order.products,
+      },
+    });
+  }
 
   return (
     <div className="res py-10">
@@ -158,7 +163,7 @@ const OrderStatusPage = () => {
             className="p-4 my-5 border border-gray-300 rounded-md"
           >
             <p className="text-end uppercase text-sm font-semibold">
-              {statusMapping[order.status] || order.status}
+              {order.status} 
             </p>
             {order.products.map((product, index) => (
               <div
@@ -195,14 +200,14 @@ const OrderStatusPage = () => {
               </p>
             </div>
 
-            {/* Xử lý hiển thị nút theo trạng thái */}
             <div className="mt-4 text-right space-x-2">
-              {order.status === "completed" && (
+              {order.status === "Hoàn thành" && (
                 <>
                   <Button
                     variant="filled"
                     color="black"
                     className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                    onClick={() => handleFeedback(order)}
                   >
                     Đánh giá
                   </Button>
@@ -215,7 +220,7 @@ const OrderStatusPage = () => {
                   </Button>
                 </>
               )}
-              {(order.status === "canceled" || order.status === "returned") && (
+              {(order.status === "Hủy hàng" || order.status === "Hoàn hàng") && (
                 <Button
                   variant="filled"
                   color="black"
@@ -224,7 +229,7 @@ const OrderStatusPage = () => {
                   Mua lại
                 </Button>
               )}
-              {order.status === "pending" && (
+              {order.status === "Chờ xác nhận" && (
                 <Button
                   variant="filled"
                   color="black"

@@ -15,6 +15,7 @@ import AdminLayout from "../admin/layout/AdminLayout";
 import Discount from "../admin/pages/Discount";
 import OrderDetailsPage from "../pages/OrderDetailsPage/OrderDetailsPage"
 import NotFoundPage from "../pages/NotFouldPage/NotFouldPage"
+import OrderFeedbackPage from "../pages/OrderFeedbackPage/OrderFeedbackPage"
 
 const publicRoutes = [
     {
@@ -56,8 +57,12 @@ const publicRoutes = [
         component: OrderStatusPage,
     },
     {
-        path: '/order-details',
+        path: '/orders/order-details',
         component: OrderDetailsPage,
+    },
+    {
+        path: '/orders/order-feedback',
+        component: OrderFeedbackPage,
     },
     {
         path: "*",

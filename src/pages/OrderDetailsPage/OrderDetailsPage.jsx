@@ -2,14 +2,14 @@ import { useLocation } from "react-router-dom";
 
 const OrderDetailsPage = () => {
   const location = useLocation();
-  const { products, totalPrice, orderStatus, statusMapping } =
+  const { products, totalPrice, orderStatus } =
     location.state || {};
 
   return (
     <div className="res py-10">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold uppercase mb-4">Chi tiết đơn hàng</h1>
-        <p className="text-sm font-semibold">{statusMapping[orderStatus]}</p>
+        <p className="text-sm font-semibold">{orderStatus}</p>
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
         <h3 className="text-lg uppercase font-semibold">Thông tin nhận hàng</h3>

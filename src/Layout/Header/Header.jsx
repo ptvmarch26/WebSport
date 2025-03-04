@@ -111,18 +111,20 @@ const Header = () => {
       {/* Ô tìm kiếm và overlay */}
       {searchOpen && (
         <div>
-          <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-10">
-            <input
-              type="text"
-              placeholder="Tìm kiếm"
-              className="w-1/2 p-2 border border-gray-300 focus:outline-none"
-            />
-            <button onClick={toggleSearch} className="ml-4">
-              <AiOutlineClose className="text-2xl text-black hover:opacity-90" />
-            </button>
+          <div>
+            <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-10">
+              <input
+                type="text"
+                placeholder="Tìm kiếm"
+                className="w-1/2 p-2 border border-gray-300 focus:outline-none"
+              />
+              <button onClick={toggleSearch} className="ml-4">
+                <AiOutlineClose className="text-2xl text-black hover:opacity-90" />
+              </button>
+            </div>
           </div>
           <div
-            className="fixed bottom-0 left-0 right-0 top-0 bg-black opacity-50 z-20"
+            className="fixed top-[100px] left-0 right-0 h-screen w-screen bg-black/40 z-20"
             onClick={toggleSearch}
           ></div>
         </div>

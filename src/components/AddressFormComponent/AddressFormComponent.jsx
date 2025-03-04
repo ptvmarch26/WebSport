@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { apiGetProvinces, apiGetDistricts, apiGetWards } from "../../services/api/AddressApi";
 
-function AddressFormComponent({ newAddress, setNewAddress }) {
+function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormErrors }) {
   const fieldNames = {
-    firstName: "Họ", // Thay đổi tên hiển thị cho trường firstName
+    firstName: "Họ",
     lastName: "Tên",
     streetAddress: "Địa chỉ",
     province: "Tỉnh/Thành phố",
@@ -11,21 +11,10 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
     ward: "Phường/Xã",
     phoneNumber: "Số điện thoại",
   };
+
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [errors, setErrors] = useState({});
-
-  const handleBlur = (field) => {
-    if (!newAddress[field]) {
-      setErrors((prev) => ({
-        ...prev,
-        [field]: `Bạn chưa nhập ${fieldNames[field]}`,
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
-  };
 
   useEffect(() => {
     apiGetProvinces()
@@ -33,54 +22,69 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
       .catch((err) => console.error("Error fetching provinces:", err));
   }, []);
 
+  const handleBlur = (field) => {
+    if (!newAddress[field]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [field]: `Bạn chưa nhập ${fieldNames[field]}`,
+      }));
+    } else {
+      setFormErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+
   const handleProvinceChange = async (e) => {
     const provinceName = e.target.value;
-    const selectedProvince = provinces.find((province) => province.province_name === provinceName);
-    const provinceId = selectedProvince ? selectedProvince.province_id : ''; // Lấy ID tỉnh
-  
+    const selectedProvince = provinces.find(
+      (province) => province.province_name === provinceName
+    );
+    const provinceId = selectedProvince ? selectedProvince.province_id : '';
+
     setNewAddress({
       ...newAddress,
-      province: provinceName, 
-      district: "", 
-      ward: "", 
+      province: provinceName,
+      district: "",
+      ward: "",
     });
-  
-    setDistricts([]); 
-    setWards([]); 
-  
+
+    setDistricts([]);
+    setWards([]);
+
     try {
-      
-      const res = await apiGetDistricts(provinceId); 
-      setDistricts(res.results); 
+      const res = await apiGetDistricts(provinceId);
+      setDistricts(res.results);
     } catch (err) {
       console.error("Error fetching districts:", err);
     }
   };
-  
+
   const handleDistrictChange = async (e) => {
     const districtName = e.target.value;
-    const selectedDistrict = districts.find((district) => district.district_name === districtName);
-    const districtId = selectedDistrict ? selectedDistrict.district_id : ''; // Lấy ID quận huyện
-  
+    const selectedDistrict = districts.find(
+      (district) => district.district_name === districtName
+    );
+    const districtId = selectedDistrict ? selectedDistrict.district_id : '';
+
     setNewAddress({
       ...newAddress,
-      district: districtName, 
-      ward: "", 
+      district: districtName,
+      ward: "",
     });
-  
+
     setWards([]);
-  
+
     try {
-      const res = await apiGetWards(districtId); 
+      const res = await apiGetWards(districtId);
       setWards(res.results);
     } catch (err) {
       console.error("Error fetching wards:", err);
     }
   };
-  
+
   return (
     <div>
       <div className="flex gap-2">
+        {/* First Name */}
         <div className="relative w-full mb-3">
           <input
             id="firstName"
@@ -91,7 +95,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
             }
             onBlur={() => handleBlur("firstName")}
             className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-              errors.firstName ? "border-red-500" : "border-gray-300"
+              formErrors.firstName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Họ"
             required
@@ -102,11 +106,12 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
           >
             Họ
           </label>
-          {errors.firstName && (
-            <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+          {formErrors.firstName && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.firstName}</p>
           )}
         </div>
 
+        {/* Last Name */}
         <div className="relative w-full mb-3">
           <input
             id="lastName"
@@ -117,7 +122,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
             }
             onBlur={() => handleBlur("lastName")}
             className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-              errors.lastName ? "border-red-500" : "border-gray-300"
+              formErrors.lastName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Tên"
             required
@@ -128,11 +133,13 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
           >
             Tên
           </label>
-          {errors.lastName && (
-            <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+          {formErrors.lastName && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.lastName}</p>
           )}
         </div>
       </div>
+
+      {/* Phone Number */}
       <div className="relative w-full mb-3">
         <input
           id="phoneNumber"
@@ -143,7 +150,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
           }
           onBlur={() => handleBlur("phoneNumber")}
           className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-            errors.phoneNumber ? "border-red-500" : "border-gray-300"
+            formErrors.phoneNumber ? "border-red-500" : "border-gray-300"
           }`}
           placeholder="Số điện thoại"
         />
@@ -153,12 +160,14 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
         >
           Số điện thoại
         </label>
-        {errors.phoneNumber && (
-          <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>
+        {formErrors.phoneNumber && (
+          <p className="text-red-500 text-xs mt-1">{formErrors.phoneNumber}</p>
         )}
       </div>
+
+      {/* Province/District/Ward */}
       <div className="flex gap-2">
-        {/* Select Province */}
+        {/* Province */}
         <div className="relative w-full mb-3">
           <select
             id="province"
@@ -166,7 +175,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
             onChange={handleProvinceChange}
             onBlur={() => handleBlur("province")}
             className={`peer w-full p-2 border text-sm rounded focus:ring-black bg-white disabled:opacity-50 ${
-              errors.province ? "border-red-500" : "border-gray-300"
+              formErrors.province ? "border-red-500" : "border-gray-300"
             }`}
           >
             <option value="">Tỉnh/Thành phố</option>
@@ -176,11 +185,12 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
               </option>
             ))}
           </select>
-          {errors.province && (
-            <p className="text-red-500 text-xs mt-1">{errors.province}</p>
+          {formErrors.province && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.province}</p>
           )}
         </div>
 
+        {/* District */}
         <div className="relative w-full mb-3">
           <select
             id="district"
@@ -189,7 +199,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
             disabled={!newAddress.province}
             onBlur={() => handleBlur("district")}
             className={`peer w-full p-2 border text-sm rounded focus:ring-black bg-white disabled:opacity-50 ${
-              errors.district ? "border-red-500" : "border-gray-300"
+              formErrors.district ? "border-red-500" : "border-gray-300"
             }`}
           >
             <option value="">Quận/Huyện</option>
@@ -199,11 +209,12 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
               </option>
             ))}
           </select>
-          {errors.district && (
-            <p className="text-red-500 text-xs mt-1">{errors.district}</p>
+          {formErrors.district && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.district}</p>
           )}
         </div>
 
+        {/* Ward */}
         <div className="relative w-full mb-3">
           <select
             id="ward"
@@ -214,7 +225,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
             disabled={!newAddress.district}
             onBlur={() => handleBlur("ward")}
             className={`peer w-full p-2 border text-sm rounded focus:ring-black bg-white disabled:opacity-50 ${
-              errors.ward ? "border-red-500" : "border-gray-300"
+              formErrors.ward ? "border-red-500" : "border-gray-300"
             }`}
           >
             <option value="">Phường/Xã</option>
@@ -224,11 +235,13 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
               </option>
             ))}
           </select>
-          {errors.ward && (
-            <p className="text-red-500 text-xs mt-1">{errors.ward}</p>
+          {formErrors.ward && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.ward}</p>
           )}
         </div>
       </div>
+
+      {/* Street Address */}
       <div className="relative w-full mb-3">
         <input
           id="streetAddress"
@@ -239,7 +252,7 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
           }
           onBlur={() => handleBlur("streetAddress")}
           className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-            errors.streetAddress ? "border-red-500" : "border-gray-300"
+            formErrors.streetAddress ? "border-red-500" : "border-gray-300"
           }`}
           placeholder="Địa chỉ cụ thể"
         />
@@ -249,8 +262,8 @@ function AddressFormComponent({ newAddress, setNewAddress }) {
         >
           Địa chỉ cụ thể
         </label>
-        {errors.streetAddress && (
-          <p className="text-red-500 text-xs mt-1">{errors.streetAddress}</p>
+        {formErrors.streetAddress && (
+          <p className="text-red-500 text-xs mt-1">{formErrors.streetAddress}</p>
         )}
       </div>
     </div>
