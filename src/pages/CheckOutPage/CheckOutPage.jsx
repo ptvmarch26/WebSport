@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import AddressFormComponent from "../../components/AddressFormComponent/AddressFormComponent";
 import { useLocation } from "react-router-dom";
 import OrderSummaryComponent from "../../components/OrderSummaryComponent/OrderSummaryComponent";
-import AddressOverlayComponent from "../../components/AddressOverlayComponent/AddressOverlayComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import SelectionComponent from "../../components/SelectionComponent/SelectionComponent";
+import { Button } from "@material-tailwind/react";
+import { AiOutlineClose } from "react-icons/ai";
 
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
@@ -34,16 +35,24 @@ function CheckoutPage() {
     ward: "",
     phoneNumber: "",
   });
+  const [formErrors, setFormErrors] = useState({
+    firstName: "",
+    lastName: "",
+    streetAddress: "",
+    province: "",
+    district: "",
+    phoneNumber: "",
+  });
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [addresses, setAddresses] = useState([
     {
-      firstName: "tt",
-      lastName: "tt",
-      streetAddress: "ttt",
-      province: "ttt",
-      district: "",
-      ward: "",
-      phoneNumber: "",
+      firstName: "Phi",
+      lastName: "Thong",
+      streetAddress: "HCM",
+      province: "TPHCM",
+      district: "Linh Trung",
+      ward: "Thu Duc",
+      phoneNumber: "0909",
     },
   ]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -54,7 +63,6 @@ function CheckoutPage() {
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
-  // Mặc định chọn địa chỉ đầu tiên nếu chưa có địa chỉ nào được chọn
   React.useEffect(() => {
     if (addresses.length > 0 && !selectedAddress) {
       setSelectedAddress(addresses[0]);
@@ -62,26 +70,36 @@ function CheckoutPage() {
   }, [addresses, selectedAddress]);
 
   const handleAddAddress = () => {
-    setAddresses([...addresses, newAddress]);
-    setNewAddress({
-      firstName: "",
-      lastName: "",
-      streetAddress: "",
-      province: "",
-      district: "",
-      ward: "",
-      phoneNumber: "",
-    });
+    if (validateForm()) {
+      setAddresses([...addresses, newAddress]);
+      setNewAddress({
+        firstName: "",
+        lastName: "",
+        streetAddress: "",
+        province: "",
+        district: "",
+        ward: "",
+        phoneNumber: "",
+      });
+    }
   };
 
   const handleDeleteAddress = (index) => {
     const updatedAddresses = addresses.filter((_, i) => i !== index);
     setAddresses(updatedAddresses);
 
-    // Nếu tất cả địa chỉ bị xóa, đặt lại selectedAddress thành null
     if (updatedAddresses.length === 0) {
       setSelectedAddress(null);
     }
+    // Reset form để không bị lỗi trước đó khi xóa form
+    setFormErrors({
+      firstName: "",
+      lastName: "",
+      streetAddress: "",
+      province: "",
+      district: "",
+      phoneNumber: "",
+    });
   };
 
   const handleSelectAddress = (index) => {
@@ -96,18 +114,21 @@ function CheckoutPage() {
   };
 
   const handleSaveEditedAddress = () => {
-    const updatedAddresses = [...addresses];
-    updatedAddresses[editingIndex] = newAddress;
-    setAddresses(updatedAddresses);
-    setNewAddress({
-      firstName: "",
-      lastName: "",
-      streetAddress: "",
-      province: "",
-      district: "",
-      ward: "",
-      phoneNumber: "",
-    });
+    if (validateForm()) {
+      const updatedAddresses = [...addresses];
+      updatedAddresses[editingIndex] = newAddress;
+      setAddresses(updatedAddresses);
+      setNewAddress({
+        firstName: "",
+        lastName: "",
+        streetAddress: "",
+        province: "",
+        district: "",
+        ward: "",
+        phoneNumber: "",
+      });
+      setEditingIndex(null);
+    }
   };
 
   const handleApplyVoucher = () => {
@@ -116,6 +137,45 @@ function CheckoutPage() {
     } else {
       alert("Mã giảm giá không hợp lệ!");
     }
+  };
+
+  const closeOverlay = () => setIsOverlayOpen(false);
+
+  const validateForm = () => {
+    const errors = {};
+    let isValid = true;
+
+    if (!newAddress.firstName) {
+      errors.firstName = "Bạn chưa nhập Họ";
+      isValid = false;
+    }
+    if (!newAddress.lastName) {
+      errors.lastName = "Bạn chưa nhập Tên";
+      isValid = false;
+    }
+    if (!newAddress.streetAddress) {
+      errors.streetAddress = "Bạn chưa nhập Địa chỉ";
+      isValid = false;
+    }
+    if (!newAddress.province) {
+      errors.province = "Bạn chưa nhập Tỉnh/Thành phố";
+      isValid = false;
+    }
+    if (!newAddress.district) {
+      errors.district = "Bạn chưa nhập Quận/Huyện";
+      isValid = false;
+    }
+    if (!newAddress.ward) {
+      errors.ward = "Bạn chưa nhập Phường/Xã";
+      isValid = false;
+    }
+    if (!newAddress.phoneNumber) {
+      errors.phoneNumber = "Bạn chưa nhập Số điện thoại";
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
   };
 
   return (
@@ -147,11 +207,12 @@ function CheckoutPage() {
                 <p className="text-[#757575]">{addresses[0].phoneNumber}</p>
               </div>
             )}
-
             {addresses.length === 0 && (
               <AddressFormComponent
                 newAddress={newAddress}
                 setNewAddress={setNewAddress}
+                formErrors={formErrors}
+                setFormErrors={setFormErrors}
               />
             )}
             {selectedAddress && (
@@ -172,8 +233,6 @@ function CheckoutPage() {
               selected={selectedShipping}
               setSelected={setSelectedShipping}
             />
-
-            {/* Phương thức thanh toán */}
             <SelectionComponent
               title="Thanh toán"
               options={paymentMethods}
@@ -181,7 +240,6 @@ function CheckoutPage() {
               setSelected={setSelectedPayment}
             />
           </div>
-
           <div className="w-1/3 min-h-[1000px]">
             <OrderSummaryComponent
               cart={cart}
@@ -193,20 +251,86 @@ function CheckoutPage() {
           </div>
         </div>
 
-        <AddressOverlayComponent
-          isOverlayOpen={isOverlayOpen}
-          setIsOverlayOpen={setIsOverlayOpen}
-          newAddress={newAddress}
-          setNewAddress={setNewAddress}
-          addresses={addresses}
-          editingIndex={editingIndex}
-          setEditingIndex={setEditingIndex}
-          handleSaveEditedAddress={handleSaveEditedAddress}
-          handleAddAddress={handleAddAddress}
-          handleEditAddress={handleEditAddress}
-          handleDeleteAddress={handleDeleteAddress}
-          handleSelectAddress={handleSelectAddress}
-        />
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10 transition-opacity duration-300 ${
+            isOverlayOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={closeOverlay}
+        >
+          <div
+            className={`bg-white p-6 rounded-lg w-1/2 relative transition-transform duration-300 transform ${
+              isOverlayOpen ? "translate-y-0" : "-translate-y-40"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg text-black font-semibold">
+                {editingIndex !== null ? "Sửa địa chỉ" : "Quản lý địa chỉ"}
+              </h3>
+              <div
+                className="p-2 rounded-full hover:bg-[#d1d1d1] transition cursor-pointer"
+                onClick={closeOverlay}
+              >
+                <AiOutlineClose className="w-5 h-5" />
+              </div>
+            </div>
+            <AddressFormComponent
+              newAddress={newAddress}
+              setNewAddress={setNewAddress}
+              formErrors={formErrors}
+              setFormErrors={setFormErrors}
+            />
+            <div className="flex justify-between mt-4">
+              {editingIndex !== null ? (
+                <Button onClick={handleSaveEditedAddress}>Lưu địa chỉ</Button>
+              ) : (
+                <Button onClick={handleAddAddress}>Thêm địa chỉ</Button>
+              )}
+            </div>
+            <ul className="mt-4">
+              {addresses.map((address, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between p-2 border-b cursor-pointer hover:bg-gray-200 transition"
+                  onClick={() => handleSelectAddress(index)}
+                >
+                  <div>
+                    <p className="text-sm">
+                      {address.firstName} {address.lastName}
+                    </p>
+                    <p className="text-sm">
+                      {address.streetAddress}, {address.ward},{" "}
+                      {address.district}, {address.province}
+                    </p>
+                    <p className="text-sm">{address.phoneNumber}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingIndex(index);
+                        handleEditAddress(index);
+                      }}
+                      className="bg-white text-black border"
+                    >
+                      Sửa
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteAddress(index);
+                        closeOverlay();
+                      }}
+                      className="bg-red-500 text-white"
+                    >
+                      Xóa
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
