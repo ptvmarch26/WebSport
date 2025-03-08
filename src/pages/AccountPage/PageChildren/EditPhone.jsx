@@ -1,75 +1,80 @@
+import { Button } from "@material-tailwind/react";
 import React, { useState } from "react";
 
 const EditPhone = () => {
-  const [currentPhone, setCurrentPhone] = useState("0123456789"); // Số hiện tại
-  const [newPhone, setNewPhone] = useState(""); // Số mới
-  const [otp, setOtp] = useState(""); // Nhập mã OTP
-  const [serverOtp, setServerOtp] = useState(""); // Mã OTP từ server
-  const [step, setStep] = useState(1); 
+  const [currentPhone, setCurrentPhone] = useState("0123456789");
+  const [newPhone, setNewPhone] = useState("");
+  const [error, setError] = useState(""); // State to handle error messages
 
-  const handleSendOtp = () => {
-    if (!newPhone) return alert("Vui lòng nhập số điện thoại mới!");
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setServerOtp(generatedOtp);
-    setStep(2);
-    alert(`Mã OTP của bạn: ${generatedOtp}`); // Trong thực tế, mã này sẽ được gửi qua SMS
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(phone);
   };
 
-  // Xác thực OTP
-  const handleVerifyOtp = () => {
-    if (otp === serverOtp) {
-      setCurrentPhone(newPhone);
-      setNewPhone("");
-      setOtp("");
-      setServerOtp("");
-      setStep(1);
-      alert("Cập nhật số điện thoại thành công!");
-    } else {
-      alert("Mã OTP không đúng!");
+  const handleUpdatePhone = () => {
+    if (!newPhone) {
+      setError("Số điện thoại không được để trống");
+      return;
     }
+
+    if (!validatePhoneNumber(newPhone)) {
+      setError("Số điện thoại không đúng định dạng");
+      return;
+    }
+
+    setCurrentPhone(newPhone);
+    setNewPhone("");
+    setError("");
+    alert("Cập nhật số điện thoại thành công!");
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-xl">
-      <h2 className="text-2xl font-semibold text-gray-800 border-b pb-4 mb-4">Cập nhật Số Điện Thoại</h2>
+    <div className="px-6 bg-white">
+      <h1 className="text-[30px] font-semibold">Đổi số điện thoại</h1>
 
-      {step === 1 && (
-        <div>
-          <p className="mb-4">Số hiện tại: <strong>{currentPhone}</strong></p>
+      <div className="space-y-5 mt-8">
+        <div className="flex items-center">
+          <label
+            htmlFor="currentPhone"
+            className="min-w-[150px] block antialiased font-sans text-sm leading-normal text-inherit font-medium text-gray-900"
+          >
+            Số điện thoại hiện tại
+          </label>
           <input
+            id="currentPhone"
             type="tel"
-            placeholder="Nhập số điện thoại mới"
-            className="w-full p-3 border rounded-lg mb-4"
-            value={newPhone}
-            onChange={(e) => setNewPhone(e.target.value)}
+            value={currentPhone}
+            disabled
+            className={`cursor-not-allowed peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
           />
-          <button
-            onClick={handleSendOtp}
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-          >
-            Gửi mã OTP
-          </button>
         </div>
-      )}
-
-      {step === 2 && (
-        <div>
-          <p className="mb-4">Nhập mã OTP đã gửi tới <strong>{newPhone}</strong></p>
-          <input
-            type="text"
-            placeholder="Nhập mã OTP"
-            className="w-full p-3 border rounded-lg mb-4"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
-          <button
-            onClick={handleVerifyOtp}
-            className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600"
-          >
-            Xác nhận & Cập nhật Số Điện Thoại
-          </button>
+        <div className="flex flex-col">
+          <div className="flex items-center">
+            <label
+              htmlFor="newPhone"
+              className="min-w-[150px] block antialiased font-sans text-sm leading-normal text-inherit font-medium text-gray-900"
+            >
+              Số điện thoại mới
+            </label>
+            <input
+              id="newPhone"
+              type="tel"
+              placeholder="Nhập số điện thoại mới"
+              value={newPhone}
+              onChange={(e) => setNewPhone(e.target.value)}
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
+            />
+          </div>
+          <div>
+            {error && (
+              <p className="text-red-500 text-sm ml-[155px] mt-2">{error}</p>
+            )}
+          </div>
         </div>
-      )}
+        <Button onClick={handleUpdatePhone} className="w-full">
+          Đổi số Điện Thoại
+        </Button>
+      </div>
     </div>
   );
 };

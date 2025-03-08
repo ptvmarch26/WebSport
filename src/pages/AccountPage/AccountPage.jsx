@@ -4,23 +4,28 @@ import { accountRoutes } from "../../routes/route";
 
 const AccountPage = () => {
   return (
-    <div className="flex min-h-screen">
-      
-      <div className="w-1/4 p-4 bg-white shadow-md">
-        <AccountInfoComponent 
+    <div className="res py-10">
+    <div className="flex justify-between">
+      <div className="">
+        <AccountInfoComponent
           full_name="Dương Anh Vũ"
           user_name="rain494"
-          src_img=""
+          // src_img=""
         />
       </div>
 
-      <div className="w-3/4 p-6">
+      <div className="flex-1">
         <Routes>
           {accountRoutes.map((route, index) => (
-            <Route key={index} path={route.path} element={<route.component />} />
+            <Route
+              key={index}
+              path={route.path}
+              element={<route.component />}
+            />
           ))}
         </Routes>
       </div>
+    </div>
     </div>
   );
 };

@@ -1,21 +1,33 @@
+import { Button } from "@material-tailwind/react";
 import React, { useState } from "react";
 
 const EditPassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
   const handleChangePassword = () => {
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      return alert("Vui lòng nhập đầy đủ thông tin!");
+    setErrors({});
+
+    let errorMessages = {};
+
+    if (!oldPassword) {
+      errorMessages.oldPassword = "Mật khẩu hiện tại không được để trống";
+    }
+    if (!newPassword && !confirmPassword) {
+      errorMessages.confirmPassword = "Mật khẩu mới không được để trống";
     }
     if (newPassword !== confirmPassword) {
-      return alert("Mật khẩu mới không khớp!");
-    }
-    if (newPassword.length < 6) {
-      return alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+      errorMessages.confirmPassword = "Mật khẩu không trùng khớp";
     }
 
+    if (Object.keys(errorMessages).length > 0) {
+      setErrors(errorMessages);
+      return;
+    }
+
+    setErrors({});
     alert("Mật khẩu đã được cập nhật thành công!");
     setOldPassword("");
     setNewPassword("");
@@ -23,39 +35,92 @@ const EditPassword = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-xl">
-      <h2 className="text-2xl font-semibold text-gray-800 border-b pb-4 mb-4">
-        Đổi mật khẩu
-      </h2>
+    <div className="px-6 bg-white">
+      <h1 className="text-[30px] font-semibold">Đổi mật khẩu</h1>
+      <div className="space-y-5 mt-8">
+        <div className="flex flex-col">
+          <div className="flex items-center">
+            <label
+              htmlFor="oldPassword"
+              className="min-w-[170px] block antialiased font-sans text-sm leading-normal text-inherit font-medium text-gray-900"
+            >
+              Mật khẩu hiện tại
+            </label>
+            <input
+              id="oldPassword"
+              type="text"
+              placeholder="Nhập mật khẩu hiện tại"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
+            />
+          </div>
+          <div>
+            {errors.oldPassword && (
+              <p className="text-red-500 text-sm ml-[175px] mt-2">
+                {errors.oldPassword}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="flex items-center">
+            <label
+              htmlFor="newPassword"
+              className="min-w-[170px] block antialiased font-sans text-sm leading-normal text-inherit font-medium text-gray-900"
+            >
+              Mật khẩu mới
+            </label>
+            <input
+              id="newPassword"
+              type="text"
+              placeholder="Nhập mật khẩu mới"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
+            />
+          </div>
+          <div>
+            {errors.newPassword && (
+              <p className="text-red-500 text-sm ml-[175px] mt-2">
+                {errors.newPassword}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="flex items-center">
+            <label
+              htmlFor="confirmPassword"
+              className="min-w-[170px] block antialiased font-sans text-sm leading-normal text-inherit font-medium text-gray-900"
+            >
+              Xác nhận mật khẩu mới
+            </label>
+            <input
+              id="confirmPassword"
+              type="text"
+              placeholder="Xác nhận mật khẩu mới"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
+            />
+          </div>
+          <div>
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm ml-[175px] mt-2">
+                {errors.confirmPassword}
+              </p>
+            )}
+          </div>
+        </div>
 
-      <input
-        type="password"
-        placeholder="Nhập mật khẩu cũ"
-        className="w-full p-3 border rounded-lg mb-4"
-        value={oldPassword}
-        onChange={(e) => setOldPassword(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Nhập mật khẩu mới"
-        className="w-full p-3 border rounded-lg mb-4"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Xác nhận mật khẩu mới"
-        className="w-full p-3 border rounded-lg mb-4"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-      />
-
-      <button
-        onClick={handleChangePassword}
-        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-      >
-        Đổi mật khẩu
-      </button>
+        <Button
+          onClick={handleChangePassword}
+          className="w-full"
+        >
+          Đổi mật khẩu
+        </Button>
+      </div>
     </div>
   );
 };

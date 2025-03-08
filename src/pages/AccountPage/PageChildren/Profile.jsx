@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { apiGetProvinces, apiGetDistricts, apiGetWards } from "../../../services/api/AddressApi";
+import {
+  apiGetProvinces,
+  apiGetDistricts,
+  apiGetWards,
+} from "../../../services/api/AddressApi";
+import { Button } from "@material-tailwind/react";
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +20,7 @@ const Profile = () => {
 
   const [originalData, setOriginalData] = useState({ ...formData });
   const [isChanged, setIsChanged] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Để kiểm soát chế độ chỉnh sửa
 
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -57,74 +63,135 @@ const Profile = () => {
     console.log("Dữ liệu đã lưu:", formData);
     setOriginalData(formData);
     setIsChanged(false);
+    setIsEditing(false); // Tắt chế độ chỉnh sửa
   };
 
   const handleCancel = () => {
     setFormData(originalData);
     setIsChanged(false);
+    setIsEditing(false); // Tắt chế độ chỉnh sửa
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true); // Bật chế độ chỉnh sửa
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-xl">
-      <h2 className="text-2xl font-semibold text-gray-800 border-b pb-4">Hồ sơ tài khoản</h2>
-
+    <div className="px-6 bg-white">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-[30px] font-semibold">Hồ sơ tài khoản</h1>
+        {!isEditing && (
+          <div>
+            <Button onClick={handleEdit}>Sửa thông tin</Button>
+          </div>
+        )}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
         <div>
-          <label className="text-gray-600 font-medium">Tên người dùng</label>
+          <label
+            htmlFor="username"
+            className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+          >
+            Tên người dùng
+          </label>
           <input
+            id="username"
             type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
+            className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+              !isEditing ? "cursor-not-allowed" : ""
+            }`}
+            placeholder="Nhập tên người dùng"
+            disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
           />
         </div>
 
         <div>
-          <label className="text-gray-600 font-medium">Họ và tên</label>
+          <label
+            htmlFor="fullname"
+            className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+          >
+            Họ và tên
+          </label>
           <input
+            id="fullname"
             type="text"
             name="fullname"
             value={formData.fullname}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
+            className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+              !isEditing ? "cursor-not-allowed" : ""
+            }`}
+            placeholder="Nhập họ và tên"
+            disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
           />
         </div>
 
         <div>
-          <label className="text-gray-600 font-medium">Ngày sinh</label>
+          <label
+            htmlFor="birthdate"
+            className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+          >
+            Ngày sinh
+          </label>
           <input
+            id="birthdate"
             type="date"
             name="birthdate"
             value={formData.birthdate}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
+            className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+              !isEditing ? "cursor-not-allowed" : ""
+            }`}
+            disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
           />
         </div>
 
         <div>
-          <label className="text-gray-600 font-medium">Giới tính</label>
+          <label
+            htmlFor="gender"
+            className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+          >
+            Giới tính
+          </label>
           <select
+            id="gender"
             name="gender"
             value={formData.gender}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
+            className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+              !isEditing ? "cursor-not-allowed" : ""
+            }`}
+            disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
           >
-            <option value="male">Nam</option>
-            <option value="female">Nữ</option>
-            <option value="other">Khác</option>
+            <option value="male" className="text-gray-700">
+              Nam
+            </option>
+            <option value="female" className="text-gray-700">
+              Nữ
+            </option>
+            <option value="other" className="text-gray-700">
+              Khác
+            </option>
           </select>
         </div>
 
         {/* Địa chỉ */}
         <div className="md:col-span-2">
-          <label className="text-gray-600 font-medium">Địa chỉ</label>
+          <label className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900">
+            Địa chỉ
+          </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <select
               name="province"
               value={formData.province}
               onChange={handleProvinceChange}
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+                !isEditing ? "cursor-not-allowed" : ""
+              }`}
+              disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
             >
               <option value="">Chọn Tỉnh/Thành phố</option>
               {provinces.map((prov) => (
@@ -138,8 +205,10 @@ const Profile = () => {
               name="district"
               value={formData.district}
               onChange={handleDistrictChange}
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
-              disabled={!formData.province}
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+                !isEditing || !formData.province ? "cursor-not-allowed" : ""
+              }`}
+              disabled={!formData.province || !isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true và có tỉnh
             >
               <option value="">Chọn Quận/Huyện</option>
               {districts.map((dist) => (
@@ -153,8 +222,10 @@ const Profile = () => {
               name="ward"
               value={formData.ward}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
-              disabled={!formData.district}
+              className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+                !isEditing || !formData.district ? "cursor-not-allowed" : ""
+              }`}
+              disabled={!formData.district || !isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true và có quận
             >
               <option value="">Chọn Phường/Xã</option>
               {wards.map((ward) => (
@@ -168,38 +239,38 @@ const Profile = () => {
 
         {/* Phường, Số nhà, Địa chỉ cụ thể */}
         <div className="md:col-span-2">
-          <label className="text-gray-600 font-medium">Phường, Số nhà, Địa chỉ cụ thể</label>
+          <label
+            htmlFor="detailAddress"
+            className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+          >
+            Địa chỉ cụ thể
+          </label>
           <textarea
+            id="detailAddress"
             name="specificAddress"
             value={formData.specificAddress}
             onChange={handleChange}
             placeholder="Nhập số nhà, đường, tổ dân phố..."
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500"
+            className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
+              !isEditing ? "cursor-not-allowed" : ""
+            }`}
+            disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
           />
         </div>
       </div>
 
       {/* Nút lưu và hủy */}
-      <div className="flex gap-4 mt-6">
-        <button
-          onClick={handleSave}
-          disabled={!isChanged}
-          className={`px-4 py-2 rounded-lg text-white transition ${
-            isChanged ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-          }`}
-        >
-          Lưu
-        </button>
+      {isEditing && (
+        <div className="flex gap-4 mt-6">
+          <Button onClick={handleSave} disabled={!isChanged}>
+            Lưu thay đổi
+          </Button>
 
-        {isChanged && (
-          <button
-            onClick={handleCancel}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-          >
-            Hủy thay đổi
-          </button>
-        )}
-      </div>
+          <Button color="red" onClick={handleCancel}>
+            Hủy
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
