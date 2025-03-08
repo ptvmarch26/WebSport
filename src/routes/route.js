@@ -16,6 +16,12 @@ import Discount from "../admin/pages/Discount";
 import OrderDetailsPage from "../pages/OrderDetailsPage/OrderDetailsPage"
 import NotFoundPage from "../pages/NotFouldPage/NotFouldPage"
 import OrderFeedbackPage from "../pages/OrderFeedbackPage/OrderFeedbackPage"
+import AccountPage from "../pages/AccountPage/AccountPage"
+
+import Profile from "../pages/AccountPage/PageChildren/Profile"
+import EditEmail from "../pages/AccountPage/PageChildren/EditMail"
+import EditPhone from "../pages/AccountPage/PageChildren/EditPhone"
+import EditPassword from "../pages/AccountPage/PageChildren/EditPassword"
 
 const publicRoutes = [
     {
@@ -65,11 +71,34 @@ const publicRoutes = [
         component: OrderFeedbackPage,
     },
     {
-        path: "*",
-        component: NotFoundPage,
-        Layout: null
-    }
+        path: '/account/*',
+        component: AccountPage,
+    },
+    // {
+    //     path: "*",
+    //     component: NotFoundPage,
+    //     Layout: null
+    // }
 ]
+
+const accountRoutes = [
+    {
+      path: "profile",
+      component: Profile,
+    },
+    {
+      path: "edit-email",
+      component: EditEmail,
+    },
+    {
+      path: "edit-phone",
+      component: EditPhone,
+    },
+    {
+      path: "edit-password",
+      component: EditPassword,
+    },
+];
 
 const privateRoutes = [
     
@@ -103,4 +132,4 @@ const adminRoutes = [
     },
 ];
 
-export { publicRoutes , privateRoutes, adminRoutes }
+export { publicRoutes , privateRoutes, adminRoutes , accountRoutes}
