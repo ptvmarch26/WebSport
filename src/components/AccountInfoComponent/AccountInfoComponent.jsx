@@ -98,7 +98,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
         <MenuItem
           icon={<FaTicketAlt />}
           text="Kho voucher"
-          path="/voucher"
+          path="/vouchers"
           selectedKey={selectedKey}
           onClick={handleNavigate}
         />

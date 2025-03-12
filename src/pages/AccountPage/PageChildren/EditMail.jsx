@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import OTPComponent from "../../../components/OTPComponent/OTPComponent";
 import { Button } from "@material-tailwind/react";
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
 
 const EditEmail = () => {
   const [currentEmail, setCurrentEmail] = useState("user@example.com");
@@ -10,13 +12,12 @@ const EditEmail = () => {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [otpError, setOtpError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
   const handleSendCode = () => {
-    // Reset errors before validation
     setErrors({});
 
     if (!newEmail || !password) {
-      // Set error message if fields are empty
       setErrors((prev) => ({
         ...prev,
         email: !newEmail ? "Email không được để trống" : "",
@@ -101,15 +102,28 @@ const EditEmail = () => {
               >
                 Mật khẩu
               </label>
-              <input
-                id="password"
-                type="text"
-                placeholder="Nhập mật khẩu"
-                value={password}
-                required
-                onChange={(e) => setPassword(e.target.value)}
-                className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
-              />
+              <div className="relative w-full">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"} // Toggle input type based on the state
+                  placeholder="Nhập mật khẩu"
+                  value={password}
+                  required
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                >
+                  {showPassword ? (
+                    <IoIosEyeOff className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <IoIosEye className="w-5 h-5 text-gray-500" />
+                  )}
+                </button>
+              </div>
             </div>
             <div>
               {errors.password && (
