@@ -4,7 +4,7 @@ import React, { useState } from "react";
 const EditPhone = () => {
   const [currentPhone, setCurrentPhone] = useState("0123456789");
   const [newPhone, setNewPhone] = useState("");
-  const [error, setError] = useState(""); // State to handle error messages
+  const [error, setError] = useState(""); 
 
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^[0-9]{10}$/;

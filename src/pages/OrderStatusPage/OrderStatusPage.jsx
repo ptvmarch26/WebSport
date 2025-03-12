@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@material-tailwind/react";
 import { useNavigate, useLocation } from "react-router-dom";
+import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
 
 const OrderStatusPage = () => {
-  const [activeTab, setActiveTab] = useState("all");  // Sử dụng 'all' để hiển thị tất cả
+  const [activeTab, setActiveTab] = useState("all"); // Sử dụng 'all' để hiển thị tất cả
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +21,7 @@ const OrderStatusPage = () => {
   const orders = [
     {
       id: 1,
-      status: "Hủy hàng", 
+      status: "Hủy hàng",
       products: [
         {
           name: "Gel vệ sinh răng miệng đánh bay mảng bám cao răng",
@@ -35,7 +36,7 @@ const OrderStatusPage = () => {
     },
     {
       id: 2,
-      status: "Hoàn thành", 
+      status: "Hoàn thành",
       products: [
         {
           name: "Dầu gội dưỡng ẩm cho thú cưng",
@@ -59,7 +60,7 @@ const OrderStatusPage = () => {
     },
     {
       id: 3,
-      status: "Chờ xác nhận", 
+      status: "Chờ xác nhận",
       products: [
         {
           name: "Bàn chải đánh răng cho thú cưng",
@@ -127,120 +128,130 @@ const OrderStatusPage = () => {
         products: order.products,
       },
     });
-  }
+  };
 
   return (
     <div className="res py-10">
-      <div className="min-h-[400px] p-6 bg-white text-black border border-gray-300 rounded-lg">
-        <div className="flex border-b border-gray-300 relative">
-          {tabs.map((tab, index) => (
-            <button
-              key={tab.id}
-              className={`px-4 py-2 text-sm font-medium relative transition-colors duration-300 ${
-                activeTab === tab.id
-                  ? "text-black"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => handleTabChange(tab.id, index)}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="underline"
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 h-0.5 bg-black"
-                />
-              )}
-            </button>
-          ))}
+      <div className="flex gap-6">
+        <div>
+          <AccountInfoComponent
+            full_name="Dương Anh Vũ"
+            user_name="rain494"
+            // src_img=""
+          />
         </div>
-
-        {filteredOrders.map((order) => (
-          <div
-            key={order.id}
-            className="p-4 my-5 border border-gray-300 rounded-md"
-          >
-            <p className="text-end uppercase text-sm font-semibold">
-              {order.status} 
-            </p>
-            {order.products.map((product, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 py-4 last:mb-0 cursor-pointer"
-                onClick={() => handleProductClick(order)}
+        <div className="min-h-[400px] flex-1 p-6 bg-white text-black border border-gray-300 rounded-lg">
+            <div className="flex border-b border-gray-300 relative">
+            {tabs.map((tab, index) => (
+              <button
+                key={tab.id}
+                className={`px-4 py-2 text-sm font-medium relative transition-colors duration-300 ${
+                  activeTab === tab.id
+                    ? "text-black"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                onClick={() => handleTabChange(tab.id, index)}
               >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-16 h-16 object-cover border border-gray-300 rounded"
-                />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold">{product.name}</p>
-                  <p className="text-sm text-gray-500">{product.size}</p>
-                  <p className="text-sm">x{product.quantity}</p>
-                </div>
-                <div className="flex space-x-2">
-                  {product.oldPrice && (
-                    <p className="text-[#9ca3af] line-through">
-                      {product.oldPrice.toLocaleString()}đ
-                    </p>
-                  )}
-                  <p className="font-medium text-[#ba2b20]">
-                    {product.price.toLocaleString()}đ
-                  </p>
-                </div>
-              </div>
+                {tab.label}
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="underline"
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute bottom-0 left-0 h-0.5 bg-black"
+                  />
+                )}
+              </button>
             ))}
-            <div className="flex justify-end space-x-4">
-              <p className="font-medium">Thành tiền:</p>
-              <p className="font-bold text-[#ba2b20]">
-                {calculateTotalPrice(order.products).toLocaleString()}đ
-              </p>
-            </div>
+          </div>
 
-            <div className="mt-4 text-right space-x-2">
-              {order.status === "Hoàn thành" && (
-                <>
+          {filteredOrders.map((order) => (
+            <div
+              key={order.id}
+              className="p-4 my-5 border border-gray-300 rounded-md"
+            >
+              <p className="text-end uppercase text-sm font-semibold">
+                {order.status}
+              </p>
+              {order.products.map((product, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-4 py-4 last:mb-0 cursor-pointer"
+                  onClick={() => handleProductClick(order)}
+                >
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-16 h-16 object-cover border border-gray-300 rounded"
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{product.name}</p>
+                    <p className="text-sm text-gray-500">{product.size}</p>
+                    <p className="text-sm">x{product.quantity}</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    {product.oldPrice && (
+                      <p className="text-[#9ca3af] line-through">
+                        {product.oldPrice.toLocaleString()}đ
+                      </p>
+                    )}
+                    <p className="font-medium text-[#ba2b20]">
+                      {product.price.toLocaleString()}đ
+                    </p>
+                  </div>
+                </div>
+              ))}
+              <div className="flex justify-end space-x-4">
+                <p className="font-medium">Thành tiền:</p>
+                <p className="font-bold text-[#ba2b20]">
+                  {calculateTotalPrice(order.products).toLocaleString()}đ
+                </p>
+              </div>
+
+              <div className="mt-4 text-right space-x-2">
+                {order.status === "Hoàn thành" && (
+                  <>
+                    <Button
+                      variant="filled"
+                      color="black"
+                      className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                      onClick={() => handleFeedback(order)}
+                    >
+                      Đánh giá
+                    </Button>
+                    <Button
+                      variant="filled"
+                      color="white"
+                      className="w-[150px] h-[40px] text-black border rounded font-medium"
+                    >
+                      Mua lại
+                    </Button>
+                  </>
+                )}
+                {(order.status === "Hủy hàng" ||
+                  order.status === "Hoàn hàng") && (
                   <Button
                     variant="filled"
                     color="black"
                     className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
-                    onClick={() => handleFeedback(order)}
-                  >
-                    Đánh giá
-                  </Button>
-                  <Button
-                    variant="filled"
-                    color="white"
-                    className="w-[150px] h-[40px] text-black border rounded font-medium"
                   >
                     Mua lại
                   </Button>
-                </>
-              )}
-              {(order.status === "Hủy hàng" || order.status === "Hoàn hàng") && (
-                <Button
-                  variant="filled"
-                  color="black"
-                  className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
-                >
-                  Mua lại
-                </Button>
-              )}
-              {order.status === "Chờ xác nhận" && (
-                <Button
-                  variant="filled"
-                  color="black"
-                  className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
-                >
-                  Hủy đơn
-                </Button>
-              )}
+                )}
+                {order.status === "Chờ xác nhận" && (
+                  <Button
+                    variant="filled"
+                    color="black"
+                    className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                  >
+                    Hủy đơn
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

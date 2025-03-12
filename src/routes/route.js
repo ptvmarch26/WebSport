@@ -22,6 +22,8 @@ import Profile from "../pages/AccountPage/PageChildren/Profile"
 import EditEmail from "../pages/AccountPage/PageChildren/EditMail"
 import EditPhone from "../pages/AccountPage/PageChildren/EditPhone"
 import EditPassword from "../pages/AccountPage/PageChildren/EditPassword"
+import NotificationPage from "../pages/NotificationPage/NotificationPage"
+import VoucherPage from "../pages/VoucherPage/VoucherPage"
 
 const publicRoutes = [
     {
@@ -74,11 +76,19 @@ const publicRoutes = [
         path: '/account/*',
         component: AccountPage,
     },
-    // {
-    //     path: "*",
-    //     component: NotFoundPage,
-    //     Layout: null
-    // }
+    {
+        path: '/notifications',
+        component: NotificationPage,
+    },
+    {
+        path: '/vouchers',
+        component: VoucherPage,
+    },
+    {
+        path: "*",
+        component: NotFoundPage,
+        Layout: null
+    }
 ]
 
 const accountRoutes = [
