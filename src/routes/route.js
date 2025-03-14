@@ -10,9 +10,9 @@ import OrderStatusPage from "../pages/OrderStatusPage/OrderStatusPage"
 import Dashboard from "../admin/pages/Dashboard";
 import Orders from "../admin/pages/Orders";
 import Products from "../admin/pages/Products";
-import Users from "../admin/pages/Users";
+import Customers from "../admin/pages/Customers";
 import AdminLayout from "../admin/layout/AdminLayout";
-import Discount from "../admin/pages/Discount";
+import Discounts from "../admin/pages/Discounts";
 import OrderDetailsPage from "../pages/OrderDetailsPage/OrderDetailsPage"
 import NotFoundPage from "../pages/NotFouldPage/NotFouldPage"
 import OrderFeedbackPage from "../pages/OrderFeedbackPage/OrderFeedbackPage"
@@ -24,6 +24,7 @@ import EditPhone from "../pages/AccountPage/PageChildren/EditPhone"
 import EditPassword from "../pages/AccountPage/PageChildren/EditPassword"
 import NotificationPage from "../pages/NotificationPage/NotificationPage"
 import VoucherPage from "../pages/VoucherPage/VoucherPage"
+import Employees from "../admin/pages/Employees"
 
 const publicRoutes = [
     {
@@ -131,13 +132,18 @@ const adminRoutes = [
         Layout: AdminLayout,
     },
     {
-        path: "/admin/users",
-        component: Users,
+        path: "/admin/customers",
+        component: Customers,
         Layout: AdminLayout,
     },
     {
-        path: "/admin/discount",
-        component: Discount,
+        path: "/admin/employees",
+        component: Employees,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/discounts",
+        component: Discounts,
         Layout: AdminLayout,
     },
 ];

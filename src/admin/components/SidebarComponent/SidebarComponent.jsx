@@ -18,13 +18,18 @@ function SidebarComponent() {
       icon: <FiBox size={20} />,
     },
     {
-      name: "Quản lý nhân viên",
-      path: "/admin/discount",
-      icon: <FiUsers size={20} />,
+      name: "Quản lý mã giảm giá",
+      path: "/admin/discounts",
+      icon: <FiTag size={20} />,
     },
     {
       name: "Quản lý khách hàng",
-      path: "/admin/users",
+      path: "/admin/customers",
+      icon: <FiUsers size={20} />,
+    },
+    {
+      name: "Quản lý nhân viên",
+      path: "/admin/employees",
       icon: <FiUsers size={20} />,
     },
   ];

@@ -8,8 +8,9 @@ function TopbarComponent({ admin_name }) {
     "/admin/dashboard": "Dashboard",
     "/admin/orders": "Danh sách đơn hàng",
     "/admin/products": "Danh sách sản phẩm",
-    "/admin/users": "Danh sách khách hàng",
-    "/admin/discount": "Danh sách nhân viên",
+    "/admin/customers": "Danh sách khách hàng",
+    "/admin/employees": "Danh sách nhân viên",
+    "/admin/discounts": "Danh sách mã giảm giá",
   };
 
   const currentPage = pageTitles[location.pathname] || "Admin Panel";
