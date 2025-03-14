@@ -1,23 +1,24 @@
-import Sidebar from "../components/Sidebar";
-import { useState } from "react";
+import { ConfigProvider } from "antd";
+import Sidebar from "../components/SidebarComponent/SidebarComponent";
+import TopbarComponent from "../components/TopbarComponent/TopbarComponent";
 
 function AdminLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+    // Bỏ border radius cho tất cả để đẹp
+    <ConfigProvider
+      theme={{
+        token: {
+          borderRadius: 0,
+        },
+      }}
+    >
+    <div className="bg-[#f5f5f5]">
+      <Sidebar />
+      <TopbarComponent />
 
-      {/* Nội dung chính */}
-      <div
-        className={`transition-all duration-300 p-6 bg-gray-100 ${
-          isSidebarOpen ? "ml-64" : "ml-16"
-        } flex-1`}
-      >
-        {children}
-      </div>
+      <div className="">{children}</div>
     </div>
+    </ConfigProvider>
   );
 }
 
