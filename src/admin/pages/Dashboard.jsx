@@ -137,7 +137,7 @@ function Dashboard() {
 
       <div className="grid grid-cols-2 gap-6 mt-8">
         <div className="bg-white p-4 rounded-lg shadow-lg col-span-2">
-          <h3 className="text-lg font-semibold mb-4">Doanh thu năm</h3>
+          <h3 className="text-lg font-semibold mb-4 text-center uppercase">Doanh thu năm</h3>
           <Chart
             options={lineOptions}
             series={lineSeries}
@@ -147,7 +147,7 @@ function Dashboard() {
         </div>
 
         <div className="bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Đơn hàng mới</h3>
+          <h3 className="text-lg font-semibold mb-4 text-center uppercase">Đơn hàng mới</h3>
           <Chart
             options={barOptions}
             series={barSeries}
@@ -157,7 +157,7 @@ function Dashboard() {
         </div>
 
         <div className="bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">
+          <h3 className="text-lg font-semibold mb-4 text-center uppercase">
             Doanh thu theo danh mục sản phẩm
           </h3>
           <Chart
