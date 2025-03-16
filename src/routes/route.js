@@ -25,15 +25,17 @@ import EditPassword from "../pages/AccountPage/PageChildren/EditPassword"
 import NotificationPage from "../pages/NotificationPage/NotificationPage"
 import VoucherPage from "../pages/VoucherPage/VoucherPage"
 import Employees from "../admin/pages/Employees"
+import LoginPage from "../admin/pages/LoginPage"
+import OrderDetails from "../admin/pages/OrderDetails"
 
 const publicRoutes = [
     {
-        path: "/login",
+        path: "/sign-in",
         component: SignInSignUp,
         // Layout: null,
     },
     {
-        path: "/signup",
+        path: "/sign-up",
         component: SignInSignUp,
         // Layout: null,
     },
@@ -117,6 +119,11 @@ const privateRoutes = [
 
 const adminRoutes = [
     {
+        path: "/admin/login",
+        component: LoginPage,
+        // Layout: AdminLayout,
+    },
+    {
         path: "/admin/dashboard",
         component: Dashboard,
         Layout: AdminLayout,
@@ -124,6 +131,11 @@ const adminRoutes = [
     {
         path: "/admin/orders",
         component: Orders,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/order-details/:id",
+        component: OrderDetails,
         Layout: AdminLayout,
     },
     {

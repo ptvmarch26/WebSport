@@ -1,4 +1,4 @@
-import MoreProductsComponent from "../../components/MoreProductsComponent/MoreProductsComponent";
+import ProductComponent from "../../components/ProductComponent/ProductComponent";
 import ProductFeedBackComponent from "../../components/ProductFeedBackComponent/ProductFeedBackComponent";
 import ProductInfoComponent from "../../components/ProductInfoComponent/ProductInfoComponent";
 
@@ -117,7 +117,11 @@ const ProductDetailsPage = () => {
         <p className="text-xl font-semibold uppercase my-8">
           Sản phẩm liên quan
         </p>
-        <MoreProductsComponent products={productsRelative} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {productsRelative.slice(0, 8).map((product, index) => (
+            <ProductComponent key={index} {...product} />
+          ))}
+        </div>
       </div>
     </div>
   );

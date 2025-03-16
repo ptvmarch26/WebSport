@@ -17,7 +17,7 @@ const SignInSignUp = () => {
 
   // Cập nhật path khi thay đổi trạng thái
   useEffect(() => {
-    navigate(isSignUp ? "/signup" : "/login", { replace: true });
+    navigate(isSignUp ? "/sign-up" : "/sign-in", { replace: true });
   }, [isSignUp, navigate]);
 
   return (

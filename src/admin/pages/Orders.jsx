@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Table, Input, Select, Button, Tag, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { ExportOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -71,6 +72,7 @@ const Orders = () => {
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const navigate = useNavigate();
 
   // Xử lý xóa đơn hàng
   const handleDelete = () => {
@@ -198,7 +200,10 @@ const Orders = () => {
           columns={columns}
           pagination={{ pageSize: 3 }}
           rowKey="id"
-          className="rounded-none"
+          onRow={(record) => ({
+            onClick: () => navigate(`/admin/order-details/${record.id}`, { state: { order: record } }),
+          })}
+          className="rounded-none cursor-pointer"
         />
       </div>
 

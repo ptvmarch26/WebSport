@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import MoreProductsComponent from "../../components/MoreProductsComponent/MoreProductsComponent";
 import { useNavigate } from "react-router-dom";
 import FavoriteItemComponent from "../../components/FavoriteItemComponent/FavoriteItemComponent";
 

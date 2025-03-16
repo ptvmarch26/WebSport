@@ -1,7 +1,7 @@
-import React from 'react'
 import Footer from "../Footer/Footer"
 import Header from "../Header/Header"
 import ScrollToTopComponent from '../../components/ScrollToTopComponent/ScrollToTopComponent'
+import BottomMenuComponent from '../../components/BottomMenuComponent/BottomMenuComponent'
 
 const DefaultLayout = ({ children }) => {
   return (
@@ -10,6 +10,7 @@ const DefaultLayout = ({ children }) => {
         <div className='mt-24'>
           {children}
         </div>
+        {/* <BottomMenuComponent /> */}
         <ScrollToTopComponent />
         <Footer />
     </div>

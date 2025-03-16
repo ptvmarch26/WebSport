@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SidebarSortComponent from "../../components/SidebarSortComponent/SideBarSortComponent";
 import TopSortComponent from "../../components/TopSortComponent/TopSortComponent";
-import MoreProductsComponent from "../../components/MoreProductsComponent/MoreProductsComponent";
+import ProductComponent from "../../components/ProductComponent/ProductComponent";
 
 const ProductPage = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -108,7 +108,11 @@ const ProductPage = () => {
         onSortToggle={() => setSortOpen(!isSortOpen)}
         onSortChange={handleSortChange}
       />
-      <MoreProductsComponent products={products} /> 
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {products.slice(0, 8).map((product, index) => (
+          <ProductComponent key={index} {...product} />
+        ))}
+      </div>
 
       <SidebarSortComponent
         isOpen={isSidebarOpen}
