@@ -131,9 +131,9 @@ const OrderStatusPage = () => {
   };
 
   return (
-    <div className="res py-10">
-      <div className="flex gap-6">
-        <div>
+    <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
+      <div className="lg:flex justify-between gap-6">
+        <div className="lg:block pb-10 lg:pb-0">
           <AccountInfoComponent
             full_name="Dương Anh Vũ"
             user_name="rain494"
@@ -141,7 +141,7 @@ const OrderStatusPage = () => {
           />
         </div>
         <div className="min-h-[400px] flex-1 p-6 bg-white text-black border border-gray-300 rounded-lg">
-            <div className="flex border-b border-gray-300 relative">
+          <div className="flex border-b border-gray-300 relative">
             {tabs.map((tab, index) => (
               <button
                 key={tab.id}
@@ -186,7 +186,7 @@ const OrderStatusPage = () => {
                     className="w-16 h-16 object-cover border border-gray-300 rounded"
                   />
                   <div className="flex-1">
-                    <p className="text-sm font-semibold">{product.name}</p>
+                    <p className="text-sm font-semibold line-clamp-2">{product.name}</p>
                     <p className="text-sm text-gray-500">{product.size}</p>
                     <p className="text-sm">x{product.quantity}</p>
                   </div>
@@ -215,7 +215,7 @@ const OrderStatusPage = () => {
                     <Button
                       variant="filled"
                       color="black"
-                      className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                      className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
                       onClick={() => handleFeedback(order)}
                     >
                       Đánh giá
@@ -223,7 +223,7 @@ const OrderStatusPage = () => {
                     <Button
                       variant="filled"
                       color="white"
-                      className="w-[150px] h-[40px] text-black border rounded font-medium"
+                      className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-black border rounded font-medium"
                     >
                       Mua lại
                     </Button>
@@ -234,7 +234,7 @@ const OrderStatusPage = () => {
                   <Button
                     variant="filled"
                     color="black"
-                    className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                    className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
                   >
                     Mua lại
                   </Button>
@@ -243,7 +243,7 @@ const OrderStatusPage = () => {
                   <Button
                     variant="filled"
                     color="black"
-                    className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                    className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
                   >
                     Hủy đơn
                   </Button>

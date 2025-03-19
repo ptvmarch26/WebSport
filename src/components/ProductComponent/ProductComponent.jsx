@@ -27,7 +27,7 @@ const ProductComponent = ({
           <img src={src} alt={alt} className="w-full h-full object-cover" />
         </div>
         <div className="p-4">
-          <h4 className="text-base font-semibold line-clamp-2 min-h-[48px] mb-3">
+          <h4 className="text-base font-semibold line-clamp-2 min-h-[38.4px] md:min-h-[48px] mb-3">
             {name}
           </h4>
           <div className="flex items-center justify-between mb-2">

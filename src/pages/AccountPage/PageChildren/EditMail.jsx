@@ -49,8 +49,8 @@ const EditEmail = () => {
   };
 
   return (
-    <div className="px-6 bg-white">
-      <h1 className="text-[30px] font-semibold">Đổi Email</h1>
+    <div className="lg:px-6 bg-white">
+      <h1 className="text-3xl font-semibold">Đổi Email</h1>
 
       {step === 1 && (
         <div className="space-y-5 mt-8">

@@ -36,7 +36,7 @@ const fakeNotifications = [
     notify_title: "Đơn hàng đang giao",
     notify_desc: "Đơn hàng #12345 đang trên đường giao đến bạn.",
     isRead: false,
-  }
+  },
 ];
 
 const getNotificationImage = (type) => {
@@ -70,14 +70,14 @@ const NotificationPage = () => {
   };
 
   return (
-    <div className="res py-10">
-      <div className="flex gap-6">
-        <div>
-        <AccountInfoComponent
-          full_name="Dương Anh Vũ"
-          user_name="rain494"
-          // src_img=""
-        />
+    <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
+      <div className="lg:flex justify-between gap-6">
+        <div className="lg:block pb-10 lg:pb-0">
+          <AccountInfoComponent
+            full_name="Dương Anh Vũ"
+            user_name="rain494"
+            // src_img=""
+          />
         </div>
         <div className="flex-1">
           <div className="flex justify-end mb-4">

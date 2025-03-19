@@ -74,7 +74,7 @@ const Header = () => {
   return (
     <div
       className={clsx(
-        "w-full h-[80px] bg-primary fixed top-0 left-0 right-0 z-50 shadow-md transition-transform duration-300 ease-in-out"
+        "w-full h-[80px] fixed top-0 left-0 right-0 bg-primary z-10 shadow-md transition-transform duration-300 ease-in-out"
       )}
     >
       <div className="container mx-auto flex justify-between items-center h-full">

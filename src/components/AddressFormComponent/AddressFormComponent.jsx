@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { apiGetProvinces, apiGetDistricts, apiGetWards } from "../../services/api/AddressApi";
+import {
+  apiGetProvinces,
+  apiGetDistricts,
+  apiGetWards,
+} from "../../services/api/AddressApi";
 
-function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormErrors }) {
+function AddressFormComponent({
+  newAddress,
+  setNewAddress,
+  formErrors,
+  setFormErrors,
+}) {
   const fieldNames = {
     firstName: "Họ",
     lastName: "Tên",
@@ -38,7 +47,7 @@ function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormEr
     const selectedProvince = provinces.find(
       (province) => province.province_name === provinceName
     );
-    const provinceId = selectedProvince ? selectedProvince.province_id : '';
+    const provinceId = selectedProvince ? selectedProvince.province_id : "";
 
     setNewAddress({
       ...newAddress,
@@ -63,7 +72,7 @@ function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormEr
     const selectedDistrict = districts.find(
       (district) => district.district_name === districtName
     );
-    const districtId = selectedDistrict ? selectedDistrict.district_id : '';
+    const districtId = selectedDistrict ? selectedDistrict.district_id : "";
 
     setNewAddress({
       ...newAddress,
@@ -85,57 +94,61 @@ function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormEr
     <div>
       <div className="flex gap-2">
         {/* First Name */}
-        <div className="relative w-full mb-3">
-          <input
-            id="firstName"
-            type="text"
-            value={newAddress.firstName}
-            onChange={(e) =>
-              setNewAddress({ ...newAddress, firstName: e.target.value })
-            }
-            onBlur={() => handleBlur("firstName")}
-            className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-              formErrors.firstName ? "border-red-500" : "border-gray-300"
-            }`}
-            placeholder="Họ"
-            required
-          />
-          <label
-            htmlFor="firstName"
-            className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-2.5 peer-focus:left-2.5 peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
-          >
-            Họ
-          </label>
-          {formErrors.firstName && (
-            <p className="text-red-500 text-xs mt-1">{formErrors.firstName}</p>
-          )}
-        </div>
+        <div className="md:flex md:gap-2 w-full">
+          <div className="relative w-full mb-3">
+            <input
+              id="firstName"
+              type="text"
+              value={newAddress.firstName}
+              onChange={(e) =>
+                setNewAddress({ ...newAddress, firstName: e.target.value })
+              }
+              onBlur={() => handleBlur("firstName")}
+              className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
+                formErrors.firstName ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Họ"
+              required
+            />
+            <label
+              htmlFor="firstName"
+              className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-2.5 peer-focus:left-2.5 peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
+            >
+              Họ
+            </label>
+            {formErrors.firstName && (
+              <p className="text-red-500 text-xs mt-1">
+                {formErrors.firstName}
+              </p>
+            )}
+          </div>
 
-        {/* Last Name */}
-        <div className="relative w-full mb-3">
-          <input
-            id="lastName"
-            type="text"
-            value={newAddress.lastName}
-            onChange={(e) =>
-              setNewAddress({ ...newAddress, lastName: e.target.value })
-            }
-            onBlur={() => handleBlur("lastName")}
-            className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-              formErrors.lastName ? "border-red-500" : "border-gray-300"
-            }`}
-            placeholder="Tên"
-            required
-          />
-          <label
-            htmlFor="lastName"
-            className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-2.5 peer-focus:left-2.5 peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
-          >
-            Tên
-          </label>
-          {formErrors.lastName && (
-            <p className="text-red-500 text-xs mt-1">{formErrors.lastName}</p>
-          )}
+          {/* Last Name */}
+          <div className="relative w-full mb-3">
+            <input
+              id="lastName"
+              type="text"
+              value={newAddress.lastName}
+              onChange={(e) =>
+                setNewAddress({ ...newAddress, lastName: e.target.value })
+              }
+              onBlur={() => handleBlur("lastName")}
+              className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
+                formErrors.lastName ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Tên"
+              required
+            />
+            <label
+              htmlFor="lastName"
+              className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-2.5 peer-focus:left-2.5 peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
+            >
+              Tên
+            </label>
+            {formErrors.lastName && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.lastName}</p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -166,7 +179,7 @@ function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormEr
       </div>
 
       {/* Province/District/Ward */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap lg:flex-nowrap gap-0 lg:gap-2">
         {/* Province */}
         <div className="relative w-full mb-3">
           <select
@@ -263,7 +276,9 @@ function AddressFormComponent({ newAddress, setNewAddress, formErrors, setFormEr
           Địa chỉ cụ thể
         </label>
         {formErrors.streetAddress && (
-          <p className="text-red-500 text-xs mt-1">{formErrors.streetAddress}</p>
+          <p className="text-red-500 text-xs mt-1">
+            {formErrors.streetAddress}
+          </p>
         )}
       </div>
     </div>

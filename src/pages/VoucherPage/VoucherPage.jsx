@@ -1,7 +1,7 @@
 import React from "react";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
-import voucherShipping from '../../assets/images/voucher_shipping.png';
-import voucherProduct from '../../assets/images/voucher_product.png';
+import voucherShipping from "../../assets/images/voucher_shipping.png";
+import voucherProduct from "../../assets/images/voucher_product.png";
 
 const vouchers = [
   {
@@ -66,7 +66,7 @@ const VoucherCard = ({ voucher, image }) => {
         <p className="text-lg">
           <span className="font-bold">{voucher.code}</span>
         </p>
-        <p>{voucher.title}</p>
+        <p className="line-clamp-1 md:line-clamp-2">{voucher.title}</p>
         <p className="text-md">x{voucher.quantity}</p>
       </div>
     </div>
@@ -82,20 +82,20 @@ const VoucherPage = () => {
   const productImage = voucherProduct;
 
   return (
-    <div className="res py-10">
-      <div className="flex gap-6">
-        <div>
+    <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
+      <div className="lg:flex justify-between gap-6">
+        <div className="lg:block pb-10 lg:pb-0">
           <AccountInfoComponent full_name="Dương Anh Vũ" user_name="rain494" />
         </div>
         <div className="flex-1">
           <h2 className="text-xl font-semibold uppercase">Sản Phẩm</h2>
-          <div className="grid grid-cols-2 gap-4 my-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
             {productVouchers.map((voucher, index) => (
               <VoucherCard key={index} voucher={voucher} image={productImage} />
             ))}
           </div>
           <h2 className="text-xl font-semibold uppercase">Vận Chuyển</h2>
-          <div className="grid grid-cols-2 gap-4 my-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
             {shippingVouchers.map((voucher, index) => (
               <VoucherCard
                 key={index}

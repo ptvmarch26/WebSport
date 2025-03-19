@@ -6,7 +6,7 @@ const OrderDetailsPage = () => {
     location.state || {};
 
   return (
-    <div className="res py-10">
+    <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold uppercase mb-4">Chi tiết đơn hàng</h1>
         <p className="text-sm font-semibold">{orderStatus}</p>
@@ -53,7 +53,7 @@ const OrderDetailsPage = () => {
               className="w-16 h-16 object-cover border border-gray-300 rounded"
             />
             <div className="flex-1">
-              <p className="text-sm font-semibold">{product.name}</p>
+              <p className="text-sm font-semibold line-clamp-1">{product.name}</p>
               <p className="text-sm text-gray-500">{product.size}</p>
               <p className="text-sm">x{product.quantity}</p>
             </div>

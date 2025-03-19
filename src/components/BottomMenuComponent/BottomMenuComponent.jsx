@@ -1,52 +1,71 @@
-import { FaHome, FaBell, FaHeart, FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FaHeart, FaRegHeart } from "react-icons/fa6";
+import { IoHomeOutline } from "react-icons/io5";
+import { IoHomeSharp } from "react-icons/io5";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { IoMdNotifications } from "react-icons/io";
+import { HiOutlineClipboardList } from "react-icons/hi";
+import { HiClipboardList } from "react-icons/hi";
 
 const BottomMenuComponent = () => {
-  // Trạng thái yêu thích để thay đổi biểu tượng
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const location = useLocation();
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const menuItems = [
+    {
+      path: "/",
+      iconDefault: <IoHomeOutline />,
+      iconActive: <IoHomeSharp />,
+      label: "Trang chủ",
+    },
+    {
+      path: "/notifications",
+      iconDefault: <IoIosNotificationsOutline />,
+      iconActive: <IoMdNotifications />,
+      label: "Thông báo",
+    },
+    {
+      path: "/favorite",
+      iconDefault: <FaRegHeart />,
+      iconActive: <FaHeart />,
+      label: "Yêu thích",
+    },
+    {
+      path: "/orders",
+      iconDefault: <HiOutlineClipboardList />,
+      iconActive: <HiClipboardList />,
+      label: "Đơn hàng",
+    },
+  ];
+
+  const handleMouseEnter = (index) => {
+    setHoveredIndex(index);
   };
 
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+  };
+
+  const isActive = (index, path) =>
+    index === hoveredIndex || location.pathname === path;
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white text-black shadow-lg z-50">
-      <div className="flex justify-around items-center py-3">
+    <div className="fixed bottom-0 left-0 right-0 z-20 bg-white shadow-[0_-4px_10px_0_rgba(0,0,0,0.2)] flex justify-around items-center py-2 lg:hidden">
+      {menuItems.map((item, index) => (
         <Link
-          to="/"
-          className="menu-item flex flex-col items-center text-xl text-gray-600 hover:text-gray-800 active:text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8a7350] transition-all duration-300"
+          key={index}
+          to={item.path}
+          className={`flex flex-col items-center text-black text-2xl md:text-xl hover:text-black ${
+            isActive(index, item.path) ? "text-black" : ""
+          }`}
+          onMouseEnter={() => handleMouseEnter(index)}
+          onMouseLeave={handleMouseLeave}
         >
-          <FaHome className="text-2xl" />
-          <span className="text-sm mt-1">Trang chủ</span>
+          {isActive(index, item.path) ? item.iconActive : item.iconDefault}
+          <span className="text-sm">{item.label}</span>
         </Link>
-        <Link
-          to="/notifications"
-          className="menu-item flex flex-col items-center text-xl text-gray-600 hover:text-gray-800 active:text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8a7350] transition-all duration-300"
-        >
-          <FaBell className="text-2xl" />
-          <span className="text-sm mt-1">Thông báo</span>
-        </Link>
-        <Link
-          to="/favorite"
-          onClick={toggleFavorite}
-          className="menu-item flex flex-col items-center text-xl text-gray-600 hover:text-gray-800 active:text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8a7350] transition-all duration-300"
-        >
-          {isFavorite ? (
-            <FaHeart className="text-2xl text-red-500" /> // Biểu tượng trái tim đặc
-          ) : (
-            <FaHeart className="text-2xl text-gray-400" /> // Biểu tượng trái tim rỗng
-          )}
-          <span className="text-sm mt-1">Yêu thích</span>
-        </Link>
-        <Link
-          to="/profile"
-          className="menu-item flex flex-col items-center text-xl text-gray-600 hover:text-gray-800 active:text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8a7350] transition-all duration-300"
-        >
-          <FaUser className="text-2xl" />
-          <span className="text-sm mt-1">Cá nhân</span>
-        </Link>
-      </div>
+      ))}
     </div>
   );
 };

@@ -27,6 +27,7 @@ import VoucherPage from "../pages/VoucherPage/VoucherPage"
 import Employees from "../admin/pages/Employees"
 import LoginPage from "../admin/pages/LoginPage"
 import OrderDetails from "../admin/pages/OrderDetails"
+import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
 
 const publicRoutes = [
     {
@@ -37,6 +38,11 @@ const publicRoutes = [
     {
         path: "/sign-up",
         component: SignInSignUp,
+        // Layout: null,
+    },
+    {
+        path: "/forgot-password",
+        component: ForgotPasswordPage,
         // Layout: null,
     },
     {
@@ -96,19 +102,19 @@ const publicRoutes = [
 
 const accountRoutes = [
     {
-      path: "profile",
+      path: "/profile",
       component: Profile,
     },
     {
-      path: "edit-email",
+      path: "/edit-email",
       component: EditEmail,
     },
     {
-      path: "edit-phone",
+      path: "/edit-phone",
       component: EditPhone,
     },
     {
-      path: "edit-password",
+      path: "/edit-password",
       component: EditPassword,
     },
 ];

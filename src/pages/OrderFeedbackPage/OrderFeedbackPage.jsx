@@ -54,7 +54,7 @@ const OrderFeedbackPage = () => {
   };
 
   return (
-    <div className="res py-10">
+    <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="min-h-[400px] p-6 bg-white text-black border border-gray-300 rounded-lg">
         <h1 className="text-2xl font-bold uppercase mb-4">Đánh giá đơn hàng</h1>
         {products.map((product, index) => (
@@ -66,7 +66,7 @@ const OrderFeedbackPage = () => {
                 className="w-16 h-16 object-cover border border-gray-300 rounded"
               />
               <div className="flex-1">
-                <p className="text-sm font-semibold">{product.name}</p>
+                <p className="text-sm font-semibold line-clamp-1">{product.name}</p>
                 <p className="text-sm text-gray-500">{product.size}</p>
                 <p className="text-sm">x{product.quantity}</p>
               </div>
@@ -170,7 +170,7 @@ const OrderFeedbackPage = () => {
               <Button
                 variant="filled"
                 color="white"
-                className="w-[150px] h-[40px] text-black border rounded font-medium"
+                className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-black border rounded font-medium"
                 onClick={handleCancel}
               >
                 Hủy
@@ -178,7 +178,7 @@ const OrderFeedbackPage = () => {
               <Button
                 variant="filled"
                 color="black"
-                className="w-[150px] h-[40px] text-white !bg-black rounded font-medium"
+                className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
                 onClick={handleSubmit}
               >
                 Đánh giá

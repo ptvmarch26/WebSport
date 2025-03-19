@@ -16,7 +16,7 @@ const OrderSummaryComponent = ({
   };
 
   return (
-    <div className="space-y-4 sticky top-5">
+    <div className="space-y-4 lg:sticky lg:top-24">
       {cart.map((item) => (
         <div key={item.id}>
           <div className="flex justify-between items-center">
@@ -43,7 +43,7 @@ const OrderSummaryComponent = ({
       ))}
       <div>
         <div className="flex items-center my-4 space-x-2">
-          <div className="relative w-full mb-3 flex space-x-2">
+          <div className="relative w-full mb-3 flex flex-nowrap lg:flex-wrap xl:flex-nowrap space-x-2 lg:space-x-0 xl:space-x-2 gap-y-2">
             <input
               id="voucher"
               type="text"
@@ -59,7 +59,7 @@ const OrderSummaryComponent = ({
               Mã giảm giá
             </label>
             <button
-              className={`py-3 text-sm w-full text-white rounded uppercase ${
+              className={`p-3 text-sm w-[150px] lg:w-full text-white rounded uppercase ${
                 !isVoucherValid
                   ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
                   : "bg-black hover:opacity-80"

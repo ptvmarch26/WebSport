@@ -12,8 +12,8 @@ const ProductDetailsPage = () => {
       "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4898d109-2c6f-4aeb-a098-463f75926f76/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
       "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4898d109-2c6f-4aeb-a098-463f75926f76/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
       "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4898d109-2c6f-4aeb-a098-463f75926f76/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
-      "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4898d109-2c6f-4aeb-a098-463f75926f76/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
-      "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4898d109-2c6f-4aeb-a098-463f75926f76/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
+      "https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/342cae83-42be-4c1f-98de-b8d5f525bae9/AS+M+NK+RPL+MILER+JKT.png",
+      "https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/3ce32cb4-7f77-4c51-b98b-3411893eabf7/NIKE+PEGASUS+PLUS+CM.png",
     ],
     sizes: [39, 39.5, 40, 41, 42, 43, 44, 45],
     oldPrice: 500000,
@@ -98,7 +98,7 @@ const ProductDetailsPage = () => {
       percent: 20,
     },
     {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/630045/87/mod01/fnd/PNA/fmt/png/Wardrobe-Essentials-Women's-Oversized-Crew-Sweatshirt",
+      src: "https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/3ce32cb4-7f77-4c51-b98b-3411893eabf7/NIKE+PEGASUS+PLUS+CM.png",
       alt: "Product 4",
       name: "Nike Air Force 1 '07",
       oldPrice: 800000,
@@ -109,7 +109,7 @@ const ProductDetailsPage = () => {
   ];
 
   return (
-    <div className="res">
+    <div className="container mx-auto px-2">
       <ProductInfoComponent product={product} />
       <ProductFeedBackComponent product={product} />
       <div className="mt-10 mb-20">

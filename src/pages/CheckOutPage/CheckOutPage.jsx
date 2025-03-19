@@ -179,10 +179,10 @@ function CheckoutPage() {
   };
 
   return (
-    <div className="res">
-      <div className="p-4">
-        <div className="flex">
-          <div className="w-2/3 pr-4">
+    <div className="xl:max-w-[1200px] container mx-auto">
+      <div className="px-2 lg:p-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-8">
+          <div className="col-span-2 lg:pr-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold uppercase mb-4">Giao hàng</h2>
               {addresses.length > 0 && (
@@ -240,7 +240,10 @@ function CheckoutPage() {
               setSelected={setSelectedPayment}
             />
           </div>
-          <div className="w-1/3 min-h-[1000px]">
+          <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">
+            <h2 className="lg:hidden text-xl font-bold uppercase mb-4">
+              Tổng quan đơn hàng
+            </h2>
             <OrderSummaryComponent
               cart={cart}
               subtotal={subtotal}
@@ -258,7 +261,7 @@ function CheckoutPage() {
           onClick={closeOverlay}
         >
           <div
-            className={`bg-white p-6 rounded-lg w-1/2 relative transition-transform duration-300 transform ${
+            className={`bg-white p-6 rounded-lg w-[80%] lg:w-1/2 relative transition-transform duration-300 transform ${
               isOverlayOpen ? "translate-y-0" : "-translate-y-40"
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -304,7 +307,7 @@ function CheckoutPage() {
                     </p>
                     <p className="text-sm">{address.phoneNumber}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col md:flex-row items-center gap-2">
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();

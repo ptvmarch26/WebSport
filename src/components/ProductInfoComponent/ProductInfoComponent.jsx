@@ -19,6 +19,7 @@ const ProductInfoComponent = ({ product }) => {
   const thumbSliderRef = useRef(null);
 
   const mainSliderSettings = {
+    dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -30,6 +31,7 @@ const ProductInfoComponent = ({ product }) => {
   };
 
   const thumbSliderSettings = {
+    // dots: true,
     infinite: true,
     speed: 500,
     // centerMode: true,
@@ -85,21 +87,21 @@ const ProductInfoComponent = ({ product }) => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row p-10 gap-10">
+    <div className="flex flex-col lg:flex-row lg:p-10 gap-10">
       {/* Phần hình ảnh */}
-      <div className="w-full lg:w-96 flex flex-col">
+      <div className="w-full h-full lg:w-[400px] flex flex-col">
         <Slider {...mainSliderSettings} ref={mainSliderRef}>
           {product.images.map((img, index) => (
             <div key={index}>
               <img
                 src={img}
                 alt={`Product ${index}`}
-                className="w-full h-96 object-cover border"
+                className="w-full h-[500px] sm:h-[800px] lg:h-96 object-cover border"
               />
             </div>
           ))}
         </Slider>
-        <div className="mt-2">
+        <div className="mt-2 hidden lg:block">
           <Slider {...thumbSliderSettings} ref={thumbSliderRef}>
             {product.images.map((img, index) => (
               <div key={index}>
@@ -137,7 +139,7 @@ const ProductInfoComponent = ({ product }) => {
 
         {/* Cột size cho sản phẩm */}
         <p className="text-base font-medium my-3">Chọn loại</p>
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 lg:grid-cols-4">
+        <div className="grid grid-cols-4 gap-2 lg:grid-cols-4">
           {product.sizes.map((size) => (
             <ButtonComponent
               key={size}
@@ -183,7 +185,7 @@ const ProductInfoComponent = ({ product }) => {
             <p>Yêu thích</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap sm:flex-nowrap gap-2">
           <button className="mt-4 p-3 border border-[#a1a8af] bg-white hover:border-black text-black w-full rounded uppercase">
             Thêm vào giỏ hàng
           </button>
