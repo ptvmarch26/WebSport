@@ -138,13 +138,13 @@ const ProductFeedBackComponent = ({ product }) => {
 
       <p className="text-xl font-semibold uppercase my-5">Đánh giá</p>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-wrap">
         {/* Hiển thị đánh giá sao */}
         <div className="flex items-center mb-2">
           {[...Array(5)].map((_, index) => {
             if (index < Math.floor(product.star)) {
               return (
-                <IoIosStar key={index} className="text-yellow-400 text-5xl" />
+                <IoIosStar key={index} className="text-yellow-400 text-xl sm:text-5xl" />
               );
             } else if (
               index === Math.floor(product.star) &&
@@ -153,12 +153,12 @@ const ProductFeedBackComponent = ({ product }) => {
               return (
                 <IoIosStarHalf
                   key={index}
-                  className="text-yellow-400 text-5xl"
+                  className="text-yellow-400 text-xl sm:text-5xl"
                 />
               );
             } else {
               return (
-                <IoIosStar key={index} className="text-gray-400 text-5xl" />
+                <IoIosStar key={index} className="text-gray-400 text-xl sm:text-5xl" />
               );
             }
           })}
@@ -176,7 +176,7 @@ const ProductFeedBackComponent = ({ product }) => {
             className="uppercase"
           />
           {isDropdownOpen && (
-            <div className="absolute left-0 top-[87%] bg-white shadow-md p-2 w-48 z-10">
+            <div className="absolute right-0 top-[87%] bg-white shadow-md p-2 w-48 z-3">
               {[5, 4, 3, 2, 1].map((starCount) => (
                 <div
                   key={starCount}

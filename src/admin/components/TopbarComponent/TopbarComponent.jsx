@@ -7,13 +7,20 @@ function TopbarComponent({ admin_name }) {
   const pageTitles = {
     "/admin/dashboard": "Dashboard",
     "/admin/orders": "Danh sách đơn hàng",
+    "/admin/order-details/:id": "Chi tiết đơn hàng",
     "/admin/products": "Danh sách sản phẩm",
     "/admin/customers": "Danh sách khách hàng",
     "/admin/employees": "Danh sách nhân viên",
     "/admin/discounts": "Danh sách mã giảm giá",
   };
 
-  const currentPage = pageTitles[location.pathname] || "Admin Panel";
+  let currentPage = "Admin Panel";
+
+  if (location.pathname.startsWith("/admin/order-details/")) {
+    currentPage = "Chi tiết đơn hàng";
+  } else if (pageTitles[location.pathname]) {
+    currentPage = pageTitles[location.pathname];
+  }
 
   return (
     <div className="fixed top-0 left-[300px] z-10 bg-white right-0 h-16 flex items-center justify-between px-6 shadow-md transition-all duration-300">

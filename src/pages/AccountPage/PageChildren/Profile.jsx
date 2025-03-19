@@ -77,9 +77,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="px-6 bg-white">
+    <div className="lg:px-6 bg-white">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-[30px] font-semibold">Hồ sơ tài khoản</h1>
+        <h1 className="text-3xl font-semibold">Hồ sơ tài khoản</h1>
         {!isEditing && (
           <div>
             <Button onClick={handleEdit}>Sửa thông tin</Button>

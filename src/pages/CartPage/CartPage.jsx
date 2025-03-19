@@ -65,8 +65,8 @@ const CartPage = () => {
   };
 
   return (
-    <div className="res min-h-[500px]">
-      <div className="p-5 grid grid-cols-3 gap-8">
+    <div className="xl:max-w-[1200px] container mx-auto min-h-[500px]">
+      <div className="px-2 py-5 lg:p-5 grid grid-cols-1 lg:grid-cols-3 gap-y-8 lg:gap-8">
         <div className="col-span-2">
           <h1 className="text-2xl font-bold uppercase mb-4">Giỏ hàng</h1>
           {cart.length === 0 ? (
@@ -102,6 +102,7 @@ const CartPage = () => {
           <button
             className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase"
             onClick={handleNavigateCheckout}
+            disabled={cart.length == 0}
           >
             Thanh toán
           </button>

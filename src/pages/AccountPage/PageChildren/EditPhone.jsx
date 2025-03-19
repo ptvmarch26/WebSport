@@ -29,8 +29,8 @@ const EditPhone = () => {
   };
 
   return (
-    <div className="px-6 bg-white">
-      <h1 className="text-[30px] font-semibold">Đổi số điện thoại</h1>
+    <div className="lg:px-6 bg-white">
+      <h1 className="text-3xl font-semibold">Đổi số điện thoại</h1>
 
       <div className="space-y-5 mt-8">
         <div className="flex items-center">

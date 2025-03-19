@@ -1,9 +1,17 @@
-import { Link, useLocation } from "react-router-dom";
-import { FiHome, FiShoppingCart, FiBox, FiUsers, FiTag } from "react-icons/fi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  FiHome,
+  FiShoppingCart,
+  FiBox,
+  FiUsers,
+  FiTag,
+  FiLogOut,
+} from "react-icons/fi";
 import logo from "../../../assets/images/logo.png";
 
 function SidebarComponent() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FiHome size={20} /> },
@@ -34,11 +42,15 @@ function SidebarComponent() {
     },
   ];
 
+  const handleLogout = () => {
+    navigate("/admin/login");
+  };
+
   return (
     <div>
       <div className="h-screen w-[300px] bg-gray-900 text-white fixed top-0 left-0 shadow-lg transition-all duration-300">
         <div className="flex items-center justify-center my-5">
-          <img src={logo} alt="Logo WTM" className="w-48" />
+          <img onClick={() => navigate("/admin")} src={logo} alt="Logo WTM" className="w-48 cursor-pointer" />
         </div>
 
         <nav>
@@ -73,6 +85,16 @@ function SidebarComponent() {
                 </Link>
               </li>
             ))}
+
+            <li className="w-full">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 p-4 mt-5 rounded transition-all duration-200 text-red-600 hover:bg-red-600 hover:text-white w-full"
+              >
+                <FiLogOut size={20} />
+                <span>Đăng xuất</span>
+              </button>
+            </li>
           </ul>
         </nav>
       </div>

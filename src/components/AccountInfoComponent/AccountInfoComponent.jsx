@@ -9,12 +9,14 @@ import {
   FaEnvelope,
   FaPhone,
   FaLock,
+  FaCog, // Thêm biểu tượng cài đặt
 } from "react-icons/fa";
 import avt_false from "../../assets/images/avatar-false.jpg";
 import { Button } from "@material-tailwind/react";
 
 const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
   const [selectedKey, setSelectedKey] = useState("/account/profile");
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const defaultAvatar = avt_false;
@@ -26,6 +28,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
   const handleNavigate = (path) => {
     setSelectedKey(path);
     navigate(path);
+    setIsMenuVisible(false);
   };
 
   const handleLogout = () => {
@@ -33,8 +36,26 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
     window.location.reload();
   };
 
+  const toggleMenuVisibility = () => {
+    setIsMenuVisible(!isMenuVisible);
+  };
+
+  const menuItems = [
+    { icon: <FaUser />, text: "Hồ sơ", path: "/account/profile" },
+    { icon: <FaEnvelope />, text: "Email", path: "/account/edit-email" },
+    {
+      icon: <FaPhone className="rotate-90" />,
+      text: "Số điện thoại",
+      path: "/account/edit-phone",
+    },
+    { icon: <FaLock />, text: "Mật khẩu", path: "/account/edit-password" },
+    { icon: <FaShoppingBag />, text: "Đơn hàng", path: "/orders" },
+    { icon: <FaBell />, text: "Thông báo", path: "/notifications" },
+    { icon: <FaTicketAlt />, text: "Kho voucher", path: "/vouchers" },
+  ];
+
   return (
-    <div className="w-72 bg-[#f6f7f8] shadow-md p-6">
+    <div className="relative w-full lg:w-72 bg-white lg:bg-[#f6f7f8] shadow-none lg:shadow-md p-0 lg:p-6">
       <div className="flex flex-col items-center">
         <label className="cursor-pointer">
           <img
@@ -49,68 +70,91 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
         <p className="text-gray-500 text-sm">{user_name}</p>
       </div>
 
-      <ul className="mt-5 space-y-2">
-        <li className="font-semibold text-gray-700 mb-2">Thông tin cá nhân</li>
-        <MenuItem
-          icon={<FaUser />}
-          text="Hồ sơ"
-          path="/account/profile"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
-        <MenuItem
-          icon={<FaEnvelope />}
-          text="Email"
-          path="/account/edit-email"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
-        <MenuItem
-          icon={<FaPhone className="rotate-90" />}
-          text="Số điện thoại"
-          path="/account/edit-phone"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
-        <MenuItem
-          icon={<FaLock />}
-          text="Mật khẩu"
-          path="/account/edit-password"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
+      <div className="lg:hidden absolute -top-[30px] right-0">
+        <Button
+          onClick={toggleMenuVisibility}
+          color="white"
+          className="flex items-center !shadow-none rounded-md w-full text-left p-4"
+        >
+          <FaCog className="w-5 h-5 mr-2" /> Cài đặt
+        </Button>
+      </div>
 
-        <li className="font-semibold text-gray-700 mt-5 mb-2">Khác</li>
-        <MenuItem
-          icon={<FaShoppingBag />}
-          text="Đơn hàng"
-          path="/orders"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
-        <MenuItem
-          icon={<FaBell />}
-          text="Thông báo"
-          path="/notifications"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
-        <MenuItem
-          icon={<FaTicketAlt />}
-          text="Kho voucher"
-          path="/vouchers"
-          selectedKey={selectedKey}
-          onClick={handleNavigate}
-        />
-        <li className="mt-5">
-          <Button
-            className="flex items-center bg-[#f6f7f8] shadow-none rounded-none w-full text-left p-4 text-red-600 hover:bg-red-100 transition duration-200 hover:shadow-none"
-            onClick={handleLogout}
-          >
-            <FaSignOutAlt className="w-5 h-5 mr-2" /> Đăng xuất
-          </Button>
-        </li>
-      </ul>
+      {isMenuVisible && (
+        <ul className="mt-5 space-y-2">
+          <li className="font-semibold text-gray-700 mb-2">
+            Thông tin cá nhân
+          </li>
+          {menuItems.slice(0, 4).map((item) => (
+            <MenuItem
+              key={item.path}
+              icon={item.icon}
+              text={item.text}
+              path={item.path}
+              selectedKey={selectedKey}
+              onClick={handleNavigate}
+            />
+          ))}
+
+          <li className="font-semibold text-gray-700 mt-5 mb-2">Khác</li>
+          {menuItems.slice(4).map((item) => (
+            <MenuItem
+              key={item.path}
+              icon={item.icon}
+              text={item.text}
+              path={item.path}
+              selectedKey={selectedKey}
+              onClick={() => handleNavigate(item.path)}
+            />
+          ))}
+          <li className="mt-5">
+            <Button
+              className="flex items-center bg-[#f6f7f8] shadow-none rounded-none w-full text-left p-4 text-red-600 hover:bg-red-100 transition duration-200 hover:shadow-none"
+              onClick={handleLogout}
+            >
+              <FaSignOutAlt className="w-5 h-5 mr-2" /> Đăng xuất
+            </Button>
+          </li>
+        </ul>
+      )}
+
+      <div className="hidden lg:block">
+        <ul className="mt-5 space-y-2">
+          <li className="font-semibold text-gray-700 mb-2">
+            Thông tin cá nhân
+          </li>
+          {menuItems.slice(0, 4).map((item) => (
+            <MenuItem
+              key={item.path}
+              icon={item.icon}
+              text={item.text}
+              path={item.path}
+              selectedKey={selectedKey}
+              onClick={handleNavigate}
+            />
+          ))}
+
+          <li className="font-semibold text-gray-700 mt-5 mb-2">Khác</li>
+          {menuItems.slice(4).map((item) => (
+            <MenuItem
+              key={item.path}
+              icon={item.icon}
+              text={item.text}
+              path={item.path}
+              selectedKey={selectedKey}
+              onClick={handleNavigate}
+            />
+          ))}
+          <li className="mt-5">
+            <Button
+              className="flex items-center bg-[#f6f7f8] shadow-none rounded-none w-full text-left p-4 text-red-600 hover:bg-red-100 transition duration-200 hover:shadow-none"
+              onClick={handleLogout}
+            >
+              <FaSignOutAlt className="w-5 h-5 mr-2" /> Đăng xuất
+            </Button>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

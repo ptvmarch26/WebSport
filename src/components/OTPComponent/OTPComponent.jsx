@@ -81,7 +81,7 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend }) => {
         </button>
       )}
       {otpError && <p className="text-red-500 text-sm mb-2">{otpError}</p>}
-      <Button onClick={handleVerify} className="w-full">
+      <Button onClick={handleVerify} className="w-full h-12">
         Xác nhận
       </Button>
     </div>

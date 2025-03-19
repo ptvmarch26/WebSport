@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Checkbox } from "@material-tailwind/react";
-import ButtonComponent from "../ButtonComponent/ButtonComponent";
 
 const filterOptions = {
   gender: {
@@ -13,6 +12,17 @@ const filterOptions = {
     title: "SẢN PHẨM",
     type: "checkbox",
     options: ["Quần Áo", "Đồ Thể Thao", "Giày", "Túi", "Phụ Kiện"],
+  },
+  style: {
+    title: "LOẠI SẢN PHẨM",
+    type: "checkbox",
+    options: {
+      "Quần Áo": ["Áo thun", "Áo sơ mi", "Quần jean", "Quần short"],
+      Giày: ["Giày chạy bộ", "Giày bóng đá", "Giày sneaker"],
+      "Đồ Thể Thao": ["Bộ thể thao", "Áo khoác thể thao"],
+      Túi: ["Túi đeo chéo", "Ba lô"],
+      "Phụ Kiện": ["Mũ", "Kính", "Găng tay"],
+    },
   },
   color: {
     title: "MÀU SẮC",
@@ -33,16 +43,16 @@ const filterOptions = {
       { name: "Kem", color: "#FAEBD7" },
     ],
   },
-  sizeClothing: {
-    title: "KÍCH CỠ TRANG PHỤC",
-    type: "checkbox",
-    options: ["XXS", "XS", "S", "M", "L", "XL"],
-  },
-  sizeShoes: {
-    title: "KÍCH CỠ GIÀY DÉP",
-    type: "dropdown",
-    options: ["39", "39.5", "40", "41", "42", "43"],
-  },
+  // sizeClothing: {
+  //   title: "KÍCH CỠ TRANG PHỤC",
+  //   type: "checkbox",
+  //   options: ["XXS", "XS", "S", "M", "L", "XL"],
+  // },
+  // sizeShoes: {
+  //   title: "KÍCH CỠ GIÀY DÉP",
+  //   type: "dropdown",
+  //   options: ["39", "39.5", "40", "41", "42", "43"],
+  // },
   price: {
     title: "GIÁ",
     type: "input",
@@ -55,9 +65,10 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
   const [selectedFilters, setSelectedFilters] = useState({
     gender: [],
     category: [],
-    sizeClothing: [],
+    style: {},
     color: [],
-    sizeShoes: [],
+    // sizeClothing: [],
+    // sizeShoes: [],
     price: { min: "", max: "" },
   });
   const [priceCheckTimeout, setPriceCheckTimeout] = useState(null);
@@ -65,20 +76,42 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
   // Hàm này để xử lý lưu và gọi useEffect khi selectedFilters thay đổi
   const handleSelect = (type, value) => {
     setSelectedFilters((prev) => {
-      // Kiểm tra xem type có phải là "gender", "color", "sizeShoes" hay không
-      if (
-        ["gender", "category", "sizeClothing", "color", "sizeShoes"].includes(
-          type
-        )
-      ) {
+      // Kiểm tra xem type có phải là "gender", "color"
+      if (["gender", "category", "color"].includes(type)) {
         const isSelected = prev[type].includes(value);
         return {
           ...prev,
           [type]: isSelected
-            ? prev[type].filter((item) => item !== value) // Bỏ phần tử khỏi mảng nếu đã chọn
-            : [...prev[type], value], // Thêm phần tử vào mảng nếu chưa chọn
+            ? prev[type].filter((item) => item !== value)
+            : [...prev[type], value],
         };
       }
+
+      if (type === "style") {
+        const { category, style } = value;
+        const isSelected = prev.style[category]?.includes(style);
+
+        const updatedStyle = {
+          ...prev.style,
+          [category]: isSelected
+            ? prev.style[category].filter((item) => item !== style)
+            : [...(prev.style[category] || []), style],
+        };
+
+        if (updatedStyle[category]?.length === 0) {
+          const { [category]: _, ...rest } = updatedStyle;
+          return {
+            ...prev,
+            style: rest,
+          };
+        }
+
+        return {
+          ...prev,
+          style: updatedStyle,
+        };
+      }
+
       return {
         ...prev,
         [type]: prev[type] === value ? null : value,
@@ -86,33 +119,28 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
     });
   };
 
-  // console.log("sis", selectedFilters);
+  console.log("sis", selectedFilters);
 
   // Hàm này để check min, max sau 2s mà max vẫn nhỏ hơn min thì swapswap
   const handlePriceChange = (e, type) => {
     const value = e.target.value;
 
-    // Cập nhật giá trị vào state
     setSelectedFilters((prev) => {
       const newPrice = { ...prev.price, [type]: value };
 
-      // Nếu đang nhập "min", cập nhật ngay lập tức
       if (type === "min") {
         return { ...prev, price: newPrice };
       }
 
-      // Nếu đang nhập "max", hủy timeout cũ nếu có
       if (priceCheckTimeout) {
         clearTimeout(priceCheckTimeout);
       }
 
-      // Đặt timeout mới để kiểm tra sau 2 giây
       const newTimeout = setTimeout(() => {
         setSelectedFilters((prev) => {
           const min = Number(prev.price.min);
           const max = Number(prev.price.max);
 
-          // Nếu cả min và max hợp lệ và min > max, hoán đổi
           if (!isNaN(min) && !isNaN(max) && min > max) {
             return { ...prev, price: { min: max, max: min } };
           }
@@ -127,13 +155,13 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 z-10 transition-opacity ${
+      className={`fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity ${
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={onClose}
     >
       <div
-        className={`pb-[30px] fixed left-0 top-0 h-full max-w-[450px] bg-white shadow-2xl transform transition-transform p-5 ${
+        className={`pb-[30px] fixed left-0 top-0 h-full w-[80%] sm:w-[450px] bg-white shadow-2xl transform transition-transform p-5 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } overflow-y-auto`}
         onClick={(e) => e.stopPropagation()}
@@ -153,17 +181,49 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
             <h3 className="font-bold text-gray-800">{filter.title}</h3>
             <div className="mt-2">
               {filter.type === "checkbox" &&
+                filter.title !== "LOẠI SẢN PHẨM" &&
                 filter.options.map((item) => (
                   <label
                     key={item}
                     className="flex items-center space-x-2 cursor-pointer text-black"
                   >
-                    <Checkbox
-                      onChange={() => handleSelect(key, item)} // Khi thay đổi thì gọi handleSelect
-                    />
+                    <Checkbox onChange={() => handleSelect(key, item)} />
                     <span>{item}</span>
                   </label>
                 ))}
+
+              {filter.type === "checkbox" &&
+                filter.title === "LOẠI SẢN PHẨM" && (
+                  <div>
+                    {Object.entries(filter.options).map(
+                      ([category, styles]) => {
+                        if (
+                          selectedFilters.category.length === 0 ||
+                          selectedFilters.category.includes(category)
+                        ) {
+                          return (
+                            <div key={category}>
+                              {styles.map((style) => (
+                                <label
+                                  key={style}
+                                  className="flex items-center space-x-2 cursor-pointer text-black"
+                                >
+                                  <Checkbox
+                                    onChange={() =>
+                                      handleSelect("style", { category, style })
+                                    }
+                                  />
+                                  <span>{style}</span>
+                                </label>
+                              ))}
+                            </div>
+                          );
+                        }
+                        return null;
+                      }
+                    )}
+                  </div>
+                )}
 
               {filter.type === "color" && (
                 <div className="grid grid-cols-4 gap-4 mt-2">
@@ -189,32 +249,32 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
                 </div>
               )}
 
-              {filter.type === "dropdown" &&
-                filter.title === "KÍCH CỠ GIÀY DÉP" && (
-                  <div>
-                    <div className="mb-3 grid grid-cols-5 gap-4">
-                      {filter.options.map((size) => (
-                        <ButtonComponent
-                          key={size}
-                          text={size}
-                          color={
-                            selectedFilters.sizeShoes.includes(size)
-                              ? "black"
-                              : "white"
-                          } // Chọn màu khác khi đã chọn
-                          onClick={() => handleSelect("sizeShoes", size)}
-                        />
-                      ))}
+              {/* {filter.type === "dropdown" &&
+                  filter.title === "KÍCH CỠ GIÀY DÉP" && (
+                    <div>
+                      <div className="mb-3 grid grid-cols-5 gap-4">
+                        {filter.options.map((size) => (
+                          <ButtonComponent
+                            key={size}
+                            text={size}
+                            color={
+                              selectedFilters.sizeShoes.includes(size)
+                                ? "black"
+                                : "white"
+                            } // Chọn màu khác khi đã chọn
+                            onClick={() => handleSelect("sizeShoes", size)}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )} */}
 
               {filter.type === "input" && filter.title === "GIÁ" && (
-                <div className="mt-2 flex items-center">
+                <div className="mt-2 flex items-center flex-wrap gap-4">
                   <input
                     // type="number"
                     placeholder="Từ"
-                    className="p-2 border border-[#a1a8af] font-sm max-w-[150px]"
+                    className="p-2 border border-[#a1a8af] font-sm max-w-[100px] sm:max-w-[150px]"
                     value={selectedFilters.price.min}
                     onChange={(e) => handlePriceChange(e, "min")}
                     onInput={(e) =>
@@ -225,7 +285,7 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
                   <input
                     // type="number"
                     placeholder="Đến"
-                    className="p-2 border border-[#a1a8af] font-sm max-w-[150px]"
+                    className="p-2 border border-[#a1a8af] font-sm max-w-[100px] sm:max-w-[150px]"
                     value={selectedFilters.price.max}
                     onChange={(e) => handlePriceChange(e, "max")}
                     onInput={(e) =>
