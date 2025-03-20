@@ -9,10 +9,11 @@ import {
   FaEnvelope,
   FaPhone,
   FaLock,
-  FaCog, // Thêm biểu tượng cài đặt
+  FaCog, 
 } from "react-icons/fa";
 import avt_false from "../../assets/images/avatar-false.jpg";
 import { Button } from "@material-tailwind/react";
+import { useAuth } from "../../context/AuthContext";
 
 const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
   const [selectedKey, setSelectedKey] = useState("/account/profile");
@@ -20,6 +21,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const defaultAvatar = avt_false;
+  const { handleLogout } = useAuth();
 
   useEffect(() => {
     setSelectedKey(location.pathname);
@@ -30,11 +32,12 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
     navigate(path);
     setIsMenuVisible(false);
   };
-
-  const handleLogout = () => {
-    navigate("/logout");
-    window.location.reload();
+  
+  const handleSubmitLogout = () => {
+    handleLogout();
+    navigate("/sign-in");
   };
+
 
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible);
@@ -109,8 +112,8 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
           ))}
           <li className="mt-5">
             <Button
+              onClick={handleSubmitLogout}
               className="flex items-center bg-[#f6f7f8] shadow-none rounded-none w-full text-left p-4 text-red-600 hover:bg-red-100 transition duration-200 hover:shadow-none"
-              onClick={handleLogout}
             >
               <FaSignOutAlt className="w-5 h-5 mr-2" /> Đăng xuất
             </Button>

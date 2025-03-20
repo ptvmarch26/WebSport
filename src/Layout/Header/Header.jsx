@@ -16,12 +16,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MdNavigateNext } from "react-icons/md";
 import flag_vn from '../../assets/images/flag_vn.jpg';
 import flag_us from '../../assets/images/flag_us.jpg';
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
+  // Thông css nếu có token thì nhấn vào icon user có nút đăng xuất với có nút navigate đến /account cái nha, để tối mai tui done cái auth luôn
+  // Có token rồi Thông css lại cái đoạn icon user, nếu có token thì để ảnh mặc định hoặc ảnh của user, không thì để icon
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
+  
+  const {token}= useAuth();
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -147,7 +152,7 @@ const Header = () => {
                 <FaHeart />
               </div>
             </Link>
-            <Link to={"/sign-in"} className="lg:order-2 order-1">
+            <Link to={token ? "/account" : "/sign-in"} className="lg:order-2 order-1">
               <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                 <FaUser />
               </div>

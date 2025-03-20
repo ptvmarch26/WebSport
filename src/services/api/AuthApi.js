@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:5000/auth";
 
 // Lấy token từ localStorage
-const getToken = () => localStorage.getItem("token");
+const getToken = () => localStorage.getItem("accessToken");
 
 // Đăng ký tài khoản mới
 export const signUp = async (user_name, email, password) => {
@@ -70,7 +70,6 @@ export const resetPassword = async (email, newPassword) => {
   }
 };
 
-// Đổi mật khẩu (cần token)
 export const changePassword = async (oldPassword, newPassword) => {
   try {
     const res = await axios.patch(
@@ -82,7 +81,10 @@ export const changePassword = async (oldPassword, newPassword) => {
     );
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi đổi mật khẩu:", error);
+    if (error.response) {
+      const { data } = error.response;
+      console.error("Lỗi khi đổi mật khẩu:", data?.EM || "Lỗi không xác định");
+    }
     return null;
   }
 };
