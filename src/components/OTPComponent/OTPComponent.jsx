@@ -24,7 +24,6 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend }) => {
       return newOtp;
     });
 
-    // Move focus after updating state
     setTimeout(() => {
       if (index < otp.length - 1) {
         inputRefs.current[index + 1]?.focus();

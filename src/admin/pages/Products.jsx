@@ -10,6 +10,8 @@ import {
   InputNumber,
 } from "antd";
 import { DeleteOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons";
+import { Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -74,6 +76,7 @@ const Products = () => {
   const [isAddProductModalVisible, setIsAddProductModalVisible] =
     useState(false);
   const [newProduct, setNewProduct] = useState({
+    image: null,
     id: "",
     name: "",
     stock: "",
@@ -125,6 +128,17 @@ const Products = () => {
   };
 
   const columns = [
+    {
+      title: "Ảnh",
+      dataIndex: "image",
+      key: "image",
+      render: (image) =>
+        image ? (
+          <img src={URL.createObjectURL(image)} alt="Ảnh sản phẩm" className="w-16 h-16 object-cover rounded" />
+        ) : (
+          "Không có ảnh"
+        ),
+    },
     {
       title: "Mã sản phẩm",
       dataIndex: "id",
@@ -274,6 +288,23 @@ const Products = () => {
           onFinish={handleAddProduct}
           initialValues={newProduct}
         >
+          <Form.Item
+            label="Ảnh sản phẩm"
+            name="image"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => e && e.fileList}
+            rules={[{ required: true, message: "Ảnh sản phẩm là bắt buộc" }]}
+          >
+            <Upload
+              listType="picture"
+              beforeUpload={(file) => {
+                setNewProduct({ ...newProduct, image: file });
+                return false; // Ngăn tải lên tự động
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+            </Upload>
+          </Form.Item>
           <Form.Item
             label="Mã sản phẩm"
             name="id"
