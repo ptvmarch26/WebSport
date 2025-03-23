@@ -16,6 +16,9 @@ export const ProductProvider = ({ children }) => {
     }
   };
   
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const fetchProductDetails = async (productId) => {
     const res = await getDetailsProduct(productId);

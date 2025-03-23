@@ -68,7 +68,7 @@ const Products = () => {
     }
 
     setIsAddProductModalVisible(false);
-    form.resetFields();
+    // form.resetFields();
     // setImage(null);
   };
 
@@ -204,7 +204,7 @@ const Products = () => {
         footer={null}
       >
         <Form form={form} layout="vertical" 
-        onFinish={(values) => { console.log("onFinish values:", values); handleAddProduct(values);}} 
+        onFinish={handleAddProduct} 
         initialValues={{
           product_title: "",
           product_brand: "",

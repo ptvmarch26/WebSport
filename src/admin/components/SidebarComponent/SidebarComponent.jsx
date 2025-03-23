@@ -24,6 +24,11 @@ function SidebarComponent() {
       icon: <FiShoppingCart size={20} />,
     },
     {
+      name: "Quản lý danh mục",
+      path: "/admin/categories",
+      icon: <FiBox size={20} />,
+    },
+    {
       name: "Quản lý sản phẩm",
       path: "/admin/products",
       icon: <FiBox size={20} />,
