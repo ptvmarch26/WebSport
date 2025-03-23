@@ -24,7 +24,6 @@ import EditPhone from "../pages/AccountPage/PageChildren/EditPhone"
 import EditPassword from "../pages/AccountPage/PageChildren/EditPassword"
 import NotificationPage from "../pages/NotificationPage/NotificationPage"
 import VoucherPage from "../pages/VoucherPage/VoucherPage"
-import Employees from "../admin/pages/Employees"
 import LoginPage from "../admin/pages/LoginPage"
 import OrderDetails from "../admin/pages/OrderDetails"
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
@@ -125,7 +124,7 @@ const privateRoutes = [
 
 const adminRoutes = [
     {
-        path: "/admin/login",
+        path: "/admin/",
         component: LoginPage,
         // Layout: AdminLayout,
     },
@@ -152,11 +151,6 @@ const adminRoutes = [
     {
         path: "/admin/customers",
         component: Customers,
-        Layout: AdminLayout,
-    },
-    {
-        path: "/admin/employees",
-        component: Employees,
         Layout: AdminLayout,
     },
     {

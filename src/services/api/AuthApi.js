@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:5000/auth";
 
 // Lấy token từ localStorage
-const getToken = () => localStorage.getItem("token");
+const getToken = () => localStorage.getItem("accessToken");
 
 // Đăng ký tài khoản mới
 export const signUp = async (user_name, email, password) => {
@@ -40,8 +40,7 @@ export const sendOTP = async (email) => {
     const res = await axios.post(`${API_URL}/send_otp`, { email });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi gửi OTP:", error);
-    return null;
+    return error.response?.data || { EM: "Gửi OTP thất bại" };
   }
 };
 
@@ -51,8 +50,7 @@ export const verifyOTP = async (email, otp) => {
     const res = await axios.post(`${API_URL}/verify_otp`, { email, otp });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi xác thực OTP:", error);
-    return null;
+    return error.response?.data || { EM: "Xác thực OTP thất bại" };
   }
 };
 
@@ -70,7 +68,6 @@ export const resetPassword = async (email, newPassword) => {
   }
 };
 
-// Đổi mật khẩu (cần token)
 export const changePassword = async (oldPassword, newPassword) => {
   try {
     const res = await axios.patch(
@@ -82,7 +79,10 @@ export const changePassword = async (oldPassword, newPassword) => {
     );
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi đổi mật khẩu:", error);
+    if (error.response) {
+      const { data } = error.response;
+      console.error("Lỗi khi đổi mật khẩu:", data?.EM || "Lỗi không xác định");
+    }
     return null;
   }
 };

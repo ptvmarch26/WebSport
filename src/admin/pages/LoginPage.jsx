@@ -1,35 +1,40 @@
 import { Button } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const { handleLogin } = useAuth();
   const [passwordShown, setPasswordShown] = useState(false);
-  const [error, setError] = useState({
-    username: "",
-    password: "",
-  });
+  const [error, setError] = useState({ username: "", password: "" });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const username = e.target.username.value;
-    const password = e.target.password.value;
-
-    let usernameError = "";
-    let passwordError = "";
+  const handleSubmitLogin = async () => {
+    let newError= {};
+    setError({});
 
     if (!username) {
-      usernameError = "Tài khoản không được để trống";
+      newError.username = "Tài khoản không được để trống";
     }
 
     if (!password) {
-      passwordError = "Mật khẩu không được để trống";
+      newError.password = "Mật khẩu không được để trống";
     }
 
-    if (usernameError || passwordError) {
-      setError({ username: usernameError, password: passwordError });
-    } else {
-      setError({ username: "", password: "" });
+    setError(newError);
+// còn lỗi vặt ở hiển thị lỗi nào
+    const response = await handleLogin(username, password);
+    if (response?.EM === "Logged in successfully") {
+      alert("Đăng nhập thành công");
+      navigate("/admin/dashboard");
+    } 
+    else {
+      newError.password = "Sai tài khoản hoặc mật khẩu";
     }
   };
 
@@ -39,23 +44,19 @@ function LoginPage() {
         <h1 className="text-2xl text-center mb-4 font-bold uppercase text-black">
           Đăng nhập
         </h1>
-        <form
-          action="#"
-          method="POST"
-          className="space-y-6"
-          onSubmit={handleLogin}
-        >
+
+        <div className="space-y-6">
+          {/* Input Username */}
           <div className="animate__animated animate__fadeIn animate__delay-1s">
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-900"
-            >
+            <label className="block text-sm font-medium text-gray-900">
               Tài khoản
             </label>
             <div className="mt-2">
               <input
                 id="username"
                 name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 className="block w-full rounded-lg bg-white px-4 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent sm:text-base transition duration-300 transform hover:scale-105"
               />
@@ -65,19 +66,17 @@ function LoginPage() {
             )}
           </div>
 
+          {/* Input Password */}
           <div className="animate__animated animate__fadeIn animate__delay-1s">
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Mật khẩu
-              </label>
-            </div>
+            <label className="block text-sm font-medium text-gray-900">
+              Mật khẩu
+            </label>
             <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type={passwordShown ? "text" : "password"}
                 autoComplete="current-password"
                 className="block w-full rounded-lg bg-white px-4 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent sm:text-base transition duration-300 transform hover:scale-105"
@@ -94,15 +93,16 @@ function LoginPage() {
             )}
           </div>
 
+          {/* Button Login */}
           <div className="animate__animated animate__fadeIn animate__delay-1s">
             <Button
-              type="submit"
+              onClick={handleSubmitLogin}
               className="w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 transition duration-300 transform hover:scale-105"
             >
               Đăng nhập
             </Button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

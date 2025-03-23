@@ -2,41 +2,59 @@ import { Button } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
+import { useAuth } from "../../../context/AuthContext";
+import { FaIgloo } from "react-icons/fa";
 
 const EditPassword = () => {
+  const { handleChangePassword , token} = useAuth();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({});
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [failChangePassword, setFailChangePassword] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleChangePassword = () => {
+  const handleSubmitChangePassword = async () => {
     setErrors({});
+    setSuccess("");
+    let newErrors = {};
+    if (!oldPassword) newErrors.oldPassword = "Vui lòng nhập mật khẩu hiện tại.";
+    if (!newPassword) newErrors.newPassword = "Vui lòng nhập mật khẩu mới.";
+    if (!confirmPassword) newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu mới.";
 
-    let errorMessages = {};
-
-    if (!oldPassword) {
-      errorMessages.oldPassword = "Mật khẩu hiện tại không được để trống";
-    }
-    if (!newPassword && !confirmPassword) {
-      errorMessages.confirmPassword = "Mật khẩu mới không được để trống";
-    }
-    if (newPassword !== confirmPassword) {
-      errorMessages.confirmPassword = "Mật khẩu không trùng khớp";
+    if (newPassword && newPassword.length < 6) {
+      newErrors.newPassword = "Mật khẩu mới phải có ít nhất 6 ký tự.";
     }
 
-    if (Object.keys(errorMessages).length > 0) {
-      setErrors(errorMessages);
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    setErrors({});
-    alert("Mật khẩu đã được cập nhật thành công!");
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    const response = await handleChangePassword(oldPassword, newPassword);
+    console.log(response);
+    if (response?.EM === "Password changed successfully") {
+      setSuccess("Đổi mật khẩu thành công.");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setTimeout(() => setSuccess(""), 3000);
+    } 
+    else {
+      setFailChangePassword("Đổi mật khẩu thất bại.");
+      setTimeout(() => setFailChangePassword(""), 3000);
+    }
   };
 
   return (
@@ -74,7 +92,7 @@ const EditPassword = () => {
             </div>
           </div>
           <div>
-            {errors.oldPassword && (
+            {errors && (
               <p className="text-red-500 text-sm ml-[175px] mt-2">
                 {errors.oldPassword}
               </p>
@@ -112,7 +130,7 @@ const EditPassword = () => {
             </div>
           </div>
           <div>
-            {errors.newPassword && (
+            {errors && (
               <p className="text-red-500 text-sm ml-[175px] mt-2">
                 {errors.newPassword}
               </p>
@@ -150,7 +168,7 @@ const EditPassword = () => {
             </div>
           </div>
           <div>
-            {errors.confirmPassword && (
+            {errors && (
               <p className="text-red-500 text-sm ml-[175px] mt-2">
                 {errors.confirmPassword}
               </p>
@@ -158,9 +176,17 @@ const EditPassword = () => {
           </div>
         </div>
 
-        <Button onClick={handleChangePassword} className="w-full">
+        <Button onClick={handleSubmitChangePassword} className="w-full">
           Đổi mật khẩu
         </Button>
+        {failChangePassword && (
+          <p className="text-red-500 text-sm mt-3 text-center">{failChangePassword}</p>
+        )}
+
+        {/* Hiển thị thông báo thành công nếu có */}
+        {success && (
+          <p className="text-green-500 text-sm mt-3 text-center">{success}</p>
+        )}
       </div>
     </div>
   );

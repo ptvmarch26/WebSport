@@ -2,57 +2,87 @@ import { useState } from "react";
 import { FaLock, FaUser } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Button } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack, IoIosEye, IoIosEyeOff } from "react-icons/io";
 import OTPComponent from "../../components/OTPComponent/OTPComponent";
+import { useAuth } from "../../context/AuthContext";
 
 const ForgotPasswordPage = () => {
-  const [step, setStep] = useState(0);
-  const [userName, setUserName] = useState("");
-  const [otpError, setOtpError] = useState("");
-  const [error, setError] = useState("");
+  const navigate=useNavigate();
+  const { handleSendOTP, handleResetPassword, handleVerifyOTP } = useAuth();
 
+  const [step, setStep] = useState(0);
+  const [email, setEmail] = useState("");
+  const [otpError, setOtpError] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
   const [errors, setErrors] = useState({});
 
-  const handleContinue = () => {
-    if (!userName.trim()) {
+  const handleSendOtp = async () => {
+    if (!email.trim()) {
       setError("Vui lòng nhập Số điện thoại hoặc Email");
       return;
     }
-    setStep(1);
+    setError("");
+
+    const res = await handleSendOTP(email);
+    if (res?.EM === "OTP sent successfully") {
+      setStep(1);
+    } else if (res?.EM === "User not found") {
+      setError("Người dùng không tồn tại.");
+    } else {
+      setError("Gửi mã OTP thất bại, vui lòng thử lại.");
+    }
   };
 
-  const handleSubmitOtp = (otp) => {
-    const enteredOtp = otp.join("");
-    if (enteredOtp === "123456") {
-      setStep(2);
-    } else {
-      setOtpError("Mã OTP không hợp lệ hoặc đã hết hạn");
-    }
-  };
+  const handleVerifyOtp = async (otpArray) => {
+    const otpString = otpArray.join("");
 
-  const handleResetPassword = () => {
-    let validationErrors = {};
-
-    if (!newPassword.trim()) {
-      validationErrors.newPassword = "Vui lòng nhập mật khẩu mới";
-    }
-
-    if (!confirmPassword.trim()) {
-      validationErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
-    } else if (confirmPassword !== newPassword) {
-      validationErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
-    } else {
-      setErrors({});
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+    if (!otpString.trim()) {
+      setOtpError("Vui lòng nhập mã OTP");
       return;
+    }
+
+    setOtpError("");
+
+    const res = await handleVerifyOTP(email, otpString);
+    console.log(res);
+    if (res?.EM === "OTP verified successfully") {
+      setStep(2);
+    } else if (res?.EM === "Invalid OTP") {
+      setOtpError("Mã OTP không hợp lệ.");
+    }
+  };
+
+
+  const handleResetPasswordSubmit = async () => {
+    let errors = {};
+    
+    if (!newPassword) {
+      errors.newPassword = "Vui lòng nhập mật khẩu mới.";
+    }
+    if (!confirmPassword) {
+      errors.confirmPassword = "Vui lòng nhập lại mật khẩu.";
+    }
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+      errors.confirmPassword = "Mật khẩu xác nhận không khớp.";
+    }
+  
+    setErrors(errors);
+  
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+  
+    const res = await handleResetPassword(email, newPassword);
+    if (res?.EM === "Password reset successfully") {
+      alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
+      navigate("/sign-in");
+    } else {
+      setError("Đặt lại mật khẩu thất bại, vui lòng thử lại.");
     }
   };
 
@@ -78,7 +108,7 @@ const ForgotPasswordPage = () => {
             <div>
               <div className="flex flex-col">
                 <label
-                  htmlFor="userName"
+                  htmlFor="email"
                   className="min-w-[170px] block antialiased font-sans text-sm mb-1 leading-normal text-inherit font-medium text-gray-900"
                 >
                   Tài khoản
@@ -86,16 +116,16 @@ const ForgotPasswordPage = () => {
                 <div className="relative">
                   <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700" />
                   <input
-                    id="userName"
+                    id="email"
                     type="text"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Số điện thoại/Email"
                     className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10`}
                   />
                 </div>
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                <Button onClick={handleContinue} className="w-full h-12 mt-4">
+                <Button onClick={handleSendOtp} className="w-full h-12 mt-4">
                   Tiếp tục
                 </Button>
               </div>
@@ -105,10 +135,10 @@ const ForgotPasswordPage = () => {
           {step === 1 && (
             <div>
               <OTPComponent
-                newEmail={userName}
+                newEmail={email}
                 otpError={otpError}
-                onVerify={handleSubmitOtp}
-                onResend={() => setOtpError("")}
+                onVerify={handleVerifyOtp}
+                onResend={handleSendOtp}
               />
             </div>
           )}
@@ -197,7 +227,7 @@ const ForgotPasswordPage = () => {
                 </div>
               </div>
 
-              <Button onClick={handleResetPassword} className="w-full h-12">
+              <Button onClick={handleResetPasswordSubmit} className="w-full h-12">
                 Đổi mật khẩu
               </Button>
             </div>

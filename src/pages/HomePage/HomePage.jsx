@@ -13,10 +13,12 @@ import CardComponent from "../../components/CardComponent/CardComponent";
 import Slider from "react-slick";
 import NextComponent from "../../components/NextComponent/NextComponent";
 import BackComponent from "../../components/BackComponent/BackComponent";
+import { useAuth } from "../../context/AuthContext";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const arrSlides = [slider1, slider1, slider1];
+
   // Sản phẩm giả để css
   const products = [
     {
