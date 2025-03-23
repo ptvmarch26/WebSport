@@ -4,20 +4,20 @@ import TopbarComponent from "../components/TopbarComponent/TopbarComponent";
 
 function AdminLayout({ children }) {
   return (
-    // Bỏ border radius cho tất cả để đẹp
     <ConfigProvider
       theme={{
-        token: {
-          borderRadius: 0,
+        components: {
+          Button: { borderRadius: 0 },
+          Card: { borderRadius: 0 },
+          Modal: { borderRadius: 0 },
         },
       }}
     >
-    <div className="bg-[#f5f5f5]">
-      <Sidebar />
-      <TopbarComponent />
-
-      <div className="">{children}</div>
-    </div>
+      <div className="bg-[#f5f5f5]">
+        <Sidebar />
+        <TopbarComponent />
+        <div>{children}</div>
+      </div>
     </ConfigProvider>
   );
 }

@@ -33,9 +33,9 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
     setIsMenuVisible(false);
   };
   
-  const handleSubmitLogout = () => {
-    handleLogout();
-    navigate("/sign-in");
+  const handleSubmitLogout = async () => {
+    await handleLogout(); // Chờ quá trình đăng xuất hoàn tất
+    navigate("/sign-in", { replace: true });
   };
 
 

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signUp, login, sendOTP, verifyOTP, resetPassword, changePassword } from "../services/api/AuthApi";
+import { signUp, login, sendOTP, verifyOTP, resetPassword} from "../services/api/AuthApi";
 
 
 const AuthContext = createContext();
@@ -47,10 +47,6 @@ export const AuthProvider = ({ children }) => {
     return await resetPassword(email, newPassword);
   };
 
-  const handleChangePassword = async (oldPassword, newPassword) => {
-    return await changePassword(oldPassword, newPassword);
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -61,7 +57,6 @@ export const AuthProvider = ({ children }) => {
         handleSendOTP,
         handleVerifyOTP,
         handleResetPassword,
-        handleChangePassword,
       }}
     >
       {children}
