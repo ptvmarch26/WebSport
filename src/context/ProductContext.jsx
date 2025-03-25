@@ -32,11 +32,6 @@ export const ProductProvider = ({ children }) => {
 
   const addProduct = async (productData) => {
     const res = await createProduct(productData);
-    
-    if (res?.EC === 0) {
-        setProducts([...products, res.data]); 
-    }
-    
     return res;
   };
 
@@ -67,6 +62,7 @@ export const ProductProvider = ({ children }) => {
       value={{ 
         products,
         productDetails,
+        setProducts,
         fetchProducts, 
         fetchProductDetails, 
         addProduct, 

@@ -6,10 +6,9 @@ const getToken = () => localStorage.getItem("accessToken");
 
 export const createProduct = async (productData) => {
   try {
-    const response = await post(`${API_URL}/create`, productData, {
+    const response = await axios.post(`${API_URL}/create`, productData, {
         headers: {
-            Authorization: `Bearer ${getToken()}`,
-            'Content-Type': 'multipart/form-data'
+            Authorization: `Bearer ${getToken()}`,  
         },
     });
 

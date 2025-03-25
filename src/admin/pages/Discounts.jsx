@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import { useDiscount } from "../../context/DiscountContext";
 import { useProduct } from "../../context/ProductContext";
+import moment from 'moment'
 
 const { Option } = Select;
 
@@ -77,7 +78,7 @@ const Discounts = () => {
   
       const res = await handleCreateDiscount(newDiscount);
       if (res?.EC === 0) {
-        setDiscounts((prevDiscounts) => [...prevDiscounts, res.data]);
+        fetchDiscounts();
         form.resetFields(); 
         setIsAddDiscountModalVisible(false);
       }
@@ -88,13 +89,22 @@ const Discounts = () => {
 
   const handleEditDiscount = (record) => {
     if (record) {
-      setSelectedDiscount(record);  // Cập nhật giá trị discount được chọn
-      form.setFieldsValue(record);  // Điền thông tin discount vào form
+      // Format lại discount_start_day và discount_end_day trước khi điền vào form
+      const formattedRecord = {
+        ...record,
+        discount_start_day: record.discount_start_day ? moment(record.discount_start_day) : null,
+        discount_end_day: record.discount_end_day ? moment(record.discount_end_day) : null,
+      };
+  
+      setSelectedDiscount(formattedRecord);  // Cập nhật giá trị discount được chọn
+      form.setFieldsValue(formattedRecord);  // Điền thông tin discount vào form
       setIsEditDiscountModalVisible(true);  // Mở modal chỉnh sửa
     } else {
       console.error("Không có discount được chọn");
     }
   };
+
+  console.log(discounts);
 
   const handleUpdate = async () => {
     try {
@@ -105,6 +115,7 @@ const Discounts = () => {
       const res = await handleUpdateDiscount(selectedDiscount._id, updatedDiscount);
       console.log(res);
       if (res?.EC === 0) {
+        fetchDiscounts();
         form.resetFields();
         setIsEditDiscountModalVisible(false);
       }
@@ -118,7 +129,11 @@ const Discounts = () => {
     { title: "Code", dataIndex: "discount_code", key: "discount_code" },
     { title: "Loại", dataIndex: "discount_type", key: "discount_type" },
     { title: "Mô tả", dataIndex: "description", key: "description" },
-    { title: "Hạn sử dụng", dataIndex: "discount_end_day", key: "discount_end_day" },
+    { title: "Hạn sử dụng", dataIndex: "discount_end_day", key: "discount_end_day" ,
+      render: (text) => {
+        return text ? moment(text).format('YYYY-MM-DD') : '';  // Định dạng lại ngày
+      }
+    },
     {
       title: "Trạng thái",
       dataIndex: "status",
@@ -363,7 +378,7 @@ const Discounts = () => {
           >
             <InputNumber />
           </Form.Item>
-          {/* <Form.Item
+          <Form.Item
             label="Ngày bắt đầu"
             name="discount_start_day"
             rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc" }]}
@@ -376,7 +391,7 @@ const Discounts = () => {
             rules={[{ required: true, message: "Ngày kết thúc là bắt buộc" }]}
           >
             <DatePicker format="YYYY-MM-DD" />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             label="Mô tả"
             name="description"

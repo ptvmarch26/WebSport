@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Select, Button, Tag, Modal, Form } from "antd";
+import { Table, Input, Select, Button, Tag, Modal, Form, InputNumber } from "antd";
 import { DeleteOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons";
 import { useProduct } from "../../context/ProductContext";
 import { Upload, message } from "antd";
@@ -13,7 +13,7 @@ const statusColors = {
 };
 
 const Products = () => {
-  const { products, fetchProducts, removeProduct, addProduct } = useProduct();
+  const { products, setProducts, fetchProducts, removeProduct, addProduct } = useProduct();
   const [form] = Form.useForm();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -38,8 +38,13 @@ const Products = () => {
   };
 
   const handleUpload = (file) => {
-    setImage(file);
-    return false; // Ngăn tải lên tự động
+    // Tạo URL tạm thời từ file
+    const imageUrl = URL.createObjectURL(file);
+    setImage({
+      ...file,
+      url: imageUrl, // Lưu URL vào để hiển thị ảnh
+    });
+    return false; // Ngừng upload tự động
   };
 
   const normFile = (e) => {
@@ -47,30 +52,32 @@ const Products = () => {
     return e?.fileList;
   };
 
-  const handleAddProduct = async (values) => {
-    console.log("Form values from validateFields:", values);
-    
-    // Tạo FormData
-    const formData = new FormData();
-    
-    // Thêm từng trường vào FormData
-    for (const key in values) {
-      // Chuyển đổi các giá trị undefined hoặc null thành chuỗi rỗng
-      const value = values[key] !== undefined && values[key] !== null ? values[key] : '';
-      formData.append(key, value);
-    }
-    
-    
-    // Kiểm tra nội dung FormData
-    console.log("FormData entries:");
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+  const handleAddProduct = async () => {
+    try {
+      await form.validateFields();
+      const newProduct = form.getFieldsValue();
 
-    setIsAddProductModalVisible(false);
-    // form.resetFields();
-    // setImage(null);
+      if (image) {
+        newProduct.product_img = {
+          image_main: image.url,  // Gán URL của ảnh chính vào
+          image_subs: []          // Có thể gán ảnh phụ nếu cần
+        }; 
+      }
+      console.log(newProduct);
+
+      const res = await addProduct(newProduct);
+      if (res?.EC === 0) {
+        setProducts([...products, res.data]); 
+        fetchProducts();
+        form.resetFields();
+        setIsAddProductModalVisible(false);
+      }
+    } catch (error) {
+      console.log("Lỗi khi xác thực form:", error);
+    }
   };
+
+  console.log(products)
 
   const filteredProducts = products.filter((product) => {
     const matchesStatus = filterStatus ? product.status === filterStatus : true;
@@ -200,33 +207,66 @@ const Products = () => {
       {/* Modal Thêm Sản Phẩm */}
       <Modal title="Thêm sản phẩm mới" 
         open={isAddProductModalVisible} 
-        onCancel={() => setIsAddProductModalVisible(false)} 
-        footer={null}
+        onOk={handleAddProduct}
+        onCancel={() => setIsAddProductModalVisible(false)}
+        okText="Thêm" 
+        cancelText="Hủy"
       >
         <Form form={form} layout="vertical" 
         onFinish={handleAddProduct} 
-        initialValues={{
-          product_title: "",
-          product_brand: "",
-          product_price: 0,
-          product_countInStock: 0,
-          product_selled: 0,
-          product_percent_discount: 0,
-          product_rate: 0
-        }}>
-          <Form.Item label="Tên sản phẩm" name="product_title"> <Input /> </Form.Item>
-          <Form.Item label="Thương hiệu" name="product_brand" > <Input/> </Form.Item>
-          <Form.Item label="Giá gốc" name="product_price" > <Input type="number"/> </Form.Item>
-          <Form.Item label="Số lượng tồn" name="product_countInStock" > <Input type="number"/> </Form.Item>
-          <Form.Item label="Đã bán" name="product_selled"> <Input type="number" /> </Form.Item>
-          <Form.Item label="Giảm giá (%)" name="product_percent_discount"> <Input type="number"/> </Form.Item>
-          <Form.Item label="Đánh giá" name="product_rate"> <Input type="number" step="0.1"/> </Form.Item>
-          {/* <Form.Item label="Ảnh sản phẩm" name="product_image" valuePropName="fileList" getValueFromEvent={normFile}>
+        >
+          <Form.Item 
+            label="Tên sản phẩm" 
+            name="product_title"
+          > 
+            <Input /> 
+          </Form.Item>
+          <Form.Item 
+            label="Thương hiệu" 
+            name="product_brand" 
+          > 
+            <Input/> 
+          </Form.Item>
+          <Form.Item 
+            label="Giá gốc" 
+            name="product_price" 
+          > 
+            <InputNumber/> 
+          </Form.Item>
+          <Form.Item 
+            label="Số lượng tồn" 
+            name="product_countInStock" 
+          > 
+            <InputNumber/> 
+          </Form.Item>
+          <Form.Item 
+            label="Đã bán" 
+            name="product_selled"
+          > 
+            <InputNumber/> 
+          </Form.Item>
+          <Form.Item 
+            label="Giảm giá (%)" 
+            name="product_percent_discount"
+          > 
+            <InputNumber/> 
+          </Form.Item>
+          <Form.Item 
+            label="Đánh giá" 
+            name="product_rate"
+          > 
+            <InputNumber/> 
+          </Form.Item>
+          <Form.Item 
+            label="Ảnh sản phẩm" 
+            name="product_img" 
+            valuePropName="fileList" 
+            getValueFromEvent={normFile}
+          >
             <Upload beforeUpload={handleUpload} listType="picture">
               <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
             </Upload>
-          </Form.Item> */}
-          <Form.Item> <Button type="primary" htmlType="submit">Thêm sản phẩm</Button> </Form.Item>
+          </Form.Item>
         </Form>
       </Modal>
     </div>
