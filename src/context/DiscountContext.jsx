@@ -6,7 +6,6 @@ import {
   updateDiscount,
   deleteDiscount,
 } from "../services/api/DiscountApi";
-import { useProduct } from "./ProductContext";
 
 const DiscountContext = createContext();
 
@@ -52,7 +51,7 @@ export const DiscountProvider = ({ children }) => {
 
   // Xóa mã giảm giá
   const handleDeleteDiscount = async (discountId) => {
-    await deleteDiscount(discountId);
+    const res = await deleteDiscount(discountId);
     setDiscounts((prevDiscounts) =>
     prevDiscounts.filter((discount) => discount._id !== discountId)
     );

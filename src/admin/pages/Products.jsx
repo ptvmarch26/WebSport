@@ -59,8 +59,8 @@ const Products = () => {
 
       if (image) {
         newProduct.product_img = {
-          image_main: image.url,  // Gán URL của ảnh chính vào
-          image_subs: []          // Có thể gán ảnh phụ nếu cần
+          image_main: image.url,  
+          image_subs: []          
         }; 
       }
       console.log(newProduct);
@@ -77,7 +77,6 @@ const Products = () => {
     }
   };
 
-  console.log(products)
 
   const filteredProducts = products.filter((product) => {
     const matchesStatus = filterStatus ? product.status === filterStatus : true;

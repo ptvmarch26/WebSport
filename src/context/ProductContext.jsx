@@ -46,13 +46,8 @@ export const ProductProvider = ({ children }) => {
   };
 
   const removeProduct = async (productId) => {
-    const res = await deleteProduct(productId);
-    
-    if (res?.EC === 0) {
-        setProducts(products.filter((p) => p._id !== productId));
-    }
-
-    return res;
+    await deleteProduct(productId);
+    setProducts((prev) => prev.filter((p) => p._id !== productId));
   };
 
   

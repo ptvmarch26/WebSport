@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   Table,
   Input,
@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import { useDiscount } from "../../context/DiscountContext";
 import { useProduct } from "../../context/ProductContext";
+import { useCategories } from "../../context/CategoriesContext";
 import moment from 'moment'
 
 const { Option } = Select;
@@ -39,13 +40,17 @@ const Discounts = () => {
 
   const { discounts, setDiscounts, fetchDiscounts, handleCreateDiscount, handleDeleteDiscount, handleUpdateDiscount } = useDiscount();
   const { products, fetchProducts } = useProduct();
-  
+  const { categories, fetchCategories } = useCategories();
   useEffect(() => {
     fetchProducts();    
   }, []);
   
   useEffect(() => {
     fetchDiscounts();
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
   }, []);
 
   const handleDelete = async () => {
@@ -300,17 +305,19 @@ const Discounts = () => {
           >
             <InputNumber />
           </Form.Item>
-          {/* <Form.Item
+          <Form.Item
             label="Danh mục áp dụng"
             name="applicable_categories"
             rules={[{ required: true, message: "Danh mục là bắt buộc" }]}
           >
             <Select mode="multiple">
-              {/* Option categories sẽ được lấy từ backend hoặc context */}
-              {/* <Option value="categoryId1">Category 1</Option>
-              <Option value="categoryId2">Category 2</Option>
+              {categories?.map((category) => (
+                <Option key={category._id} value={category._id}>
+                  {category.category_type}
+                </Option>  
+              ))}
             </Select>
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             label="Sản phẩm áp dụng"
             name="applicable_products"
@@ -403,6 +410,19 @@ const Discounts = () => {
             name="min_order_value"
           >
             <InputNumber />
+          </Form.Item>
+          <Form.Item
+            label="Danh mục áp dụng"
+            name="applicable_categories"
+            rules={[{ required: true, message: "Danh mục là bắt buộc" }]}
+          >
+            <Select mode="multiple">
+              {categories?.map((category) => (
+                <Option key={category._id} value={category._id}>
+                  {category.category_type}
+                </Option>  
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             label="Sản phẩm áp dụng"
