@@ -55,7 +55,7 @@ export const DiscountProvider = ({ children }) => {
     setDiscounts((prevDiscounts) =>
     prevDiscounts.filter((discount) => discount._id !== discountId)
     );
-
+    return res;
   };
 
   return (

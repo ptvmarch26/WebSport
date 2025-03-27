@@ -10,7 +10,7 @@ const statusColors = {
 };
 // be thiếu trường tên khách hàng, cả phần đăng ký các kiểu...
 const Customers = () => {
-  const { fetchUsers, users, loading  } = useUser();
+  const { fetchUsers, users  } = useUser();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
@@ -19,7 +19,6 @@ const Customers = () => {
   useEffect(() => {
     fetchUsers(); 
   }, []);
-  console.log(users);
 
   const filteredUsers = Array.isArray(users)
   ? users.filter((user) => {
@@ -46,7 +45,7 @@ const Customers = () => {
         ),
     },
     { title: "Giới tính", dataIndex: "gender", key: "gender" },
-    { title: "Tên khách hàng", dataIndex: "name", key: "name" },
+    { title: "Tên người dùng", dataIndex: "user_name", key: "user_name" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Số điện thoại", dataIndex: "phone", key: "phone" },
     {
@@ -87,16 +86,6 @@ const Customers = () => {
             <Option value="Đã khóa">Đã khóa</Option>
             <Option value="Mới">Mới</Option>
           </Select>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined />}
-            disabled={selectedRowKeys.length === 0}
-            onClick={() => setIsModalVisible(true)}
-            className="rounded-none"
-          >
-            Xóa ({selectedRowKeys.length})
-          </Button>
         </div>
       </div>
 
@@ -110,7 +99,6 @@ const Customers = () => {
           columns={columns}
           pagination={{ pageSize: 8 }}
           rowKey="_id"
-          loading={loading}
           className="rounded-none"
         />
       </div>

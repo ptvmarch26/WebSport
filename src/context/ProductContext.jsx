@@ -20,6 +20,8 @@ export const ProductProvider = ({ children }) => {
     fetchProducts();
   }, []);
 
+  
+
   const fetchProductDetails = async (productId) => {
     const res = await getDetailsProduct(productId);
     if (res?.EC === 0) {
@@ -32,22 +34,26 @@ export const ProductProvider = ({ children }) => {
 
   const addProduct = async (productData) => {
     const res = await createProduct(productData);
+    setProducts((prev) => [...prev, res.data]);
     return res;
   };
 
   const editProduct = async (productId, updatedData) => {
     const res = await updateProduct(productId, updatedData);
     
-    if (res?.EC === 0) {
-        setProducts(products.map((p) => (p._id === productId ? res.data : p)));
-    }
+    setProducts((prev) =>
+      prev.map((product) =>
+        product._id === productId ? res.data : product
+      )
+    );
 
     return res;
   };
 
   const removeProduct = async (productId) => {
-    await deleteProduct(productId);
+    const res = await deleteProduct(productId);
     setProducts((prev) => prev.filter((p) => p._id !== productId));
+    return res;
   };
 
   
