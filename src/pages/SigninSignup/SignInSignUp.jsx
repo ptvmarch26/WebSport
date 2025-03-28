@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaUser, FaLock, FaEdit, FaPhone, FaMailBulk } from "react-icons/fa";
+import { FaUser, FaLock, FaEdit } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -15,19 +16,18 @@ const SignInSignUp = () => {
 
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { handleSignUp, handleLogin ,token} = useAuth();
- 
+  const { handleSignUp, handleLogin, token } = useAuth();
+
   useEffect(() => {
     if (token) {
       navigate("/", { replace: true });
     }
   }, [token, navigate]);
 
-  
   if (token) {
     return null;
   }
@@ -37,7 +37,7 @@ const SignInSignUp = () => {
       alert("Mật khẩu xác nhận không khớp!");
       return;
     }
-    
+
     const result = await handleSignUp(userName, email, password);
     if (result) {
       alert("Đăng ký thành công!");
@@ -58,7 +58,7 @@ const SignInSignUp = () => {
     const result = await handleLogin(userName, password);
     if (result?.result?.accessToken) {
       alert("Đăng nhập thành công!");
-      navigate("/"); 
+      navigate("/");
     } else {
       alert("Tài khoản hoặc mật khẩu không đúng!");
     }
@@ -128,7 +128,7 @@ const SignInSignUp = () => {
                     type="text"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    placeholder="Số điện thoại/Email"
+                    placeholder="Số điện thoại/Email/Tên đăng nhập"
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
                 </div>
@@ -169,7 +169,12 @@ const SignInSignUp = () => {
                 </Link>
               </div>
               <div className="mt-2">
-                <Button onClick={handleSubmitSignIn} className="w-full h-12 mb-6">Đăng nhập</Button>
+                <Button
+                  onClick={handleSubmitSignIn}
+                  className="w-full h-12 mb-6"
+                >
+                  Đăng nhập
+                </Button>
                 <div className="space-y-4">
                   <Button
                     variant="outlined"
@@ -223,19 +228,39 @@ const SignInSignUp = () => {
                   />
                 </div>
               </div>
+
               <div>
                 <label
-                  htmlFor="phone"
+                  htmlFor="name"
+                  className="min-w-[170px] block antialiased font-sans text-sm mb-1 leading-normal text-inherit font-medium text-gray-900"
+                >
+                  Tên đăng nhập
+                </label>
+                <div className="relative">
+                  <FaUser className="absolute left-3 top-[38%] transform -translate-y-1/2 text-gray-700" />
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Tên đăng nhập"
+                    className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="email"
                   className="min-w-[170px] block antialiased font-sans text-sm mb-1 leading-normal text-inherit font-medium text-gray-900"
                 >
                   Email
                 </label>
-                {/* Thong chinh lai doan nay thanh email cai da nhe */}
                 <div className="relative">
-                  <FaPhone className="absolute left-3 top-[38%] transform -translate-y-1/2 text-gray-700 rotate-90" />
+                  <MdEmail className="absolute left-3 top-[38%] transform -translate-y-1/2 text-gray-700" />
                   <input
-                    id="phone"
-                    type="tel"
+                    id="email"
+                    type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
@@ -300,7 +325,12 @@ const SignInSignUp = () => {
                 }
               />
               <div className="mt-2">
-                <Button onClick={handleSubmitSignUp} className="w-full h-12 mb-6">Đăng ký</Button>
+                <Button
+                  onClick={handleSubmitSignUp}
+                  className="w-full h-12 mb-6"
+                >
+                  Đăng ký
+                </Button>
                 <div className="space-y-4">
                   <Button
                     variant="outlined"
