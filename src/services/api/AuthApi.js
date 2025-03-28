@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { auth, provider, signInWithPopup } from "../../config/firebase";
 const API_URL = "http://localhost:5000/auth";
 
 // Lấy token từ localStorage
@@ -84,5 +84,25 @@ export const changePassword = async (oldPassword, newPassword) => {
       console.error("Lỗi khi đổi mật khẩu:", data?.EM || "Lỗi không xác định");
     }
     return null;
+  }
+};
+
+export const loginWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("🔥 Firebase User:", {
+      email: user.email,
+      user_name: user.email,  
+      uid: user.uid,
+    });
+    const res = await axios.post(`${API_URL}/login_with_google`, {
+      email: user.email,
+      user_name: user.email,
+      uid: user.uid,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("L��i khi đăng nhập với Google:", error);
   }
 };

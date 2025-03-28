@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signUp, login, sendOTP, verifyOTP, resetPassword} from "../services/api/AuthApi";
+import { signUp, login, sendOTP, verifyOTP, resetPassword, loginWithGoogle } from "../services/api/AuthApi";
 
 
 const AuthContext = createContext();
@@ -47,6 +47,16 @@ export const AuthProvider = ({ children }) => {
     return await resetPassword(email, newPassword);
   };
 
+  const handlLoginWithGoogle = async () => { 
+    const data = await loginWithGoogle();
+    if (data?.result?.accessToken) {
+      setToken(data?.result?.accessToken);
+      localStorage.setItem("accessToken", data.result.accessToken);
+    }
+    
+    return data;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -57,6 +67,7 @@ export const AuthProvider = ({ children }) => {
         handleSendOTP,
         handleVerifyOTP,
         handleResetPassword,
+        handlLoginWithGoogle,
       }}
     >
       {children}

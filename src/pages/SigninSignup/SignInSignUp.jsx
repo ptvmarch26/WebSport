@@ -20,8 +20,8 @@ const SignInSignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { handleSignUp, handleLogin, token } = useAuth();
-
+  const { handleSignUp, handleLogin , handlLoginWithGoogle, token} = useAuth();
+ 
   useEffect(() => {
     if (token) {
       navigate("/", { replace: true });
@@ -67,6 +67,16 @@ const SignInSignUp = () => {
   useEffect(() => {
     navigate(isSignUp ? "/sign-up" : "/sign-in", { replace: true });
   }, [isSignUp, navigate]);
+
+  const handleSignInWithGoogle = async () => {
+    const result = await handlLoginWithGoogle();
+    if (result?.result?.accessToken) {
+      alert("Đăng nhập thành công!");
+      navigate("/"); 
+    } else {
+      alert("Tài khoản hoặc mật khẩu không đúng!");
+    }
+  };
   //  Thêm một ô input username nữa, hiện tại cái Họ và tên đang là username
   return (
     <div className="bg-white py-14 px-2">
@@ -176,7 +186,7 @@ const SignInSignUp = () => {
                   Đăng nhập
                 </Button>
                 <div className="space-y-4">
-                  <Button
+                  <Button onClick={handleSignInWithGoogle}
                     variant="outlined"
                     size="lg"
                     className="flex h-12 items-center justify-center gap-2"
