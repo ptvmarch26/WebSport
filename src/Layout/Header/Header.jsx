@@ -19,6 +19,7 @@ import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 
+
 const Header = () => {
   // Thông css nếu có token thì nhấn vào icon user có nút đăng xuất với có nút navigate đến /account cái nha, để tối mai tui done cái auth luôn
   // Có token rồi Thông css lại cái đoạn icon user, nếu có token thì để ảnh mặc định hoặc ảnh của user, không thì để icon
@@ -83,7 +84,7 @@ const Header = () => {
         "w-full h-[80px] fixed top-0 left-0 right-0 bg-primary z-10 shadow-md transition-transform duration-300 ease-in-out"
       )}
     >
-      <div className="container mx-auto flex justify-between items-center h-full">
+      <div className="container mx-auto flex justify-between items-center h-full px-2">
         <div className="flex items-center h-full">
           <div className="p-2 flex items-center space-x-4 lg:hidden">
             <button onClick={toggleMenu} className="text-white text-2xl">

@@ -9,8 +9,9 @@ import {
   FaEnvelope,
   FaPhone,
   FaLock,
-  FaCog, 
+  FaCog,
 } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
 import avt_false from "../../assets/images/avatar-false.jpg";
 import { Button } from "@material-tailwind/react";
 import { useAuth } from "../../context/AuthContext";
@@ -32,12 +33,11 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
     navigate(path);
     setIsMenuVisible(false);
   };
-  
+
   const handleSubmitLogout = async () => {
     await handleLogout(); // Chờ quá trình đăng xuất hoàn tất
     navigate("/sign-in", { replace: true });
   };
-
 
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible);
@@ -50,6 +50,11 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
       icon: <FaPhone className="rotate-90" />,
       text: "Số điện thoại",
       path: "/account/edit-phone",
+    },
+    {
+      icon: <FaLocationDot />,
+      text: "Địa chỉ",
+      path: "/account/my-address",
     },
     { icon: <FaLock />, text: "Mật khẩu", path: "/account/edit-password" },
     { icon: <FaShoppingBag />, text: "Đơn hàng", path: "/orders" },
@@ -88,7 +93,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
           <li className="font-semibold text-gray-700 mb-2">
             Thông tin cá nhân
           </li>
-          {menuItems.slice(0, 4).map((item) => (
+          {menuItems.slice(0, 5).map((item) => (
             <MenuItem
               key={item.path}
               icon={item.icon}
@@ -100,7 +105,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
           ))}
 
           <li className="font-semibold text-gray-700 mt-5 mb-2">Khác</li>
-          {menuItems.slice(4).map((item) => (
+          {menuItems.slice(5).map((item) => (
             <MenuItem
               key={item.path}
               icon={item.icon}
@@ -126,7 +131,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
           <li className="font-semibold text-gray-700 mb-2">
             Thông tin cá nhân
           </li>
-          {menuItems.slice(0, 4).map((item) => (
+          {menuItems.slice(0, 5).map((item) => (
             <MenuItem
               key={item.path}
               icon={item.icon}
@@ -138,7 +143,7 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
           ))}
 
           <li className="font-semibold text-gray-700 mt-5 mb-2">Khác</li>
-          {menuItems.slice(4).map((item) => (
+          {menuItems.slice(5).map((item) => (
             <MenuItem
               key={item.path}
               icon={item.icon}
