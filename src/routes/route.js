@@ -13,6 +13,7 @@ import Products from "../admin/pages/Products";
 import Customers from "../admin/pages/Customers";
 import AdminLayout from "../admin/layout/AdminLayout";
 import Discounts from "../admin/pages/Discounts";
+import Categories from "../admin/pages/Categories"
 import OrderDetailsPage from "../pages/OrderDetailsPage/OrderDetailsPage"
 import NotFoundPage from "../pages/NotFouldPage/NotFouldPage"
 import OrderFeedbackPage from "../pages/OrderFeedbackPage/OrderFeedbackPage"
@@ -155,8 +156,13 @@ const adminRoutes = [
         Layout: AdminLayout,
     },
     {
-        path: "/admin/product-details/:id",
+        path: "/admin/products/:id",
         component: ProductDetails,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/categories",
+        component: Categories,
         Layout: AdminLayout,
     },
     {

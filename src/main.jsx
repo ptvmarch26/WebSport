@@ -5,6 +5,8 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { UserProvider } from "./context/UserContext.jsx";
 import { ProductProvider } from "./context/ProductContext.jsx";
+import { DiscountProvider } from "./context/DiscountContext.jsx";
+import { CategoriesProvider } from "./context/CategoriesContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -12,7 +14,11 @@ createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <UserProvider>
           <ProductProvider>
-            <App />
+            <DiscountProvider>
+              <CategoriesProvider >
+                <App />
+              </CategoriesProvider >
+            </DiscountProvider>
           </ProductProvider>
         </UserProvider>
       </AuthProvider>

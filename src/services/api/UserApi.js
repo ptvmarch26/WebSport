@@ -4,9 +4,11 @@ const API_URL = "http://localhost:5000/user";
 
 const getToken = () => localStorage.getItem("accessToken");
 
-export const getUser = async (userId) => {
+export const getUser = async () => {
     try {
-      const response = await axios.get(`${API_URL}/${userId}`);
+      const response = await axios.get(API_URL,{
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
       return response.data;
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -16,7 +18,7 @@ export const getUser = async (userId) => {
 
 export const getAllUsers = async () => {
   try {
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(`${API_URL}/get_all_user`, {
       headers: { Authorization: `Bearer ${getToken()}` },
     });
     return response.data;
