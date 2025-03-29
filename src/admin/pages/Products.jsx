@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { Table, Input, Select, Button, Tag, Modal, Form, InputNumber } from "antd";
 import { DeleteOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons";
+import { Table, Input, Select, Button, Tag, Modal, Form } from "antd";
+import {
+  DeleteOutlined,
+  ExportOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useProduct } from "../../context/ProductContext";
 import { Upload, message, Switch, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -20,6 +26,10 @@ const Products = () => {
 
   const { categories, fetchCategories } = useCategories();
  
+  const [isAddProductModalVisible, setIsAddProductModalVisible] =
+    useState(false);
+  const [image, setImage] = useState(null);
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -62,7 +72,9 @@ const Products = () => {
 
   const filteredProducts = products.filter((product) => {
     const matchesStatus = filterStatus ? product.status === filterStatus : true;
-    const matchesSearch = searchText ? product.product_title.toLowerCase().includes(searchText.toLowerCase()) : true;
+    const matchesSearch = searchText
+      ? product.product_title.toLowerCase().includes(searchText.toLowerCase())
+      : true;
     return matchesStatus && matchesSearch;
   });
 
@@ -73,6 +85,11 @@ const Products = () => {
       key: "product_img",
       render: (product_img) =>
         product_img?.image_main ? (
+          <img
+            src={product_img.image_main}
+            alt="Ảnh sản phẩm"
+            className="w-16 h-16 object-cover rounded"
+          />
           <img
             src={product_img.image_main}
             alt="Ảnh sản phẩm"
@@ -97,6 +114,12 @@ const Products = () => {
       render: (value) => value ?? 0,
     },
     {
+      title: "Số lượng tồn",
+      dataIndex: "product_countInStock",
+      key: "product_countInStock",
+    },
+    { title: "Đã bán", dataIndex: "product_selled", key: "product_selled" },
+    {
       title: "Giá gốc",
       dataIndex: "product_price",
       key: "product_price",
@@ -113,6 +136,28 @@ const Products = () => {
       dataIndex: "product_rate",
       key: "product_rate",
       render: (value) => value ?? "Chưa có",
+    { title: "Đánh giá", dataIndex: "product_rate", key: "product_rate" },
+    {
+      title: "Ngày tạo",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "product_countInStock",
+      key: "status",
+      render: (countInStock) => {
+        let status = "Hết hàng";
+        if (countInStock > 5) status = "Còn hàng";
+        else if (countInStock > 0) status = "Cần nhập";
+
+        return (
+          <Tag className="py-1 px-2" color={statusColors[status]}>
+            {status}
+          </Tag>
+        );
+      },
     },
   ];
   
@@ -127,10 +172,19 @@ const Products = () => {
             onChange={(e) => setSearchText(e.target.value)}
             className="rounded-none"
           />
-          <Button type="primary" icon={<ExportOutlined />} className="rounded-none">
+          <Button
+            type="primary"
+            icon={<ExportOutlined />}
+            className="rounded-none"
+          >
             Xuất file
           </Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddProductModalVisible(true)} className="rounded-none">
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setIsAddProductModalVisible(true)}
+            className="rounded-none"
+          >
             Thêm sản phẩm
           </Button>
         </div>
@@ -194,6 +248,11 @@ const Products = () => {
         onCancel={() => setIsAddProductModalVisible(false)}
         okText="Thêm"
         cancelText="Hủy"
+      <Modal
+        title="Thêm sản phẩm mới"
+        open={isAddProductModalVisible}
+        onCancel={() => setIsAddProductModalVisible(false)}
+        footer={null}
       >
         <Form form={form} 
           layout="vertical" 
@@ -260,6 +319,54 @@ const Products = () => {
           <Form.Item label="Ảnh phụ" name="product_subs_img" valuePropName="fileList" getValueFromEvent={normFile}>
             <Upload beforeUpload={() => false} listType="picture" multiple>
               <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={(values) => {
+            console.log("onFinish values:", values);
+            handleAddProduct(values);
+          }}
+          initialValues={{
+            product_title: "",
+            product_brand: "",
+            product_price: 0,
+            product_countInStock: 0,
+            product_selled: 0,
+            product_percent_discount: 0,
+            product_rate: 0,
+          }}
+        >
+          <Form.Item label="Tên sản phẩm" name="product_title">
+            
+            <Input />
+          </Form.Item>
+          <Form.Item label="Thương hiệu" name="product_brand">
+            
+            <Input />
+          </Form.Item>
+          <Form.Item label="Giá gốc" name="product_price">
+            
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item label="Số lượng tồn" name="product_countInStock">
+            
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item label="Đã bán" name="product_selled">
+            
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item label="Giảm giá (%)" name="product_percent_discount">
+            
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item label="Đánh giá" name="product_rate">
+            
+            <Input type="number" step="0.1" />
+          </Form.Item>
+          {/* <Form.Item label="Ảnh sản phẩm" name="product_image" valuePropName="fileList" getValueFromEvent={normFile}>
+            <Upload beforeUpload={handleUpload} listType="picture">
+              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
             </Upload>
           </Form.Item>
 
@@ -342,6 +449,13 @@ const Products = () => {
               </>
             )}
           </Form.List>
+          </Form.Item> */}
+          <Form.Item>
+            
+            <Button type="primary" htmlType="submit">
+              Thêm sản phẩm
+            </Button>
+          </Form.Item>
         </Form>
       </Modal>
 

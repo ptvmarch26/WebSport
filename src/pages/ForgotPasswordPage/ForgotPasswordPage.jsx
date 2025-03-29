@@ -8,7 +8,7 @@ import OTPComponent from "../../components/OTPComponent/OTPComponent";
 import { useAuth } from "../../context/AuthContext";
 
 const ForgotPasswordPage = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const { handleSendOTP, handleResetPassword, handleVerifyOTP } = useAuth();
 
   const [step, setStep] = useState(0);
@@ -57,10 +57,9 @@ const ForgotPasswordPage = () => {
     }
   };
 
-
   const handleResetPasswordSubmit = async () => {
     let errors = {};
-    
+
     if (!newPassword) {
       errors.newPassword = "Vui lòng nhập mật khẩu mới.";
     }
@@ -70,13 +69,13 @@ const ForgotPasswordPage = () => {
     if (newPassword && confirmPassword && newPassword !== confirmPassword) {
       errors.confirmPassword = "Mật khẩu xác nhận không khớp.";
     }
-  
+
     setErrors(errors);
-  
+
     if (Object.keys(errors).length > 0) {
       return;
     }
-  
+
     const res = await handleResetPassword(email, newPassword);
     if (res?.EM === "Password reset successfully") {
       alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
@@ -139,6 +138,7 @@ const ForgotPasswordPage = () => {
                 otpError={otpError}
                 onVerify={handleVerifyOtp}
                 onResend={handleSendOtp}
+                height="h-12"
               />
             </div>
           )}
@@ -227,7 +227,10 @@ const ForgotPasswordPage = () => {
                 </div>
               </div>
 
-              <Button onClick={handleResetPasswordSubmit} className="w-full h-12">
+              <Button
+                onClick={handleResetPasswordSubmit}
+                className="w-full h-12"
+              >
                 Đổi mật khẩu
               </Button>
             </div>

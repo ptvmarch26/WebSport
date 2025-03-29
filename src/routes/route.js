@@ -28,6 +28,7 @@ import VoucherPage from "../pages/VoucherPage/VoucherPage"
 import LoginPage from "../admin/pages/LoginPage"
 import OrderDetails from "../admin/pages/OrderDetails"
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
+import MyAddress from "../pages/AccountPage/PageChildren/MyAddress"
 
 
 const publicRoutes = [
@@ -118,6 +119,10 @@ const accountRoutes = [
       path: "/edit-password",
       component: EditPassword,
     },
+    {
+        path: "/my-address",
+        component: MyAddress,
+      },
 ];
 
 const privateRoutes = [

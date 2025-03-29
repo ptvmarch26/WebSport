@@ -1,7 +1,7 @@
 import { Button } from "@material-tailwind/react";
 import { useState, useRef, useEffect } from "react";
 
-const OTPComponent = ({ newEmail, otpError, onVerify, onResend }) => {
+const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height}) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(30); // Set initial time to 30 seconds
   const inputRefs = useRef([]);
@@ -80,7 +80,7 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend }) => {
         </button>
       )}
       {otpError && <p className="text-red-500 text-sm mb-2">{otpError}</p>}
-      <Button onClick={handleVerify} className="w-full h-12">
+      <Button onClick={handleVerify} className={`w-full ${height}`}>
         Xác nhận
       </Button>
     </div>

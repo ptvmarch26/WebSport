@@ -14,9 +14,11 @@ import { useEffect } from "react";
 import userScrollHandling from "../../hooks/userScrollHandling";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdNavigateNext } from "react-icons/md";
-import flag_vn from '../../assets/images/flag_vn.jpg';
-import flag_us from '../../assets/images/flag_us.jpg';
+import flag_vn from "../../assets/images/flag_vn.jpg";
+import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
+import avatar_false from "../../assets/images/avatar-false.jpg";
+
 
 const Header = () => {
   // Thông css nếu có token thì nhấn vào icon user có nút đăng xuất với có nút navigate đến /account cái nha, để tối mai tui done cái auth luôn
@@ -25,8 +27,8 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
-  
-  const {token}= useAuth();
+
+  const { token } = useAuth();
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -82,7 +84,7 @@ const Header = () => {
         "w-full h-[80px] fixed top-0 left-0 right-0 bg-primary z-10 shadow-md transition-transform duration-300 ease-in-out"
       )}
     >
-      <div className="container mx-auto flex justify-between items-center h-full">
+      <div className="container mx-auto flex justify-between items-center h-full px-2">
         <div className="flex items-center h-full">
           <div className="p-2 flex items-center space-x-4 lg:hidden">
             <button onClick={toggleMenu} className="text-white text-2xl">
@@ -152,12 +154,24 @@ const Header = () => {
                 <FaHeart />
               </div>
             </Link>
-            <Link to={token ? "/account" : "/sign-in"} className="lg:order-2 order-1">
-              <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-                <FaUser />
-              </div>
-            </Link>
-            <Link to={"/cart"} className="lg:order-1 order-2">
+            {token ? (
+              <Link to={"/account"} className="order-1">
+                <div>
+                  <img
+                    src={avatar_false}
+                    alt="User avatar"
+                    className="w-7 h-7 rounded-full"
+                  />
+                </div>
+              </Link>
+            ) : (
+              <Link to={"/sign-in"} className="order-1">
+                <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
+                  <FaUser />
+                </div>
+              </Link>
+            )}
+            <Link to={"/cart"}>
               <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                 <FaShoppingCart />
               </div>
@@ -248,11 +262,7 @@ const Header = () => {
                     <div className="flex items-center">
                       <span>{language === "vi" ? "VN" : "US"}</span>
                       <img
-                        src={
-                          language === "vi"
-                            ? flag_vn
-                            : flag_us
-                        }
+                        src={language === "vi" ? flag_vn : flag_us}
                         alt="flag"
                         className="w-6 h-6 rounded-full object-cover ml-2"
                       />
