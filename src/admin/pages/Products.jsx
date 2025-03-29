@@ -230,7 +230,10 @@ const Products = () => {
           columns={columns}
           pagination={{ pageSize: 10 }}
           rowKey="_id"
-          className="rounded-none"
+          onRow={(record) => ({
+            onClick: () => navigate(`/admin/product-details/${record._id}`),
+          })}
+          className="rounded-none cursor-pointer"
         />
       </div>
 

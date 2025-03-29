@@ -31,7 +31,6 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress"
 import ProductDetails from "../admin/pages/ProductDetails"
 
-
 const publicRoutes = [
     {
         path: "/sign-in",
