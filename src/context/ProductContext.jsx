@@ -12,7 +12,7 @@ export const ProductProvider = ({ children }) => {
     if (res?.EM === "Lấy danh sách sản phẩm thành công") {
         setProducts(res.result.products);
     } else {
-        console.error(res?.EM || "Lỗi khi lấy danh sách sản phẩm");
+        console.error(res);
     }
   };
   
@@ -25,7 +25,7 @@ export const ProductProvider = ({ children }) => {
   const fetchProductDetails = async (productId) => {
     const res = await getDetailsProduct(productId);
     if (res?.EC === 0) {
-        setProductDetails(res.data);
+        setProductDetails(res.result);
     } else {
         console.error(res?.EM || "Lỗi khi lấy thông tin sản phẩm");
     }
@@ -64,6 +64,7 @@ export const ProductProvider = ({ children }) => {
         products,
         productDetails,
         setProducts,
+        setProductDetails,
         fetchProducts, 
         fetchProductDetails, 
         addProduct, 

@@ -1,38 +1,32 @@
 import { useEffect, useState } from "react";
 import { Table, Input, Select, Button, Tag, Modal, Form, InputNumber } from "antd";
 import { DeleteOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons";
-import { Table, Input, Select, Button, Tag, Modal, Form } from "antd";
-import {
-  DeleteOutlined,
-  ExportOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
 import { useProduct } from "../../context/ProductContext";
 import { Upload, message, Switch, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useCategories } from "../../context/CategoriesContext";
+import { useNavigate } from "react-router-dom";
+
 const { Option } = Select;
 
-
-
 const Products = () => {
-  const { products, setProducts, fetchProducts, removeProduct, addProduct } = useProduct();
+  const { products, setProducts, fetchProducts, removeProduct, addProduct, editProduct } = useProduct();
   const [form] = Form.useForm();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddProductModalVisible, setIsAddProductModalVisible] = useState(false);
+  const [isEditProductModalVisible, setIsEditProductgModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const navigate = useNavigate();
 
   const { categories, fetchCategories } = useCategories();
  
-
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, []);
-
-
 
   const handleDelete = async () => {
     try {
@@ -54,7 +48,6 @@ const Products = () => {
     try {
       await form.validateFields();
       const newProduct = form.getFieldsValue();
-      console.log("newProduct", newProduct);
       const res = await addProduct(newProduct);
       if (res?.EC === 0) {
         fetchProducts();
@@ -63,6 +56,34 @@ const Products = () => {
       }
     } catch (error) {
       console.log("Lỗi khi xác thực form:", error);
+    }
+  };
+
+  const handleEditProduct = (record) => {
+    if (record) {
+  
+      setSelectedProduct(record);  // Cập nhật giá trị discount được chọn
+      form.setFieldsValue(record);  // Điền thông tin discount vào form
+      setIsEditProductgModalVisible(true);  // Mở modal chỉnh sửa
+    } else {
+      console.error("Không có discount được chọn");
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await form.validateFields();
+      const updatedFields = form.getFieldsValue(); 
+
+      const res = await editProduct(selectedProduct._id, updatedFields);
+      console.log(res);
+      if (res?.EC === 0) {
+        fetchProducts();
+        form.resetFields();
+        setIsEditProductgModalVisible(false);
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật sản phẩm:", error);
     }
   };
 
@@ -122,6 +143,30 @@ const Products = () => {
       dataIndex: "product_rate",
       key: "product_rate",
       render: (value) => value ?? "Chưa có",
+    },
+    {
+      title: "Chỉnh sửa",
+      key: "edit",
+      render: (_, record) => (
+        <Button
+          type="link"
+          onClick={() => handleEditProduct(record)} // Gọi handleEditDiscount với dòng được chọn
+        >
+          Chỉnh sửa
+        </Button>
+      ),
+    },
+    {
+      title: "Xem chi tiết",
+      key: "view",
+      render: (record) => (
+        <span
+          className="text-blue-500 cursor-pointer"
+          onClick={() => navigate(`/admin/products/${record._id}`)}
+        >
+          Chi tiết
+        </span>
+      ),
     },
   ];
   
@@ -183,7 +228,7 @@ const Products = () => {
           rowSelection={{ selectedRowKeys, onChange: setSelectedRowKeys }}
           dataSource={filteredProducts}
           columns={columns}
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 10 }}
           rowKey="_id"
           className="rounded-none"
         />
@@ -256,7 +301,7 @@ const Products = () => {
           </Form.Item>
 
           <Form.Item label="Danh mục" name="product_category" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}>
-            <Select mode="multiple" >
+            <Select >
               {categories?.map((cat) => (
                 <Select.Option key={cat._id} value={cat._id}>
                   {cat.category_type}
@@ -334,8 +379,9 @@ const Products = () => {
                     </Form.Item>
                     <Form.Item
                       {...restField}
-                      name={[name, "variant_img", "image_main"]}
+                      name={[name, "variant_img_main"]}
                       label="Ảnh chính"
+                      valuePropName="fileList" getValueFromEvent={normFile}
                     >
                       <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
                         <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
@@ -343,8 +389,9 @@ const Products = () => {
                     </Form.Item>
                     <Form.Item
                       {...restField}
-                      name={[name, "variant_img", "image_subs"]}
-                      label="Ảnh phụ (cách nhau bởi dấu phẩy)"
+                      name={[name, "variant_img_subs"]}
+                      label="Ảnh phụ"
+                      valuePropName="fileList" getValueFromEvent={normFile}
                     >
                       <Upload beforeUpload={() => false} listType="picture" multiple>
                         <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
@@ -363,6 +410,157 @@ const Products = () => {
         </Form>
       </Modal>
 
+      {/* Modal chỉnh sửa  */}
+      <Modal
+        title="Chỉnh sửa sản phẩm"
+        open={isEditProductModalVisible}
+        onOk={handleUpdate}
+        onCancel={() => setIsEditProductgModalVisible(false)}
+        okText="Cập nhật"
+        cancelText="Hủy"
+      >
+        <Form form={form} 
+          layout="vertical" 
+          onFinish={handleUpdate}
+          initialValues={selectedProduct}
+        >
+          <Form.Item label="Tên sản phẩm" name="product_title" rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="Thương hiệu" name="product_brand" rules={[{ required: true, message: 'Vui lòng nhập thương hiệu' }]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="Giá gốc" name="product_price" rules={[{ required: true, message: 'Vui lòng nhập giá' }]}>
+            <InputNumber min={0} className="w-full" />
+          </Form.Item>
+
+          <Form.Item label="Số lượng tồn" name="product_countInStock" rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}>
+            <InputNumber min={0} className="w-full" />
+          </Form.Item>
+
+          <Form.Item label="Đã bán" name="product_selled">
+            <InputNumber min={0} className="w-full" />
+          </Form.Item>
+
+          <Form.Item label="Giảm giá (%)" name="product_percent_discount">
+            <InputNumber min={0} max={100} className="w-full" />
+          </Form.Item>
+
+          <Form.Item label="Đánh giá" name="product_rate">
+            <InputNumber min={0} max={5} step={0.1} className="w-full" />
+          </Form.Item>
+
+          <Form.Item label="Danh mục" name="product_category" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}>
+            <Select >
+              {categories?.map((cat) => (
+                <Select.Option key={cat._id} value={cat._id}>
+                  {cat.category_type}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Mô tả sản phẩm" name="product_description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+            <Input.TextArea rows={4} />
+          </Form.Item>
+
+          <Form.Item label="Ảnh chính" name="product_main_img" valuePropName="fileList" getValueFromEvent={normFile}>
+            <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
+              <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item label="Ảnh phụ" name="product_subs_img" valuePropName="fileList" getValueFromEvent={normFile}>
+            <Upload beforeUpload={() => false} listType="picture" multiple>
+              <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item name="product_display" label="Hiển thị sản phẩm" valuePropName="checked">
+            <Switch  />
+          </Form.Item>
+
+          <Form.Item name="product_famous" label="Sản phẩm nổi bật" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+          <Form.List name="variants">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Card key={key} title={`Biến thể ${key + 1}`} className="mb-4" extra={<Button danger onClick={() => remove(name)}>Xóa</Button>}>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_color"]}
+                      label="Màu sắc"
+                      rules={[{ required: true, message: "Vui lòng nhập màu" }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_size"]}
+                      label="Kích cỡ"
+                      rules={[{ required: true, message: "Vui lòng nhập kích cỡ" }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_price"]}
+                      label="Giá"
+                      rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+                    >
+                      <InputNumber min={0} className="w-full" />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_countInStock"]}
+                      label="Số lượng tồn"
+                      rules={[{ required: true, message: "Vui lòng nhập số lượng tồn" }]}
+                    >
+                      <InputNumber min={0} className="w-full" />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_percent_discount"]}
+                      label="Giảm giá (%)"
+                    >
+                      <InputNumber min={0} max={100} className="w-full" />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_img_main"]}
+                      label="Ảnh chính"
+                      valuePropName="fileList" getValueFromEvent={normFile}
+                    >
+                      <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
+                        <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
+                      </Upload>
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "variant_img_subs"]}
+                      label="Ảnh phụ"
+                      valuePropName="fileList" getValueFromEvent={normFile}
+                    >
+                      <Upload beforeUpload={() => false} listType="picture" multiple>
+                        <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+                      </Upload>
+                    </Form.Item>
+                  </Card>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Thêm biến thể
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+        </Form>
+      </Modal>
     </div>
   );
 };

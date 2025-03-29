@@ -29,6 +29,7 @@ import LoginPage from "../admin/pages/LoginPage"
 import OrderDetails from "../admin/pages/OrderDetails"
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress"
+import ProductDetails from "../admin/pages/ProductDetails"
 
 
 const publicRoutes = [
@@ -153,6 +154,11 @@ const adminRoutes = [
     {
         path: "/admin/products",
         component: Products,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/products/:id",
+        component: ProductDetails,
         Layout: AdminLayout,
     },
     {

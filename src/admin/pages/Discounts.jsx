@@ -75,7 +75,6 @@ const Discounts = () => {
       await form.validateFields(); 
       const newDiscount = form.getFieldsValue(); 
   
-      // Kiểm tra giá trị ngày hợp lệ
       if (!newDiscount.discount_start_day || !newDiscount.discount_end_day) {
         console.error("Ngày bắt đầu hoặc ngày kết thúc không hợp lệ");
         return;
@@ -94,7 +93,6 @@ const Discounts = () => {
 
   const handleEditDiscount = (record) => {
     if (record) {
-      // Format lại discount_start_day và discount_end_day trước khi điền vào form
       const formattedRecord = {
         ...record,
         discount_start_day: record.discount_start_day ? moment(record.discount_start_day) : null,
