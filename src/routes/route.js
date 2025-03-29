@@ -13,6 +13,7 @@ import Products from "../admin/pages/Products";
 import Customers from "../admin/pages/Customers";
 import AdminLayout from "../admin/layout/AdminLayout";
 import Discounts from "../admin/pages/Discounts";
+import Categories from "../admin/pages/Categories"
 import OrderDetailsPage from "../pages/OrderDetailsPage/OrderDetailsPage"
 import NotFoundPage from "../pages/NotFouldPage/NotFouldPage"
 import OrderFeedbackPage from "../pages/OrderFeedbackPage/OrderFeedbackPage"
@@ -28,6 +29,8 @@ import LoginPage from "../admin/pages/LoginPage"
 import OrderDetails from "../admin/pages/OrderDetails"
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress"
+import ProductDetails from "../admin/pages/ProductDetails"
+
 
 const publicRoutes = [
     {
@@ -151,6 +154,16 @@ const adminRoutes = [
     {
         path: "/admin/products",
         component: Products,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/products/:id",
+        component: ProductDetails,
+        Layout: AdminLayout,
+    },
+    {
+        path: "/admin/categories",
+        component: Categories,
         Layout: AdminLayout,
     },
     {

@@ -1,11 +1,12 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { getAllUsers, updateUser, changePassword, addAddress, updateAddress } from "../services/api/UserApi";
+import { createContext, useContext, useState, useEffect, use } from "react";
+import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress } from "../services/api/UserApi";
 import { message } from "antd";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -27,9 +28,10 @@ export const UserProvider = ({ children }) => {
     } 
   };
 
-  const fetchUser = async (userId) => {
+  const fetchUser = async () => {
     try {
-      const data = await getUser(userId);
+      const data = await getUser();
+      console.log(data);
       if (data?.EC === 0) {
         setSelectedUser(data.user);
       } else {
