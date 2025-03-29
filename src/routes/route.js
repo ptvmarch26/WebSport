@@ -156,7 +156,7 @@ const adminRoutes = [
         Layout: AdminLayout,
     },
     {
-        path: "/admin/products/:id",
+        path: "/admin/product-details/:id",
         component: ProductDetails,
         Layout: AdminLayout,
     },
