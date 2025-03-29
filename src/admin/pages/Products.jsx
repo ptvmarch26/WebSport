@@ -8,6 +8,7 @@ import {
 import { useProduct } from "../../context/ProductContext";
 import { Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const statusColors = {
@@ -26,6 +27,7 @@ const Products = () => {
   const [isAddProductModalVisible, setIsAddProductModalVisible] =
     useState(false);
   const [image, setImage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -206,7 +208,10 @@ const Products = () => {
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="_id"
-          className="rounded-none"
+          onRow={(record) => ({
+            onClick: () => navigate(`/admin/product-details/${record._id}`),
+          })}
+          className="rounded-none cursor-pointer"
         />
       </div>
 
@@ -250,31 +255,24 @@ const Products = () => {
           }}
         >
           <Form.Item label="Tên sản phẩm" name="product_title">
-            
             <Input />
           </Form.Item>
           <Form.Item label="Thương hiệu" name="product_brand">
-            
             <Input />
           </Form.Item>
           <Form.Item label="Giá gốc" name="product_price">
-            
             <Input type="number" />
           </Form.Item>
           <Form.Item label="Số lượng tồn" name="product_countInStock">
-            
             <Input type="number" />
           </Form.Item>
           <Form.Item label="Đã bán" name="product_selled">
-            
             <Input type="number" />
           </Form.Item>
           <Form.Item label="Giảm giá (%)" name="product_percent_discount">
-            
             <Input type="number" />
           </Form.Item>
           <Form.Item label="Đánh giá" name="product_rate">
-            
             <Input type="number" step="0.1" />
           </Form.Item>
           {/* <Form.Item label="Ảnh sản phẩm" name="product_image" valuePropName="fileList" getValueFromEvent={normFile}>
@@ -283,7 +281,6 @@ const Products = () => {
             </Upload>
           </Form.Item> */}
           <Form.Item>
-            
             <Button type="primary" htmlType="submit">
               Thêm sản phẩm
             </Button>
