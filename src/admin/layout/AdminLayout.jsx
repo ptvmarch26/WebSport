@@ -7,6 +7,7 @@ function AdminLayout({ children }) {
     <ConfigProvider
       theme={{
         components: {
+          borderRadius: 0,
           Button: { borderRadius: 0 },
           Card: { borderRadius: 0 },
           Modal: { borderRadius: 0 },

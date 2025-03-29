@@ -1,8 +1,20 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Select, Button, Tag, Modal, Form, InputNumber } from "antd";
-import { DeleteOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Table,
+  Input,
+  Select,
+  Button,
+  Modal,
+  Form,
+  InputNumber,
+} from "antd";
+import {
+  DeleteOutlined,
+  ExportOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useProduct } from "../../context/ProductContext";
-import { Upload, message, Switch, Card } from "antd";
+import { Upload, Switch, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useCategories } from "../../context/CategoriesContext";
 import { useNavigate } from "react-router-dom";
@@ -10,19 +22,27 @@ import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const Products = () => {
-  const { products, setProducts, fetchProducts, removeProduct, addProduct, editProduct } = useProduct();
+  const {
+    products,
+    fetchProducts,
+    removeProduct,
+    addProduct,
+    editProduct,
+  } = useProduct();
   const [form] = Form.useForm();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAddProductModalVisible, setIsAddProductModalVisible] = useState(false);
-  const [isEditProductModalVisible, setIsEditProductgModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const [isAddProductModalVisible, setIsAddProductModalVisible] =
+    useState(false);
+  const [isEditProductModalVisible, setIsEditProductgModalVisible] =
+    useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
   const { categories, fetchCategories } = useCategories();
- 
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -61,10 +81,9 @@ const Products = () => {
 
   const handleEditProduct = (record) => {
     if (record) {
-  
-      setSelectedProduct(record);  // Cập nhật giá trị discount được chọn
-      form.setFieldsValue(record);  // Điền thông tin discount vào form
-      setIsEditProductgModalVisible(true);  // Mở modal chỉnh sửa
+      setSelectedProduct(record); // Cập nhật giá trị discount được chọn
+      form.setFieldsValue(record); // Điền thông tin discount vào form
+      setIsEditProductgModalVisible(true); // Mở modal chỉnh sửa
     } else {
       console.error("Không có discount được chọn");
     }
@@ -73,7 +92,7 @@ const Products = () => {
   const handleUpdate = async () => {
     try {
       await form.validateFields();
-      const updatedFields = form.getFieldsValue(); 
+      const updatedFields = form.getFieldsValue();
 
       const res = await editProduct(selectedProduct._id, updatedFields);
       console.log(res);
@@ -86,7 +105,6 @@ const Products = () => {
       console.error("Lỗi khi cập nhật sản phẩm:", error);
     }
   };
-
 
   const filteredProducts = products.filter((product) => {
     const matchesStatus = filterStatus ? product.status === filterStatus : true;
@@ -162,14 +180,13 @@ const Products = () => {
       render: (record) => (
         <span
           className="text-blue-500 cursor-pointer"
-          onClick={() => navigate(`/admin/products/${record._id}`)}
+          onClick={() => navigate(`/admin/product-details/${record._id}`)}
         >
           Chi tiết
         </span>
       ),
     },
   ];
-  
 
   return (
     <div className="ml-[300px] mt-[64px] p-6 min-h-screen bg-gray-100">
@@ -261,8 +278,9 @@ const Products = () => {
         okText="Thêm"
         cancelText="Hủy"
       >
-        <Form form={form} 
-          layout="vertical" 
+        <Form
+          form={form}
+          layout="vertical"
           onFinish={handleAddProduct}
           initialValues={{
             product_price: 0,
@@ -275,19 +293,35 @@ const Products = () => {
             product_img_subs: [],
           }}
         >
-          <Form.Item label="Tên sản phẩm" name="product_title" rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}>
+          <Form.Item
+            label="Tên sản phẩm"
+            name="product_title"
+            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Thương hiệu" name="product_brand" rules={[{ required: true, message: 'Vui lòng nhập thương hiệu' }]}>
+          <Form.Item
+            label="Thương hiệu"
+            name="product_brand"
+            rules={[{ required: true, message: "Vui lòng nhập thương hiệu" }]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Giá gốc" name="product_price" rules={[{ required: true, message: 'Vui lòng nhập giá' }]}>
+          <Form.Item
+            label="Giá gốc"
+            name="product_price"
+            rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+          >
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
-          <Form.Item label="Số lượng tồn" name="product_countInStock" rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}>
+          <Form.Item
+            label="Số lượng tồn"
+            name="product_countInStock"
+            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+          >
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
@@ -303,8 +337,12 @@ const Products = () => {
             <InputNumber min={0} max={5} step={0.1} className="w-full" />
           </Form.Item>
 
-          <Form.Item label="Danh mục" name="product_category" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}>
-            <Select >
+          <Form.Item
+            label="Danh mục"
+            name="product_category"
+            rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
+          >
+            <Select>
               {categories?.map((cat) => (
                 <Select.Option key={cat._id} value={cat._id}>
                   {cat.category_type}
@@ -313,34 +351,65 @@ const Products = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Mô tả sản phẩm" name="product_description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+          <Form.Item
+            label="Mô tả sản phẩm"
+            name="product_description"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          <Form.Item label="Ảnh chính" name="product_main_img" valuePropName="fileList" getValueFromEvent={normFile}>
+          <Form.Item
+            label="Ảnh chính"
+            name="product_main_img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
             <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
               <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
             </Upload>
           </Form.Item>
 
-          <Form.Item label="Ảnh phụ" name="product_subs_img" valuePropName="fileList" getValueFromEvent={normFile}>
+          <Form.Item
+            label="Ảnh phụ"
+            name="product_subs_img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
             <Upload beforeUpload={() => false} listType="picture" multiple>
               <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
             </Upload>
           </Form.Item>
 
-          <Form.Item name="product_display" label="Hiển thị sản phẩm" valuePropName="checked">
-            <Switch  />
+          <Form.Item
+            name="product_display"
+            label="Hiển thị sản phẩm"
+            valuePropName="checked"
+          >
+            <Switch />
           </Form.Item>
 
-          <Form.Item name="product_famous" label="Sản phẩm nổi bật" valuePropName="checked">
+          <Form.Item
+            name="product_famous"
+            label="Sản phẩm nổi bật"
+            valuePropName="checked"
+          >
             <Switch />
           </Form.Item>
           <Form.List name="variants">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
-                  <Card key={key} title={`Biến thể ${key + 1}`} className="mb-4" extra={<Button danger onClick={() => remove(name)}>Xóa</Button>}>
+                  <Card
+                    key={key}
+                    title={`Biến thể ${key + 1}`}
+                    className="mb-4"
+                    extra={
+                      <Button danger onClick={() => remove(name)}>
+                        Xóa
+                      </Button>
+                    }
+                  >
                     <Form.Item
                       {...restField}
                       name={[name, "variant_color"]}
@@ -353,7 +422,9 @@ const Products = () => {
                       {...restField}
                       name={[name, "variant_size"]}
                       label="Kích cỡ"
-                      rules={[{ required: true, message: "Vui lòng nhập kích cỡ" }]}
+                      rules={[
+                        { required: true, message: "Vui lòng nhập kích cỡ" },
+                      ]}
                     >
                       <Input />
                     </Form.Item>
@@ -369,7 +440,12 @@ const Products = () => {
                       {...restField}
                       name={[name, "variant_countInStock"]}
                       label="Số lượng tồn"
-                      rules={[{ required: true, message: "Vui lòng nhập số lượng tồn" }]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng nhập số lượng tồn",
+                        },
+                      ]}
                     >
                       <InputNumber min={0} className="w-full" />
                     </Form.Item>
@@ -384,26 +460,45 @@ const Products = () => {
                       {...restField}
                       name={[name, "variant_img_main"]}
                       label="Ảnh chính"
-                      valuePropName="fileList" getValueFromEvent={normFile}
+                      valuePropName="fileList"
+                      getValueFromEvent={normFile}
                     >
-                      <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
-                        <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
+                      <Upload
+                        beforeUpload={() => false}
+                        listType="picture"
+                        maxCount={1}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Tải ảnh chính lên
+                        </Button>
                       </Upload>
                     </Form.Item>
                     <Form.Item
                       {...restField}
                       name={[name, "variant_img_subs"]}
                       label="Ảnh phụ"
-                      valuePropName="fileList" getValueFromEvent={normFile}
+                      valuePropName="fileList"
+                      getValueFromEvent={normFile}
                     >
-                      <Upload beforeUpload={() => false} listType="picture" multiple>
-                        <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+                      <Upload
+                        beforeUpload={() => false}
+                        listType="picture"
+                        multiple
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Tải ảnh phụ lên
+                        </Button>
                       </Upload>
                     </Form.Item>
                   </Card>
                 ))}
                 <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
                     Thêm biến thể
                   </Button>
                 </Form.Item>
@@ -422,24 +517,41 @@ const Products = () => {
         okText="Cập nhật"
         cancelText="Hủy"
       >
-        <Form form={form} 
-          layout="vertical" 
+        <Form
+          form={form}
+          layout="vertical"
           onFinish={handleUpdate}
           initialValues={selectedProduct}
         >
-          <Form.Item label="Tên sản phẩm" name="product_title" rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}>
+          <Form.Item
+            label="Tên sản phẩm"
+            name="product_title"
+            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Thương hiệu" name="product_brand" rules={[{ required: true, message: 'Vui lòng nhập thương hiệu' }]}>
+          <Form.Item
+            label="Thương hiệu"
+            name="product_brand"
+            rules={[{ required: true, message: "Vui lòng nhập thương hiệu" }]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Giá gốc" name="product_price" rules={[{ required: true, message: 'Vui lòng nhập giá' }]}>
+          <Form.Item
+            label="Giá gốc"
+            name="product_price"
+            rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+          >
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
-          <Form.Item label="Số lượng tồn" name="product_countInStock" rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}>
+          <Form.Item
+            label="Số lượng tồn"
+            name="product_countInStock"
+            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+          >
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
@@ -455,8 +567,12 @@ const Products = () => {
             <InputNumber min={0} max={5} step={0.1} className="w-full" />
           </Form.Item>
 
-          <Form.Item label="Danh mục" name="product_category" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}>
-            <Select >
+          <Form.Item
+            label="Danh mục"
+            name="product_category"
+            rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
+          >
+            <Select>
               {categories?.map((cat) => (
                 <Select.Option key={cat._id} value={cat._id}>
                   {cat.category_type}
@@ -465,34 +581,65 @@ const Products = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Mô tả sản phẩm" name="product_description" rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}>
+          <Form.Item
+            label="Mô tả sản phẩm"
+            name="product_description"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          <Form.Item label="Ảnh chính" name="product_main_img" valuePropName="fileList" getValueFromEvent={normFile}>
+          <Form.Item
+            label="Ảnh chính"
+            name="product_main_img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
             <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
               <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
             </Upload>
           </Form.Item>
 
-          <Form.Item label="Ảnh phụ" name="product_subs_img" valuePropName="fileList" getValueFromEvent={normFile}>
+          <Form.Item
+            label="Ảnh phụ"
+            name="product_subs_img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
             <Upload beforeUpload={() => false} listType="picture" multiple>
               <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
             </Upload>
           </Form.Item>
 
-          <Form.Item name="product_display" label="Hiển thị sản phẩm" valuePropName="checked">
-            <Switch  />
+          <Form.Item
+            name="product_display"
+            label="Hiển thị sản phẩm"
+            valuePropName="checked"
+          >
+            <Switch />
           </Form.Item>
 
-          <Form.Item name="product_famous" label="Sản phẩm nổi bật" valuePropName="checked">
+          <Form.Item
+            name="product_famous"
+            label="Sản phẩm nổi bật"
+            valuePropName="checked"
+          >
             <Switch />
           </Form.Item>
           <Form.List name="variants">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
-                  <Card key={key} title={`Biến thể ${key + 1}`} className="mb-4" extra={<Button danger onClick={() => remove(name)}>Xóa</Button>}>
+                  <Card
+                    key={key}
+                    title={`Biến thể ${key + 1}`}
+                    className="mb-4"
+                    extra={
+                      <Button danger onClick={() => remove(name)}>
+                        Xóa
+                      </Button>
+                    }
+                  >
                     <Form.Item
                       {...restField}
                       name={[name, "variant_color"]}
@@ -505,7 +652,9 @@ const Products = () => {
                       {...restField}
                       name={[name, "variant_size"]}
                       label="Kích cỡ"
-                      rules={[{ required: true, message: "Vui lòng nhập kích cỡ" }]}
+                      rules={[
+                        { required: true, message: "Vui lòng nhập kích cỡ" },
+                      ]}
                     >
                       <Input />
                     </Form.Item>
@@ -521,7 +670,12 @@ const Products = () => {
                       {...restField}
                       name={[name, "variant_countInStock"]}
                       label="Số lượng tồn"
-                      rules={[{ required: true, message: "Vui lòng nhập số lượng tồn" }]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng nhập số lượng tồn",
+                        },
+                      ]}
                     >
                       <InputNumber min={0} className="w-full" />
                     </Form.Item>
@@ -536,26 +690,45 @@ const Products = () => {
                       {...restField}
                       name={[name, "variant_img_main"]}
                       label="Ảnh chính"
-                      valuePropName="fileList" getValueFromEvent={normFile}
+                      valuePropName="fileList"
+                      getValueFromEvent={normFile}
                     >
-                      <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
-                        <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
+                      <Upload
+                        beforeUpload={() => false}
+                        listType="picture"
+                        maxCount={1}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Tải ảnh chính lên
+                        </Button>
                       </Upload>
                     </Form.Item>
                     <Form.Item
                       {...restField}
                       name={[name, "variant_img_subs"]}
                       label="Ảnh phụ"
-                      valuePropName="fileList" getValueFromEvent={normFile}
+                      valuePropName="fileList"
+                      getValueFromEvent={normFile}
                     >
-                      <Upload beforeUpload={() => false} listType="picture" multiple>
-                        <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+                      <Upload
+                        beforeUpload={() => false}
+                        listType="picture"
+                        multiple
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          Tải ảnh phụ lên
+                        </Button>
                       </Upload>
                     </Form.Item>
                   </Card>
                 ))}
                 <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
                     Thêm biến thể
                   </Button>
                 </Form.Item>
