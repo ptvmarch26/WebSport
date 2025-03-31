@@ -1,62 +1,11 @@
-import { useState } from "react";
-import { Table, Input, Select, Button, Tag, Modal } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { Table, Input, Select, Button, Tag } from "antd";
 import { ExportOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { useOrder } from "../../context/OrderContext";
+import moment from "moment";
 
 const { Option } = Select;
-
-const initialOrders = [
-  {
-    id: "DH001",
-    products: ["Giày Nike Air Force 1", "Áo Hoodie Adidas"],
-    date: "12/03/2025",
-    customer: "Nguyễn Văn A",
-    payment: "Chuyển khoản",
-    total: 1200000,
-    status: "Chờ xác nhận",
-  },
-  {
-    id: "DH002",
-    products: ["Vòng tay phong thủy"],
-    date: "11/03/2025",
-    customer: "Trần Thị B",
-    payment: "Tiền mặt",
-    total: 500000,
-    status: "Đang giao",
-  },
-  {
-    id: "DH003",
-    products: [
-      "Laptop Dell XPS",
-      "Chuột Logitech G Pro",
-      "Bàn phím cơ Keychron K6",
-    ],
-    date: "10/03/2025",
-    customer: "Lê Văn C",
-    payment: "Momo",
-    total: 25000000,
-    status: "Hoàn thành",
-  },
-  {
-    id: "DH004",
-    products: ["Túi xách Gucci"],
-    date: "09/03/2025",
-    customer: "Phạm Thị D",
-    payment: "Chuyển khoản",
-    total: 15000000,
-    status: "Hủy hàng",
-  },
-  {
-    id: "DH005",
-    products: ["Túi xách Gucci"],
-    date: "09/03/2025",
-    customer: "Phạm Thị D",
-    payment: "Chuyển khoản",
-    total: 15000000,
-    status: "Hoàn hàng",
-  },
-];
 
 const statusColors = {
   "Chờ xác nhận": "orange",
@@ -67,26 +16,22 @@ const statusColors = {
 };
 
 const Orders = () => {
-  const [orders, setOrders] = useState(initialOrders);
+  const { orders, fetchOrders } = useOrder();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
 
-  // Xử lý xóa đơn hàng
-  const handleDelete = () => {
-    setOrders(orders.filter((order) => !selectedRowKeys.includes(order.id)));
-    setSelectedRowKeys([]);
-    setIsModalVisible(false);
-  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-  // Lọc đơn hàng theo trạng thái & tìm kiếm sản phẩm
+  console.log(orders);
   const filteredOrders = orders.filter((order) => {
     const matchesStatus = filterStatus ? order.status === filterStatus : true;
     const matchesSearch = searchText
       ? order.products.some((product) =>
-          product.toLowerCase().includes(searchText.toLowerCase())
+          product.name.toLowerCase().includes(searchText.toLowerCase())
         )
       : true;
     return matchesStatus && matchesSearch;
@@ -95,8 +40,8 @@ const Orders = () => {
   const columns = [
     {
       title: "Mã đơn",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Sản phẩm",
@@ -104,41 +49,39 @@ const Orders = () => {
       key: "products",
       render: (products) => (
         <span>
-          {products[0]}{" "}
-          {products.length > 1 && `+${products.length - 1} sản phẩm`}
+          {`${products.length} sản phẩm`}
         </span>
       ),
     },
     {
       title: "Ngày đặt",
-      dataIndex: "date",
-      key: "date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => {
+        return date ? moment(date).format("YYYY-MM-DD") : ""
+      }
     },
     {
       title: "Khách hàng",
-      dataIndex: "customer",
-      key: "customer",
+      dataIndex: "user_id",
+      key: "user_id",
     },
     {
       title: "Hình thức",
-      dataIndex: "payment",
-      key: "payment",
+      dataIndex: "order_payment_method",
+      key: "order_payment_method",
     },
     {
       title: "Tổng tiền",
-      dataIndex: "total",
-      key: "total",
+      dataIndex: "order_total_final",
+      key: "order_total_final",
       render: (value) => `${value.toLocaleString()}đ`,
     },
     {
       title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag className="py-1 px-2" color={statusColors[status]}>
-          {status}
-        </Tag>
-      ),
+      dataIndex: "order_status",
+      key: "order_status",
+      render: (status) => <Tag color={statusColors[status]}>{status}</Tag>,
     },
   ];
 
@@ -168,25 +111,13 @@ const Orders = () => {
             onChange={setFilterStatus}
             allowClear
             className="w-[300px]"
-            borderRadius="0"
           >
-            <Option value="Chờ xác nhận">Chờ xác nhận</Option>
-            <Option value="Đang giao">Đang giao</Option>
-            <Option value="Hoàn thành">Hoàn thành</Option>
-            <Option value="Hủy hàng">Hủy hàng</Option>
-            <Option value="Hoàn hàng">Hoàn hàng</Option>
+            {Object.keys(statusColors).map((status) => (
+              <Option key={status} value={status}>
+                {status}
+              </Option>
+            ))}
           </Select>
-
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined />}
-            disabled={selectedRowKeys.length === 0}
-            onClick={() => setIsModalVisible(true)}
-            className="rounded-none"
-          >
-            Xóa ({selectedRowKeys.length})
-          </Button>
         </div>
       </div>
 
@@ -198,30 +129,16 @@ const Orders = () => {
           }}
           dataSource={filteredOrders}
           columns={columns}
-          pagination={{ pageSize: 3 }}
-          rowKey="id"
-          onRow={(record) => ({
-            onClick: () => navigate(`/admin/order-details/${record.id}`, { state: { order: record } }),
-          })}
-          className="rounded-none cursor-pointer"
+          pagination={{ pageSize: 5 }}
+          rowKey="_id"
+          // onRow={(record) => ({
+          //   onClick: () =>
+          //     navigate(`/admin/order-details/${record._id}`, {
+          //       state: { order: record },
+          //     }),
+          // })}
         />
       </div>
-
-      <Modal
-        title="Xác nhận xóa"
-        visible={isModalVisible}
-        onOk={handleDelete}
-        onCancel={() => setIsModalVisible(false)}
-        okText="Xóa"
-        cancelText="Hủy"
-        okButtonProps={{ danger: true }}
-        width={500}
-        bodyStyle={{
-          padding: "20px",
-        }}
-      >
-        <p>Bạn có chắc muốn xóa các đơn hàng đã chọn?</p>
-      </Modal>
     </div>
   );
 };

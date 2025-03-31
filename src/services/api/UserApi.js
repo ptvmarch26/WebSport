@@ -43,6 +43,8 @@ export const changePassword = async (oldPassword, newPassword) => {
 };
 
 export const updateUser = async (userData) => {
+  console.log("userData", userData);
+  
   try {
     const response = await axios.put(API_URL, userData, {
       headers: { Authorization: `Bearer ${getToken()}` },

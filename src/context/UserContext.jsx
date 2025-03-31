@@ -38,23 +38,15 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  if (token){
-    useEffect(() => {
-      fetchUser();
-    },[])
-  }
 
   const handleUpdateUser = async (userData) => {
-    const updatedUser = await updateUser(userData).catch((error) => null);
-  
-    if (updatedUser) {
-      setUsers((prevUsers) =>
-        prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u))
-      );
-      message.success("Cập nhật thông tin người dùng thành công!");
-    } else {
-      message.error("Cập nhật thất bại!");
-    }
+    const updatedUser = await updateUser(userData);
+    console.log("updatedUser", updatedUser);
+    setSelectedUser((prev) => ({
+      ...prev,
+      ...updatedUser.data,
+    }));
+    return updatedUser;
   };
   
 

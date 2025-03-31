@@ -24,9 +24,11 @@ const AccountInfoComponent = () => {
   const location = useLocation();
   const defaultAvatar = avt_false;
   const { handleLogout } = useAuth();
-  const { selectedUser } = useUser();
+  const { selectedUser, fetchUser } = useUser();
 
-  console.log(selectedUser); 
+  useEffect(() => {
+    fetchUser(); 
+  }, []); 
 
   useEffect(() => {
     setSelectedKey(location.pathname);
@@ -162,7 +164,7 @@ const AccountInfoComponent = () => {
           <li className="mt-5">
             <Button
               className="flex items-center bg-[#f6f7f8] shadow-none rounded-none w-full text-left p-4 text-red-600 hover:bg-red-100 transition duration-200 hover:shadow-none"
-              onClick={handleLogout}
+              onClick={handleSubmitLogout}
             >
               <FaSignOutAlt className="w-5 h-5 mr-2" /> Đăng xuất
             </Button>

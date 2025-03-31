@@ -15,12 +15,6 @@ export const ProductProvider = ({ children }) => {
         console.error(res);
     }
   };
-  
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  
 
   const fetchProductDetails = async (productId) => {
     const res = await getDetailsProduct(productId);
