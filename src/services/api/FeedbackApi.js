@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:5000/feedback";
 
 // Lấy token từ localStorage
-const getToken = () => localStorage.getItem("token");
+const getToken = () => localStorage.getItem("accessToken");
 
 // Tạo feedback mới
 export const createFeedback = async (feedbackData) => {

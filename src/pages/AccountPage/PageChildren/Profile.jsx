@@ -5,13 +5,15 @@ import {
   apiGetWards,
 } from "../../../services/api/AddressApi";
 import { Button } from "@material-tailwind/react";
+import { useUser } from "../../../context/UserContext";
 
 const Profile = () => {
+  const {selectedUser} = useUser();
   const [formData, setFormData] = useState({
-    username: "Chưa cập nhật",
-    fullname: "Chưa cập nhật",
-    birthdate: "",
-    gender: "other",
+    username: selectedUser?.user_name || "Chưa cập nhật",
+    fullname: selectedUser?.full_name || "Chưa cập nhật",
+    birthdate: selectedUser?.birth || "",
+    gender: selectedUser?.gender,
     province: "",
     district: "",
     ward: "",

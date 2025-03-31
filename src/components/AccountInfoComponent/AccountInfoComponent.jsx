@@ -15,14 +15,18 @@ import { FaLocationDot } from "react-icons/fa6";
 import avt_false from "../../assets/images/avatar-false.jpg";
 import { Button } from "@material-tailwind/react";
 import { useAuth } from "../../context/AuthContext";
+import { useUser } from "../../context/UserContext";
 
-const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
+const AccountInfoComponent = () => {
   const [selectedKey, setSelectedKey] = useState("/account/profile");
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const defaultAvatar = avt_false;
   const { handleLogout } = useAuth();
+  const { selectedUser } = useUser();
+
+  console.log(selectedUser); 
 
   useEffect(() => {
     setSelectedKey(location.pathname);
@@ -35,9 +39,11 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
   };
 
   const handleSubmitLogout = async () => {
-    await handleLogout(); // Chờ quá trình đăng xuất hoàn tất
+    await handleLogout(); 
     navigate("/sign-in", { replace: true });
   };
+
+  
 
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible);
@@ -68,14 +74,14 @@ const AccountInfoComponent = ({ full_name, src_img, user_name }) => {
         <label className="cursor-pointer">
           <img
             className="w-20 h-20 rounded-full object-cover shadow-md"
-            src={src_img || defaultAvatar}
+            src={defaultAvatar || selectedUser?.avt_img}
             alt="avatar"
           />
         </label>
         <h2 className="text-lg font-semibold mt-3 text-gray-800">
-          {full_name}
+          {selectedUser?.full_name || "Chưa cập nhật"}
         </h2>
-        <p className="text-gray-500 text-sm">{user_name}</p>
+        <p className="text-gray-500 text-sm">{selectedUser?.user_name || "Chưa cập nhật"}</p>
       </div>
 
       <div className="lg:hidden absolute -top-[30px] right-0">
