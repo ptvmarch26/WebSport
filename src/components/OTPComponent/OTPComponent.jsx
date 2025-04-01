@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 
 const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height}) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [timeLeft, setTimeLeft] = useState(30); // Set initial time to 30 seconds
+  const [timeLeft, setTimeLeft] = useState(30); 
   const inputRefs = useRef([]);
 
   useEffect(() => {

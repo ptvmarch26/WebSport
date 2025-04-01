@@ -38,7 +38,6 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-
   const handleUpdateUser = async (userData) => {
     const updatedUser = await updateUser(userData);
     console.log("updatedUser", updatedUser);
