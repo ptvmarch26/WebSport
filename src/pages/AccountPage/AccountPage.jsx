@@ -19,11 +19,12 @@ const AccountPage = () => {
     }
   }, [location, navigate]);
 
+  
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="lg:flex justify-between">
         <div className="lg:block pb-10 lg:pb-0">
-          <AccountInfoComponent full_name="Dương Anh Vũ" user_name="rain494" />
+          <AccountInfoComponent />
         </div>
 
         <div className="flex-1">

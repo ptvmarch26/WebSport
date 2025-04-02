@@ -2,26 +2,35 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
-const FavoriteItemComponent = ({ item, onRemove }) => {
+
+const FavoriteItemComponent = ({ productDetails, onRemove, categoryDetail }) => {
+  console.log("", categoryDetail);
   return (
     <div>
       <div className="flex gap-10 mt-10 sm:my-10">
         <Link to={"/"}>
           <img
-            src={item.image}
-            alt={item.name}
+            src={productDetails.product_img.image_main}
+            alt={productDetails.title}
             className="max-w-[128px] w-[128px] h-[128px] sm:max-w-[256px] sm:w-52 sm:h-52 md:w-64 md:h-64 object-cover"
           />
         </Link>
         <div className="w-full">
-          <h2 className="font-semibold line-clamp-2">{item.name}</h2>
-          <p className="text-sm my-1">Loại: {item.category}</p>
-          <div className="flex items-center">
+          <h2 className="font-semibold line-clamp-2">{productDetails.product_title}</h2>
+          <p className="text-sm my-1">
+            Loại: 
+            {categoryDetail && categoryDetail.length > 0 ? (
+              categoryDetail
+                .filter(category => category._id === productDetails.product_category)
+                .map(category => category.category_type)
+            ) : "Không xác định"}
+          </p>
+          <div className="flex productDetailss-center">
             <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
-              {item.oldPrice.toLocaleString()}₫
+              {productDetails.product_price.toLocaleString()}₫
             </p>
             <p className="text-md font-bold text-[#ba2b20] mr-4">
-              {item.newPrice.toLocaleString()}₫
+              {(productDetails.product_price*(1-productDetails.product_percent_discount/100)).toLocaleString()}₫
             </p>
           </div>
           <div className="flex flex-col">
@@ -31,7 +40,7 @@ const FavoriteItemComponent = ({ item, onRemove }) => {
               </button>
               <button
                 className="p-2 hover:bg-gray-200 transition-all duration-300 hover:rounded-full"
-                onClick={() => onRemove(item.id)} // Gọi hàm xóa khi nhấn
+                onClick={() => onRemove(productDetails._id)} // Gọi hàm xóa khi nhấn
               >
                 <IoTrashOutline className="text-2xl text-red-500" />
               </button>

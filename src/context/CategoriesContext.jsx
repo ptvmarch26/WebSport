@@ -12,6 +12,7 @@ const CategoriesContext = createContext();
 
 export const CategoriesProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
+  const [categoryDetail, setCategoryDetail] = useState({});
 
   const fetchCategories = async () => {
     const response = await getAllCategory();
@@ -23,7 +24,8 @@ export const CategoriesProvider = ({ children }) => {
 
   const fetchCategoryDetail = async (id) => {
     const response = await getDetailCategory(id);
-    return response;
+    setCategoryDetail(response?.data?.result);
+    return response?.data?.result;
   };
 
   const fetchSubCategories = async (id) => {
@@ -58,6 +60,7 @@ export const CategoriesProvider = ({ children }) => {
   return (
     <CategoriesContext.Provider value={{
       categories,
+      categoryDetail,
       fetchCategories,
       fetchCategoryDetail,
       fetchSubCategories,

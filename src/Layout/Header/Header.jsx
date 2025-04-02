@@ -21,8 +21,6 @@ import avatar_false from "../../assets/images/avatar-false.jpg";
 
 
 const Header = () => {
-  // Thông css nếu có token thì nhấn vào icon user có nút đăng xuất với có nút navigate đến /account cái nha, để tối mai tui done cái auth luôn
-  // Có token rồi Thông css lại cái đoạn icon user, nếu có token thì để ảnh mặc định hoặc ảnh của user, không thì để icon
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);

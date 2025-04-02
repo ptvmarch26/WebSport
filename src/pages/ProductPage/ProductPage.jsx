@@ -1,102 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import SidebarSortComponent from "../../components/SidebarSortComponent/SideBarSortComponent";
 import ProductComponent from "../../components/ProductComponent/ProductComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import PanigationComponent from "../../components/PanigationComponent/PanigationComponent";
-
+import { useProduct } from "../../context/ProductContext";
 import { VscSettings } from "react-icons/vsc";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const ProductPage = () => {
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSortOpen, setSortOpen] = useState(false);
   const [sortText, setSortText] = useState("Lọc theo");
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRef = useRef(null);
-
-  const products = [
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/631126/01/mod01/fnd/PNA/fmt/png/A$AP-ROCKY-x-PUMA-Distressed-Sweatshirt",
-      alt: "Product 1",
-      name: "Nước Hoa Chó Mèo ABURA Khử Mùi Hôi, Nước Tiểu Chó Mèo Hương Thơm Lưu Giữ Lâu, An Toàn",
-      oldPrice: 500000,
-      newPrice: 400000,
-      start: 1.5,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/677912/01/mod01/fnd/PNA/fmt/png/PUMA-MOTION-Women's-Sweatshirt",
-      alt: "Product 2",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 600000,
-      newPrice: 480000,
-      start: 5,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/630045/87/mod01/fnd/PNA/fmt/png/Wardrobe-Essentials-Women's-Oversized-Crew-Sweatshirt",
-      alt: "Product 3",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 700000,
-      newPrice: 560000,
-      start: 4.8,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/630045/87/mod01/fnd/PNA/fmt/png/Wardrobe-Essentials-Women's-Oversized-Crew-Sweatshirt",
-      alt: "Product 4",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 800000,
-      newPrice: 640000,
-      start: 4.2,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/631126/01/mod01/fnd/PNA/fmt/png/A$AP-ROCKY-x-PUMA-Distressed-Sweatshirt",
-      alt: "Product 1",
-      name: "Nước Hoa Chó Mèo ABURA Khử Mùi Hôi, Nước Tiểu Chó Mèo Hương Thơm Lưu Giữ Lâu, An Toàn",
-      oldPrice: 500000,
-      newPrice: 400000,
-      start: 1.5,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/677912/01/mod01/fnd/PNA/fmt/png/PUMA-MOTION-Women's-Sweatshirt",
-      alt: "Product 2",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 600000,
-      newPrice: 480000,
-      start: 5,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/630045/87/mod01/fnd/PNA/fmt/png/Wardrobe-Essentials-Women's-Oversized-Crew-Sweatshirt",
-      alt: "Product 3",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 700000,
-      newPrice: 560000,
-      start: 4.8,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/630045/87/mod01/fnd/PNA/fmt/png/Wardrobe-Essentials-Women's-Oversized-Crew-Sweatshirt",
-      alt: "Product 4",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 800000,
-      newPrice: 640000,
-      start: 4.2,
-      percent: 20,
-    },
-    {
-      src: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/630045/87/mod01/fnd/PNA/fmt/png/Wardrobe-Essentials-Women's-Oversized-Crew-Sweatshirt",
-      alt: "Product 4",
-      name: "Nike Air Force 1 '07",
-      oldPrice: 800000,
-      newPrice: 640000,
-      start: 4.2,
-      percent: 20,
-    },
-  ];
+  const { products, fetchProducts } = useProduct(); 
 
   const handleSortChange = (sortOption) => {
     console.log(sortOption);
@@ -187,8 +108,19 @@ const ProductPage = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {products
           .slice((currentPage - 1) * 12, currentPage * 12)
-          .map((product, index) => (
-            <ProductComponent key={index} {...product} />
+          .map((product) => (
+            <ProductComponent
+              key={product._id}
+              productId={product._id} // Dùng _id làm key cho mỗi sản phẩm
+              src={product.product_img.image_main} // Lấy ảnh chính
+              alt={product.product_title}
+              name={product.product_title}
+              oldPrice={product.product_price} // Nếu có giảm giá, thêm oldPrice
+              newPrice={product.product_price * (1 - product.product_percent_discount / 100)} // Giá sau giảm
+              star={product.product_rate} // Số sao đánh giá
+              percent={product.product_percent_discount} // % giảm giá
+              onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
+            />
           ))}
       </div>
 

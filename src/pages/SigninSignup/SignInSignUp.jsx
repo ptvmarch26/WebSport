@@ -16,7 +16,6 @@ const SignInSignUp = () => {
 
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -39,7 +38,7 @@ const SignInSignUp = () => {
     }
 
     const result = await handleSignUp(userName, email, password);
-    if (result) {
+    if (result?.EC === 0) {
       alert("Đăng ký thành công!");
       setIsSignUp(false); // Chuyển sang màn hình đăng nhập
       setUserName("");
@@ -73,7 +72,6 @@ const SignInSignUp = () => {
       alert("Tài khoản hoặc mật khẩu không đúng!");
     }
   };
-  //  Thêm một ô input username nữa, hiện tại cái Họ và tên đang là username
   return (
     <div className="bg-white py-14 px-2">
       <div className="max-w-[1200px] mx-auto flex flex-col items-center">
@@ -81,13 +79,13 @@ const SignInSignUp = () => {
           <div className="max-w-full w-[250px]">
             <h2
               className={`group text-base uppercase text-center font-bold text-gray-900 cursor-pointer relative 
-      after:content-[''] after:absolute after:left-0 after:bottom-[-5px] after:w-full after:h-[2px] 
-      after:bg-gray-900 after:transition-transform after:duration-500 
-      ${
-        !isSignUp
-          ? "after:scale-x-100"
-          : "after:scale-x-0 hover:after:scale-x-100 hover:after:bg-[#e5e7eb]"
-      }`}
+              after:content-[''] after:absolute after:left-0 after:bottom-[-5px] after:w-full after:h-[2px] 
+              after:bg-gray-900 after:transition-transform after:duration-500 
+              ${
+                !isSignUp
+                  ? "after:scale-x-100"
+                  : "after:scale-x-0 hover:after:scale-x-100 hover:after:bg-[#e5e7eb]"
+              }`}
               onClick={() => setIsSignUp(false)}
             >
               <span className={!isSignUp ? "" : "text-[#e5e7eb]"}>
@@ -98,13 +96,13 @@ const SignInSignUp = () => {
           <div className="max-w-full w-[250px]">
             <h2
               className={`group text-base uppercase text-center font-bold text-gray-900 cursor-pointer relative 
-      after:content-[''] after:absolute after:left-0 after:bottom-[-5px] after:w-full after:h-[2px] 
-      after:bg-gray-900 after:transition-transform after:duration-500 
-      ${
-        isSignUp
-          ? "after:scale-x-100"
-          : "after:scale-x-0 hover:after:scale-x-100 hover:after:bg-[#e5e7eb]"
-      }`}
+              after:content-[''] after:absolute after:left-0 after:bottom-[-5px] after:w-full after:h-[2px] 
+              after:bg-gray-900 after:transition-transform after:duration-500 
+              ${
+                isSignUp
+                  ? "after:scale-x-100"
+                  : "after:scale-x-0 hover:after:scale-x-100 hover:after:bg-[#e5e7eb]"
+              }`}
               onClick={() => setIsSignUp(true)}
             >
               <span className={isSignUp ? "" : "text-[#e5e7eb]"}>Đăng ký</span>
@@ -218,26 +216,6 @@ const SignInSignUp = () => {
             <div className="flex flex-col">
               <div>
                 <label
-                  htmlFor="fullName"
-                  className="min-w-[170px] block antialiased font-sans text-sm mb-1 leading-normal text-inherit font-medium text-gray-900"
-                >
-                  Họ và tên
-                </label>
-                <div className="relative">
-                  <FaEdit className="absolute left-3 top-[38%] transform -translate-y-1/2 text-gray-700" />
-                  <input
-                    id="fullName"
-                    type="text"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    placeholder="Họ và tên"
-                    className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
                   htmlFor="name"
                   className="min-w-[170px] block antialiased font-sans text-sm mb-1 leading-normal text-inherit font-medium text-gray-900"
                 >
@@ -248,8 +226,8 @@ const SignInSignUp = () => {
                   <input
                     id="name"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
                     placeholder="Tên đăng nhập"
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
