@@ -5,25 +5,30 @@ import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { TbShoppingCart } from "react-icons/tb";
 import { HiOutlineShoppingCart } from "react-icons/hi";
+import { getFavourite, updateFavourite, clearFavourites } from "../../services/api/FavouriteApi" // import API
+
 
 const ProductComponent = ({
   src,
+  productId,
   alt,
   name,
   oldPrice,
   newPrice,
   star,
   percent,
+  onClick,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const toggleFavorite = async () => {
+    setIsFavorite(!isFavorite); 
+    const res = await updateFavourite(productId); // Gọi API để cập nhật danh sách yêu thích
+    console.log(res);
   };
 
   return (
-    <Link to={"/"}>
       <div className="relative group text-black overflow-hidden shadow-sm hover:shadow-xl transition-transform duration-300 transform">
-        <div className="relative">
+        <div onClick={onClick} className="relative">
           <img src={src} alt={alt} className="w-full h-full object-cover" />
         </div>
         <div className="p-4">
@@ -89,7 +94,6 @@ const ProductComponent = ({
           </div>
         </div>
       </div>
-    </Link>
   );
 };
 

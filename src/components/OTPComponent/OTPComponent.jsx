@@ -43,7 +43,7 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height}) => {
 
   const handleResend = () => {
     onResend();
-    setTimeLeft(30); // Reset the time to 30 seconds
+    setTimeLeft(30); 
     setOtp(["", "", "", "", "", ""]);
   };
 

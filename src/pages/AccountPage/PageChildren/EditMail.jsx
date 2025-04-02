@@ -38,9 +38,6 @@ const EditEmail = () => {
        
   }, [selectedUser]); 
 
-
-
-
   const handleSend = async ()=> {
     setErrors({});
 

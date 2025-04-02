@@ -1,78 +1,108 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
+import { getFavourite, updateFavourite, clearFavourites } from "../../services/api/FavouriteApi"; // import API
 import FavoriteItemComponent from "../../components/FavoriteItemComponent/FavoriteItemComponent";
+import { useProduct } from "../../context/ProductContext";
+import { useCategories } from "../../context/CategoriesContext";
 
 const FavoriteProductPage = () => {
-  const mockData = [
-    {
-      id: 1,
-      name: "Nike Air Force 1 '07",
-      category: "Men's Shoes",
-      color: "Platinum Violet/Light Violet Ore/Team Gold/Dark Raisin",
-      size: 39,
-      oldPrice: 500000,
-      newPrice: 400000,
-      image:
-        "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Nike Air Force 1 '07",
-      category: "Men's Shoes",
-      color: "White/Black",
-      size: 42,
-      oldPrice: 550000,
-      newPrice: 420000,
-      image:
-        "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/402095/01/sv01/fnd/PNA/fmt/png/CA-Pro-Rain-Map-Camo-Sneakers",
-      quantity: 1,
-    },
-    {
-      id: 3,
-      name: "Nike Air Force 1 '07",
-      category: "Men's Shoes",
-      color: "Black/Red",
-      size: 41,
-      oldPrice: 480000,
-      newPrice: 390000,
-      image:
-        "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/402095/01/sv01/fnd/PNA/fmt/png/CA-Pro-Rain-Map-Camo-Sneakers",
-      quantity: 1,
-    },
-  ];
-  const [cart, setCart] = useState(mockData);
-  const navigate = useNavigate();
+  const fetchFavourites = async () => {
+    const favourites = await getFavourite();
+    if (favourites?.EC === 0) {
+      setCart(favourites.result);
+    }
+  };
+  const [cart, setCart] = useState([]);
+  const { fetchProductDetails } = useProduct();
+  const { fetchCategoryDetail } = useCategories();
+  const [products, setProducts] = useState([]); 
+  const [category, setCategory] = useState([]); 
+  useEffect(() => {
+    fetchFavourites();
+  }, []); 
 
-  // Hàm xóa sản phẩm khỏi danh sách
-  const handleRemove = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
+  useEffect(() => {
+    const fetchAllProductDetails = async () => {
+        const productDetails = await Promise.all(
+          cart.map(async (item) => {
+            return await fetchProductDetails(item); 
+          })
+        );
+        setProducts(productDetails);
+    };
+  
+    if (cart.length > 0) {
+      fetchAllProductDetails();
+    }
+  }, [cart]);  
+
+  useEffect(() => {
+    const fetchAllCategoryDetails = async () => {
+        const categoryDetails = await Promise.all(
+          products.map(async (item) => {
+            return await fetchCategoryDetail(item.product_category); 
+          })
+        );
+        setCategory(categoryDetails);
+    };
+  
+    if (products.length > 0) {
+      fetchAllCategoryDetails();
+    }
+  }, [products]);  
+  
+  const handleRemove = async (id) => {
+    const updatedFavourites = await updateFavourite(id);
+    if (updatedFavourites) {
+      setCart(updatedFavourites);
+      setProducts((prevProducts) =>
+        prevProducts.filter((item) => item._id !== id) 
+      );
+    }
+  };
+
+  const handleClearAll = async () => {
+    const result = await clearFavourites();
+    console.log("result", result);
+    if (result) {
+      setCart([]); 
+      setProducts([]); 
+    }
   };
 
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="border rounded-lg p-10">
         <div className="flex justify-between gap-2 flex-wrap">
-          <h2 className="uppercase text-xl font-semibold">
-            Danh sách sản phẩm yêu thích
-          </h2>
-          <p>{cart.length} sản phẩm</p>
+          <h2 className="uppercase text-xl font-semibold">Danh sách sản phẩm yêu thích</h2>
+          <p>{products.length} sản phẩm</p>
         </div>
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-8"></div>
-        {cart.length === 0 ? (
+
+        {products.length === 0 ? (
           <p className="text-center uppercase text-xl font-semibold text-gray-600">
             Hiện không có sản phẩm nào trong danh sách
           </p>
         ) : (
-          cart.map((item) => (
+          products.map((item, index) => (
             <FavoriteItemComponent
-              key={item.id}
-              item={item}
-              onRemove={handleRemove} // Truyền hàm xóa vào component con
+              key={index} 
+              productDetails={item} 
+              categoryDetail={category} 
+              onRemove={handleRemove} 
             />
           ))
         )}
       </div>
+
+      {products.length > 0 && (
+        <button
+          onClick={handleClearAll}
+          className="mt-6 p-3 bg-red-500 text-white w-full rounded uppercase"
+        >
+          Xóa tất cả sản phẩm yêu thích
+        </button>
+      )}
     </div>
   );
 };

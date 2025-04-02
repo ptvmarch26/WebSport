@@ -1,117 +1,147 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Checkbox } from "@material-tailwind/react";
-
-const filterOptions = {
-  gender: {
-    title: "GIỚI TÍNH",
-    type: "checkbox",
-    options: ["Nam", "Nữ", "Unisex"],
-  },
-  category: {
-    title: "SẢN PHẨM",
-    type: "checkbox",
-    options: ["Quần Áo", "Đồ Thể Thao", "Giày", "Túi", "Phụ Kiện"],
-  },
-  style: {
-    title: "LOẠI SẢN PHẨM",
-    type: "checkbox",
-    options: {
-      "Quần Áo": ["Áo thun", "Áo sơ mi", "Quần jean", "Quần short"],
-      Giày: ["Giày chạy bộ", "Giày bóng đá", "Giày sneaker"],
-      "Đồ Thể Thao": ["Bộ thể thao", "Áo khoác thể thao"],
-      Túi: ["Túi đeo chéo", "Ba lô"],
-      "Phụ Kiện": ["Mũ", "Kính", "Găng tay"],
-    },
-  },
-  color: {
-    title: "MÀU SẮC",
-    type: "color",
-    options: [
-      { name: "Đỏ", color: "#FF0000" },
-      { name: "Vàng", color: "#FFD700" },
-      { name: "Cam", color: "#FFA500" },
-      { name: "Xanh dương", color: "#0000FF" },
-      { name: "Xanh lá", color: "#008000" },
-      { name: "Nâu", color: "#8B4513" },
-      { name: "Xám", color: "#808080" },
-      { name: "Tím", color: "#BA55D3" },
-      { name: "Hồng", color: "#FF69B4" },
-      { name: "Đen", color: "#000000" },
-      { name: "Nâu", color: "#D2B48C" },
-      { name: "Trắng", color: "#FFFFFF" },
-      { name: "Kem", color: "#FAEBD7" },
-    ],
-  },
-  // sizeClothing: {
-  //   title: "KÍCH CỠ TRANG PHỤC",
-  //   type: "checkbox",
-  //   options: ["XXS", "XS", "S", "M", "L", "XL"],
-  // },
-  // sizeShoes: {
-  //   title: "KÍCH CỠ GIÀY DÉP",
-  //   type: "dropdown",
-  //   options: ["39", "39.5", "40", "41", "42", "43"],
-  // },
-  price: {
-    title: "GIÁ",
-    type: "input",
-    options: ["Min", "Max"],
-  },
-};
+import { useProduct } from "../../context/ProductContext";
+import { useCategories } from "../../context/CategoriesContext";
 
 const SidebarSortComponent = ({ isOpen, onClose }) => {
-  // selectedFilters để lưu những gì người dùng chọnchọn
-  const [selectedFilters, setSelectedFilters] = useState({
-    gender: [],
-    category: [],
-    style: {},
-    color: [],
-    // sizeClothing: [],
-    // sizeShoes: [],
-    price: { min: "", max: "" },
+  const [filterOptions, setFilterOptions] = useState({
+    category: {
+      title: "SẢN PHẨM",
+      type: "checkbox",
+      options: [],
+    },
+    category_sub: {
+      title: "LOẠI SẢN PHẨM",
+      type: "checkbox",
+      options: [],
+    },
+    color: {
+      title: "MÀU SẮC",
+      type: "color",
+      options: [
+        { name: "Đỏ", color: "#FF0000" },
+        { name: "Vàng", color: "#FFD700" },
+        { name: "Xanh dương", color: "#0000FF" },
+        { name: "Đen", color: "#000000" },
+        { name: "Trắng", color: "#FFFFFF" },
+      ],
+    },
+    price: {
+      title: "GIÁ",
+      type: "input",
+      options: ["Min", "Max"],
+    },
   });
-  const [priceCheckTimeout, setPriceCheckTimeout] = useState(null);
 
-  // Hàm này để xử lý lưu và gọi useEffect khi selectedFilters thay đổi
+  const [selectedFilters, setSelectedFilters] = useState({
+    category: [],
+    category_sub: [],
+    product_color: [],
+    price_min: "",
+    price_max: "",
+    search: "",
+  });
+  
+  const [priceCheckTimeout, setPriceCheckTimeout] = useState(null);
+  const [categorySubOptions, setCategorySubOptions] = useState([]);
+
+  const { fetchCategories, categories } = useCategories();
+  const { fetchProducts } = useProduct();
+  
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Xử lý dữ liệu danh mục từ API
+  useEffect(() => {
+    if (categories.length > 0) {
+      // Lọc các danh mục có category_level = 1 cho category
+      const categoryOptions = categories
+        .filter(cat => cat.category_level === 1)
+        .map(cat => ({
+          id: cat._id,
+          name: cat.category_type
+        }));
+  
+      // Lưu toàn bộ danh mục cấp 2 để lọc sau
+      const allCategorySubOptions = categories
+        .filter(cat => cat.category_level === 2)
+        .map(cat => ({
+          id: cat._id,
+          name: cat.category_type,
+          parentId: cat.category_parent_id
+        }));
+      
+      setCategorySubOptions(allCategorySubOptions);
+  
+      setFilterOptions(prev => ({
+        ...prev,
+        category: {
+          ...prev.category,
+          options: categoryOptions,
+        },
+      }));
+    }
+  }, [categories]);
+  
+  // Cập nhật danh sách loại sản phẩm dựa trên danh mục được chọn
+  useEffect(() => {
+    if (selectedFilters.category.length > 0 && categorySubOptions.length > 0) {
+      // Lấy id của các danh mục được chọn
+      const selectedCategoryIds = categories
+        .filter(cat => selectedFilters.category.includes(cat.category_type) && cat.category_level === 1)
+        .map(cat => cat._id);
+      
+      // Lọc ra các danh mục con dựa trên parentId
+      const filteredSubOptions = categorySubOptions
+        .filter(subCat => selectedCategoryIds.includes(subCat.parentId))
+        .map(subCat => subCat.name);
+      
+      setFilterOptions(prev => ({
+        ...prev,
+        category_sub: {
+          ...prev.category_sub,
+          options: filteredSubOptions,
+        },
+      }));
+      
+      // Xóa các lựa chọn category_sub không còn hợp lệ
+      setSelectedFilters(prev => ({
+        ...prev,
+        category_sub: prev.category_sub.filter(sub => filteredSubOptions.includes(sub))
+      }));
+    } else {
+      // Nếu không có danh mục nào được chọn, hiển thị tất cả danh mục con
+      const allSubOptions = categorySubOptions.map(subCat => subCat.name);
+      
+      setFilterOptions(prev => ({
+        ...prev,
+        category_sub: {
+          ...prev.category_sub,
+          options: allSubOptions,
+        },
+      }));
+    }
+  }, [selectedFilters.category, categories, categorySubOptions]);
+
+  useEffect(() => {
+    fetchProducts(selectedFilters);
+  }, [selectedFilters]);
+
   const handleSelect = (type, value) => {
     setSelectedFilters((prev) => {
-      // Kiểm tra xem type có phải là "gender", "color"
-      if (["gender", "category", "color"].includes(type)) {
+      if (type === "category" || type === "category_sub" || type === "product_color") {
         const isSelected = prev[type].includes(value);
+  
         return {
           ...prev,
           [type]: isSelected
-            ? prev[type].filter((item) => item !== value)
-            : [...prev[type], value],
+            ? prev[type].filter((item) => item !== value) // Nếu có rồi thì bỏ
+            : [...prev[type], value], // Nếu chưa có thì thêm vào
         };
       }
-
-      if (type === "style") {
-        const { category, style } = value;
-        const isSelected = prev.style[category]?.includes(style);
-
-        const updatedStyle = {
-          ...prev.style,
-          [category]: isSelected
-            ? prev.style[category].filter((item) => item !== style)
-            : [...(prev.style[category] || []), style],
-        };
-
-        if (updatedStyle[category]?.length === 0) {
-          const { [category]: _, ...rest } = updatedStyle;
-          return {
-            ...prev,
-            style: rest,
-          };
-        }
-
-        return {
-          ...prev,
-          style: updatedStyle,
-        };
-      }
-
+  
       return {
         ...prev,
         [type]: prev[type] === value ? null : value,
@@ -119,38 +149,37 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
     });
   };
 
-  console.log("sis", selectedFilters);
+  console.log("selectedFilters", selectedFilters);
 
-  // Hàm này để check min, max sau 2s mà max vẫn nhỏ hơn min thì swapswap
   const handlePriceChange = (e, type) => {
     const value = e.target.value;
-
-    setSelectedFilters((prev) => {
-      const newPrice = { ...prev.price, [type]: value };
-
-      if (type === "min") {
-        return { ...prev, price: newPrice };
-      }
-
-      if (priceCheckTimeout) {
-        clearTimeout(priceCheckTimeout);
-      }
-
-      const newTimeout = setTimeout(() => {
-        setSelectedFilters((prev) => {
-          const min = Number(prev.price.min);
-          const max = Number(prev.price.max);
-
-          if (!isNaN(min) && !isNaN(max) && min > max) {
-            return { ...prev, price: { min: max, max: min } };
-          }
-          return prev;
-        });
-      }, 2000);
-
-      setPriceCheckTimeout(newTimeout);
-      return { ...prev, price: newPrice };
-    });
+    
+    setSelectedFilters(prev => ({
+      ...prev,
+      [`price_${type}`]: value
+    }));
+    
+    if (priceCheckTimeout) {
+      clearTimeout(priceCheckTimeout);
+    }
+    
+    const newTimeout = setTimeout(() => {
+      setSelectedFilters((prev) => {
+        const min = Number(prev.price_min);
+        const max = Number(prev.price_max);
+        
+        if (!isNaN(min) && !isNaN(max) && min > max) {
+          return { 
+            ...prev, 
+            price_min: max.toString(), 
+            price_max: min.toString() 
+          };
+        }
+        return prev;
+      });
+    }, 2000);
+    
+    setPriceCheckTimeout(newTimeout);
   };
 
   return (
@@ -181,49 +210,18 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
             <h3 className="font-bold text-gray-800">{filter.title}</h3>
             <div className="mt-2">
               {filter.type === "checkbox" &&
-                filter.title !== "LOẠI SẢN PHẨM" &&
                 filter.options.map((item) => (
                   <label
-                    key={item}
+                    key={typeof item === 'object' ? item.id : item}
                     className="flex items-center space-x-2 cursor-pointer text-black"
                   >
-                    <Checkbox onChange={() => handleSelect(key, item)} />
-                    <span>{item}</span>
+                    <Checkbox 
+                      checked={selectedFilters[key].includes(typeof item === 'object' ? item.name : item)}
+                      onChange={() => handleSelect(key, typeof item === 'object' ? item.name : item)} 
+                    />
+                    <span>{typeof item === 'object' ? item.name : item}</span>
                   </label>
                 ))}
-
-              {filter.type === "checkbox" &&
-                filter.title === "LOẠI SẢN PHẨM" && (
-                  <div>
-                    {Object.entries(filter.options).map(
-                      ([category, styles]) => {
-                        if (
-                          selectedFilters.category.length === 0 ||
-                          selectedFilters.category.includes(category)
-                        ) {
-                          return (
-                            <div key={category}>
-                              {styles.map((style) => (
-                                <label
-                                  key={style}
-                                  className="flex items-center space-x-2 cursor-pointer text-black"
-                                >
-                                  <Checkbox
-                                    onChange={() =>
-                                      handleSelect("style", { category, style })
-                                    }
-                                  />
-                                  <span>{style}</span>
-                                </label>
-                              ))}
-                            </div>
-                          );
-                        }
-                        return null;
-                      }
-                    )}
-                  </div>
-                )}
 
               {filter.type === "color" && (
                 <div className="grid grid-cols-4 gap-4 mt-2">
@@ -234,12 +232,12 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
                     >
                       <div
                         className={`w-7 h-7 rounded-full border ${
-                          selectedFilters.color.includes(colorOption.color)
+                          selectedFilters.product_color.includes(colorOption.name)
                             ? "ring-2 ring-black"
                             : ""
                         }`}
                         style={{ backgroundColor: colorOption.color }}
-                        onClick={() => handleSelect("color", colorOption.color)}
+                        onClick={() => handleSelect("product_color", colorOption.name)}
                       ></div>
                       <span className="mt-2 text-sm font-medium text-center">
                         {colorOption.name}
@@ -249,48 +247,26 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
                 </div>
               )}
 
-              {/* {filter.type === "dropdown" &&
-                  filter.title === "KÍCH CỠ GIÀY DÉP" && (
-                    <div>
-                      <div className="mb-3 grid grid-cols-5 gap-4">
-                        {filter.options.map((size) => (
-                          <ButtonComponent
-                            key={size}
-                            text={size}
-                            color={
-                              selectedFilters.sizeShoes.includes(size)
-                                ? "black"
-                                : "white"
-                            } // Chọn màu khác khi đã chọn
-                            onClick={() => handleSelect("sizeShoes", size)}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )} */}
-
               {filter.type === "input" && filter.title === "GIÁ" && (
                 <div className="mt-2 flex items-center flex-wrap gap-4">
                   <input
-                    // type="number"
                     placeholder="Từ"
                     className="p-2 border border-[#a1a8af] font-sm max-w-[100px] sm:max-w-[150px]"
-                    value={selectedFilters.price.min}
+                    value={selectedFilters.price_min}
                     onChange={(e) => handlePriceChange(e, "min")}
                     onInput={(e) =>
                       (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
-                    } // Chỉ cho phép nhập số 0-9
+                    }
                   />
                   <span className="mx-5 font-medium text-md">-</span>
                   <input
-                    // type="number"
                     placeholder="Đến"
                     className="p-2 border border-[#a1a8af] font-sm max-w-[100px] sm:max-w-[150px]"
-                    value={selectedFilters.price.max}
+                    value={selectedFilters.price_max}
                     onChange={(e) => handlePriceChange(e, "max")}
                     onInput={(e) =>
                       (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
-                    } // Chỉ cho phép nhập số 0-9
+                    }
                   />
                 </div>
               )}

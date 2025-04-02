@@ -23,12 +23,12 @@ const ForgotPasswordPage = () => {
 
   const handleSendOtp = async () => {
     if (!email.trim()) {
-      setError("Vui lòng nhập Số điện thoại hoặc Email");
+      setError("Vui lòng nhập Email");
       return;
     }
     setError("");
-
     const res = await handleSendOTP(email);
+    console.log(res);
     if (res?.EM === "OTP sent successfully") {
       setStep(1);
     } else if (res?.EM === "User not found") {
