@@ -1,12 +1,12 @@
 // import React from "react";
 import { IoIosStar, IoIosStarHalf } from "react-icons/io";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { TbShoppingCart } from "react-icons/tb";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { getFavourite, updateFavourite, clearFavourites } from "../../services/api/FavouriteApi" // import API
-
+import { useCart } from "../../context/CartContext"; // import context Cart
+import { addToCart } from "../../services/api/CartApi";
 
 const ProductComponent = ({
   src,
@@ -25,7 +25,12 @@ const ProductComponent = ({
     const res = await updateFavourite(productId); // Gọi API để cập nhật danh sách yêu thích
     console.log(res);
   };
+  const { handleAddToCart } = useCart();
 
+  const handlePushToCart = async () => {
+    const res = await handleAddToCart(productId); // Gọi API để thêm sản phẩm vào giỏ hàng
+    console.log(res);
+  }
   return (
       <div className="relative group text-black overflow-hidden shadow-sm hover:shadow-xl transition-transform duration-300 transform">
         <div onClick={onClick} className="relative">
@@ -76,7 +81,10 @@ const ProductComponent = ({
 
           <div className="absolute top-[10px] left-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
             {/* Button Thêm vào giỏ */}
-            <button className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg">
+            <button 
+              className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg"
+              onClick={handlePushToCart}
+            >
               <HiOutlineShoppingCart className="text-xl" />
             </button>
 

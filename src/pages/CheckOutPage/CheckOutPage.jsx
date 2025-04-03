@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
 import AddressFormComponent from "../../components/AddressFormComponent/AddressFormComponent";
-import { useLocation } from "react-router-dom";
 import OrderSummaryComponent from "../../components/OrderSummaryComponent/OrderSummaryComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import SelectionComponent from "../../components/SelectionComponent/SelectionComponent";
 import { Button } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
-
+import { useCart } from "../../context/CartContext";
+import { useDiscount } from "../../context/DiscountContext";
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
   {
@@ -23,9 +23,16 @@ const paymentMethods = [
 ];
 
 function CheckoutPage() {
-  const { state } = useLocation();
-  const [cart, setCart] = useState(state?.cart || []);
-  const subtotal = state?.subtotal || 0;
+  const { cart, fetchCart } = useCart();
+  useEffect(() => {
+    fetchCart(); // Gọi hàm fetchCart khi component mount
+  },[]);
+
+  const subtotal = cart?.reduce((acc, item) => {
+    const discountedPrice = item.product_id.product_price * (1 - item.product_id.product_percent_discount / 100);
+    return acc + discountedPrice * item.quantity;
+  }, 0) || 0;
+
   const [newAddress, setNewAddress] = useState({
     firstName: "",
     lastName: "",
@@ -63,7 +70,7 @@ function CheckoutPage() {
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (addresses.length > 0 && !selectedAddress) {
       setSelectedAddress(addresses[0]);
     }
@@ -130,6 +137,12 @@ function CheckoutPage() {
       setEditingIndex(null);
     }
   };
+
+  const { fetchDiscounts, discounts} = useDiscount();
+  useEffect(() => {
+    fetchDiscounts(); // Gọi hàm fetchDiscounts khi component mount
+  }, []);
+  console.log(discounts);
 
   const handleApplyVoucher = () => {
     if (voucher === "SALE10") {

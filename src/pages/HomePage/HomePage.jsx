@@ -26,6 +26,7 @@ const HomePage = () => {
     fetchProducts();
   }, []);
   
+  
 
   const productsStatus = [
     {

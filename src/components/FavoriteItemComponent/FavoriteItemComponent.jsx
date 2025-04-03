@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 
 const FavoriteItemComponent = ({ productDetails, onRemove, categoryDetail }) => {
-  console.log("", categoryDetail);
   return (
     <div>
       <div className="flex gap-10 mt-10 sm:my-10">

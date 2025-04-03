@@ -149,8 +149,6 @@ const SidebarSortComponent = ({ isOpen, onClose }) => {
     });
   };
 
-  console.log("selectedFilters", selectedFilters);
-
   const handlePriceChange = (e, type) => {
     const value = e.target.value;
     
