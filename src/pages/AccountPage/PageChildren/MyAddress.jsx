@@ -6,7 +6,10 @@ import { FaRegEdit } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Button } from "antd";
 import { AiOutlineClose } from "react-icons/ai";
+import { useUser } from "../../../context/UserContext";
 function MyAddress() {
+  // const { handleAddAddress } = useUser(); 
+
   const [addresses, setAddresses] = useState([]);
   const [editingAddress, setEditingAddress] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -14,11 +17,10 @@ function MyAddress() {
 
   const validateForm = (address) => {
     const errors = {};
-    if (!address.firstName) errors.firstName = "Vui lòng nhập Họ";
-    if (!address.lastName) errors.lastName = "Vui lòng nhập Tên";
-    if (!address.phoneNumber)
-      errors.phoneNumber = "Vui lòng nhập Số điện thoại";
-    if (!address.streetAddress) errors.streetAddress = "Vui lòng nhập Địa chỉ";
+    if (!address.name) errors.name = "Vui lòng nhập Họ và tên";
+    if (!address.phone)
+      errors.phone = "Vui lòng nhập Số điện thoại";
+    if (!address.home_address) errors.home_address = "Vui lòng nhập Địa chỉ";
     if (!address.province) errors.province = "Vui lòng chọn Tỉnh/Thành phố";
     if (!address.district) errors.district = "Vui lòng chọn Quận/Huyện";
     if (!address.ward) errors.ward = "Vui lòng chọn Phường/Xã";
@@ -29,6 +31,7 @@ function MyAddress() {
     setEditingAddress(null);
     setShowForm(true);
     setFormErrors({});
+    
   };
 
   const handleEditAddress = (index) => {
@@ -37,7 +40,7 @@ function MyAddress() {
     setFormErrors({});
   };
 
-  const handleSaveAddress = () => {
+  const handleSaveAddress = async () => {
     const errors = validateForm(editingAddress || {});
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -45,6 +48,7 @@ function MyAddress() {
     }
 
     if (editingAddress.index !== undefined) {
+      console.log(index);
       const updatedAddresses = [...addresses];
       updatedAddresses[editingAddress.index] = {
         ...editingAddress,
@@ -57,8 +61,10 @@ function MyAddress() {
         { ...editingAddress, isDefault: addresses.length === 0 },
       ]);
     }
+
     setShowForm(false);
   };
+
 
   const handleSetDefault = (index) => {
     setAddresses(
@@ -85,13 +91,13 @@ function MyAddress() {
               <div className="flex flex-wrap items-center gap-5">
                 <div className="space-y-3">
                   <p>
-                    {address.firstName} {address.lastName}
+                    {address.name} 
                   </p>
                   <p>
-                    {address.streetAddress}, {address.ward}, {address.district},{" "}
+                    {address.home_address}, {address.ward}, {address.district},{" "}
                     {address.province}
                   </p>
-                  <p>{address.phoneNumber}</p>
+                  <p>{address.phone}</p>
                 </div>
                 {address.isDefault && (
                   <MButton color="white" disabled className="h-full !shadow-lg">

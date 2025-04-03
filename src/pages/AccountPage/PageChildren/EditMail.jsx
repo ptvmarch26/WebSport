@@ -7,36 +7,15 @@ import { useUser } from "../../../context/UserContext";
 import { useAuth } from "../../../context/AuthContext";
 
 const EditEmail = () => {
-  const { selectedUser, fetchUser, handleUpdateUser } = useUser();
+  const { selectedUser, handleUpdateUser, fetchUser } = useUser();
   const { handleSendOTP, handleVerifyOTP} = useAuth();
   
   const [newEmail, setNewEmail] = useState("");
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [otpError, setOtpError] = useState("");
-  const [formData, setFormData] = useState({
-    email: ""
-  });
+  
 
-  useEffect(() => {
-    fetchUser(); 
-    // if(selectedUser){
-    //   setFormData((prev) => ({
-    //     ...prev,
-    //     email: selectedUser?.email
-    //   })); 
-    // }
-  }, []); 
-
-  useEffect(() => {
-    if (selectedUser){
-      setFormData((prev) => ({
-        ...prev,
-        email: selectedUser?.email
-      }));
-    }
-       
-  }, [selectedUser]); 
 
   const handleSend = async ()=> {
     setErrors({});
@@ -48,30 +27,24 @@ const EditEmail = () => {
       }));
       return;
     }
-    const res = await handleSendOTP(newEmail);
-    console.log(res);
+    const res = await handleSendOTP(selectedUser?.email);
     setStep(2);
   };
 
   const handleVerifyCode = async (otp) => {
     const enteredCode = otp.join("");
-    const res = await handleVerifyOTP(newEmail,enteredCode);
-    console.log(res);
+    const res = await handleVerifyOTP(selectedUser?.email,enteredCode);
     if (res?.EC === 0 ) {
-      console.log(newEmail);
-      setFormData((prev) => ({
-        ...prev,
-        email: newEmail
-      }));
+      await handleUpdateUser({email: newEmail});
+      await fetchUser();
       setNewEmail("");
       setStep(1);
     } else {
       setOtpError("Mã OTP không hợp lệ hoặc đã hết hạn");
     }
-    console.log(formData);
   };
 
-  // console.log(formData);
+
   return (
     <div className="lg:px-6 bg-white">
       <h1 className="text-3xl font-semibold">Đổi Email</h1>
@@ -128,7 +101,7 @@ const EditEmail = () => {
         <div>
           <OTPComponent
             onVerify={handleVerifyCode}
-            newEmail={newEmail}
+            newEmail={selectedUser?.email}
             otpError={otpError}
             onResend={handleSend}
           />

@@ -1,8 +1,16 @@
 import { Button } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useUser } from "../../../context/UserContext";
 
 const EditPhone = () => {
-  const [currentPhone, setCurrentPhone] = useState("0123456789");
+  const { selectedUser, handleUpdateUser, fetchUser } = useUser();
+  
+  // console.log(selectedUser);
+  useEffect(() => {
+    setCurrentPhone(selectedUser?.phone || "Chưa cập nhật");
+  }, [selectedUser]);
+
+  const [currentPhone, setCurrentPhone] = useState(selectedUser?.phone || "Chưa cập nhật");
   const [newPhone, setNewPhone] = useState("");
   const [error, setError] = useState(""); 
 
@@ -11,7 +19,7 @@ const EditPhone = () => {
     return phoneRegex.test(phone);
   };
 
-  const handleUpdatePhone = () => {
+  const handleUpdatePhone = async ()  => {
     if (!newPhone) {
       setError("Số điện thoại không được để trống");
       return;
@@ -22,10 +30,13 @@ const EditPhone = () => {
       return;
     }
 
-    setCurrentPhone(newPhone);
-    setNewPhone("");
-    setError("");
-    alert("Cập nhật số điện thoại thành công!");
+    const res = await handleUpdateUser({ phone: newPhone });
+    if (res?.EC === 0) {
+      await fetchUser();
+      setNewPhone("");
+      setError("");
+      alert("Cập nhật số điện thoại thành công!");
+    }
   };
 
   return (
