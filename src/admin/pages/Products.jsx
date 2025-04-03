@@ -1,13 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  Input,
-  Select,
-  Button,
-  Modal,
-  Form,
-  InputNumber,
-} from "antd";
+import { Table, Input, Select, Button, Modal, Form, InputNumber } from "antd";
 import {
   DeleteOutlined,
   ExportOutlined,
@@ -22,13 +14,8 @@ import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const Products = () => {
-  const {
-    products,
-    fetchProducts,
-    removeProduct,
-    addProduct,
-    editProduct,
-  } = useProduct();
+  const { products, fetchProducts, removeProduct, addProduct, editProduct } =
+    useProduct();
   const [form] = Form.useForm();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -189,7 +176,7 @@ const Products = () => {
   ];
 
   return (
-    <div className="ml-[300px] mt-[64px] p-6 min-h-screen bg-gray-100">
+    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
         <div className="flex gap-4">
           <Input
@@ -251,6 +238,7 @@ const Products = () => {
             onClick: () => navigate(`/admin/product-details/${record._id}`),
           })}
           className="rounded-none cursor-pointer"
+          scroll={{x:1000}}
         />
       </div>
 
