@@ -86,7 +86,7 @@ const Orders = () => {
   ];
 
   return (
-    <div className="ml-[300px] mt-[64px] p-6 min-h-screen bg-gray-100">
+    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
         <div className="flex gap-4">
           <Input

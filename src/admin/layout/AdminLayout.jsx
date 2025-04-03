@@ -1,8 +1,15 @@
+import { useState } from "react";
 import { ConfigProvider } from "antd";
-import Sidebar from "../components/SidebarComponent/SidebarComponent";
+import SidebarComponent from "../components/SidebarComponent/SidebarComponent";
 import TopbarComponent from "../components/TopbarComponent/TopbarComponent";
 
 function AdminLayout({ children }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -14,10 +21,12 @@ function AdminLayout({ children }) {
         },
       }}
     >
-      <div className="bg-[#f5f5f5]">
-        <Sidebar />
-        <TopbarComponent />
-        <div>{children}</div>
+      <div className="bg-[#f5f5f5] min-h-screen flex">
+        <SidebarComponent isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <div className="flex-1">
+          <TopbarComponent toggleSidebar={toggleSidebar} />
+          <div>{children}</div>
+        </div>
       </div>
     </ConfigProvider>
   );

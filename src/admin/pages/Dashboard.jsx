@@ -100,7 +100,7 @@ function Dashboard() {
   const donutSeries = [20, 25, 30, 15, 10];
 
   return (
-    <div className="ml-[300px] mt-[64px] p-6 min-h-screen">
+    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="grid grid-cols-3 gap-6 mt-4">
         <div className="bg-white flex gap-5 py-6 px-2 rounded-lg shadow-lg">
           <div className="bg-blue-500 w-20 h-20 rounded-md flex items-center justify-center">

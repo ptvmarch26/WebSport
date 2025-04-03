@@ -43,7 +43,7 @@ const OrderDetails = () => {
   }));
 
   return (
-    <div className="ml-[300px] mt-[64px] p-6 min-h-screen bg-gray-100">
+    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-5">
         <div className="flex justify-between items-center bg-[#e9eff5] py-5 px-2 rounded-md   ">
           <p className="text-base leading-loose">
