@@ -25,6 +25,7 @@ const ProductComponent = ({
     const res = await updateFavourite(productId); // Gọi API để cập nhật danh sách yêu thích
     console.log(res);
   };
+  const { handleAddToCart } = useCart();
 
   useEffect(() => {
     const fetchFavoriteStatus = async () => {

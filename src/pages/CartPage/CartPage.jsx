@@ -1,67 +1,25 @@
-import React, { useState } from "react";
+import React, {useEffect} from "react";
 import CartItemComponent from "../../components/CartItemComponent/CartItemComponent";
 import { useNavigate } from "react-router-dom";
-
-const mockData = [
-  {
-    id: 1,
-    name: "Nike Air Force 1 '07",
-    category: "Men's Shoes",
-    color: "Platinum Violet/Light Violet Ore/Team Gold/Dark Raisin",
-    size: 39,
-    oldPrice: 500000,
-    newPrice: 400000,
-    image:
-      "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4898d109-2c6f-4aeb-a098-463f75926f76/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: "Nike Air Force 1 '07",
-    category: "Men's Shoes",
-    color: "White/Black",
-    size: 42,
-    oldPrice: 550000,
-    newPrice: 420000,
-    image:
-      "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/a6f2a1e0-ffdb-4e91-9eb4-5e7b3d4e82e1/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: "Nike Air Force 1 '07",
-    category: "Men's Shoes",
-    color: "Black/Red",
-    size: 41,
-    oldPrice: 480000,
-    newPrice: 390000,
-    image:
-      "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/c3a8e8a7-3a4e-4f9e-9d16-fdc9d2e9f2a3/AS+W+NSW+PHNX+FLC+FT+HR+PANT+W.png",
-    quantity: 1,
-  },
-];
+import { useCart } from "../../context/CartContext";
 
 const CartPage = () => {
-  const [cart, setCart] = useState(mockData);
+  const { cart, setCart, handleRemoveFromCart, handleDecreaseQuantity, fetchCart, handleAddToCart, handleClearCart } = useCart();
+
+  useEffect(() => {
+    fetchCart();
+  }, []); // Gọi hàm fetchCart khi component mount
+  console.log(cart);
   const navigate = useNavigate();
 
-  const handleRemove = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
-  };
-
-  const handleQuantityChange = (id, quantity) => {
-    setCart(
-      cart.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
-
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item.newPrice * item.quantity,
-    0
-  );
+  // Tính toán subtotal
+  const subtotal = cart?.reduce((acc, item) => {
+    const discountedPrice = item.product_id.product_price * (1 - item.product_id.product_percent_discount / 100);
+    return acc + discountedPrice * item.quantity;
+  }, 0) || 0;
 
   const handleNavigateCheckout = () => {
-    navigate("/checkout", { state: { cart, subtotal } }); // Truyền cart qua state
+    navigate("/checkout"); // Truyền cart qua state
   };
 
   return (
@@ -69,20 +27,45 @@ const CartPage = () => {
       <div className="px-2 py-5 lg:p-5 grid grid-cols-1 lg:grid-cols-3 gap-y-8 lg:gap-8">
         <div className="col-span-2">
           <h1 className="text-2xl font-bold uppercase mb-4">Giỏ hàng</h1>
-          {cart.length === 0 ? (
-            <p className="text-center uppercase text-xl font-semibold text-gray-600">
-              Hiện không có sản phẩm nào trong giỏ
-            </p>
-          ) : (
-            cart.map((item) => (
-              <CartItemComponent
-                key={item.id}
-                item={item}
-                onRemove={handleRemove}
-                onQuantityChange={handleQuantityChange}
-              />
-            ))
-          )}
+          {
+              cart?.length === 0 ? (
+                <p className="text-center uppercase text-xl font-semibold text-gray-600">
+                  Hiện không có sản phẩm nào trong giỏ
+                </p>
+              ) : (
+                cart?.map((item) => (
+                  <CartItemComponent
+                    key={item.product_id._id}
+                    item={item}
+                    onRemove={() => {
+                      handleRemoveFromCart(item?.product_id._id);
+                      setCart((prevCart) => prevCart.filter((cartItem) => cartItem.product_id._id !== item.product_id._id));
+                    }}
+                    onDecrease={() => {
+                      const newQuantity = item.quantity - 1;
+                      if (newQuantity > 0) {
+                        handleDecreaseQuantity(item?.product_id._id);
+                        setCart((prevCart) => prevCart.map((cartItem) =>
+                          cartItem.product_id._id === item.product_id._id
+                            ? { ...cartItem, quantity: newQuantity }
+                            : cartItem
+                        ));
+                      }
+                    }}
+                    onIncrease={() => {
+                      const newQuantity = item.quantity + 1;
+                      handleAddToCart(item?.product_id._id);
+                      setCart((prevCart) => prevCart.map((cartItem) =>
+                        cartItem.product_id._id === item.product_id._id
+                          ? { ...cartItem, quantity: newQuantity }
+                          : cartItem
+                      ));
+                    }}
+                  />
+                ))
+              )
+            }
+
         </div>
         <div>
           <h2 className="text-xl font-semibold uppercase mb-4">Tổng kết</h2>
@@ -100,11 +83,20 @@ const CartPage = () => {
             <span>{subtotal.toLocaleString()}₫</span>
           </div>
           <button
-            className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase"
+            className={`mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase ${
+              cart?.length === 0? "cursor-not-allowed " : ""
+            }`}
             onClick={handleNavigateCheckout}
-            disabled={cart.length == 0}
+            disabled={cart?.length === 0}
           >
             Thanh toán
+          </button>
+          <button onClick={() => {
+            handleClearCart();
+            // setCart([]);
+          }
+          }>
+            Xóa tất cả
           </button>
         </div>
       </div>

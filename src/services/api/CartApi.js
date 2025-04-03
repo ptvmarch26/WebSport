@@ -34,9 +34,8 @@ export const addToCart = async (productId) => {
 
 export const removeFromCart = async (productId) => {
   try {
-    const res = await axios.delete(API_URL, {
+    const res = await axios.delete(`${API_URL}/${productId}`, {
       headers: { Authorization: `Bearer ${getToken()}` },
-      data: { productId },
     });
     return res.data;
   } catch (error) {

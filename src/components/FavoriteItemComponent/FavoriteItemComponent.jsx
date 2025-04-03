@@ -3,12 +3,8 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
-const FavoriteItemComponent = ({
-  productDetails,
-  onRemove,
-  categoryDetail,
-}) => {
-  console.log("", categoryDetail);
+
+const FavoriteItemComponent = ({ productDetails, onRemove, categoryDetail }) => {
   return (
     <div>
       <div className="flex gap-10 mt-10 sm:my-10">

@@ -8,7 +8,7 @@ import { ProductProvider } from "./context/ProductContext.jsx";
 import { DiscountProvider } from "./context/DiscountContext.jsx";
 import { CategoriesProvider } from "./context/CategoriesContext.jsx";
 import { OrderProvider } from "./context/OrderContext.jsx";
-
+import { CartProvider } from "./context/CartContext.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
@@ -18,7 +18,9 @@ createRoot(document.getElementById("root")).render(
             <DiscountProvider>
               <CategoriesProvider >
                 <OrderProvider>
-                  <App />
+                  <CartProvider>
+                    <App />
+                  </CartProvider>
                 </OrderProvider>
               </CategoriesProvider >
             </DiscountProvider>
