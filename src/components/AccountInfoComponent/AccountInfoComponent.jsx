@@ -76,7 +76,7 @@ const AccountInfoComponent = () => {
         <label className="cursor-pointer">
           <img
             className="w-20 h-20 rounded-full object-cover shadow-md"
-            src={defaultAvatar || selectedUser?.avt_img}
+            src={selectedUser?.avt_img || defaultAvatar}
             alt="avatar"
           />
         </label>

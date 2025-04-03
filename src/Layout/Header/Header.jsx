@@ -18,6 +18,7 @@ import flag_vn from "../../assets/images/flag_vn.jpg";
 import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
+import { useUser } from "../../context/UserContext";
 
 
 const Header = () => {
@@ -25,8 +26,14 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
+  const { selectedUser, fetchUser } = useUser();
 
   const { token } = useAuth();
+
+  
+    useEffect(() => {
+      fetchUser(); 
+    }, []); 
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -156,7 +163,7 @@ const Header = () => {
               <Link to={"/account"} className="order-1">
                 <div>
                   <img
-                    src={avatar_false}
+                    src={selectedUser?.avt_img || avatar_false}
                     alt="User avatar"
                     className="w-7 h-7 rounded-full"
                   />

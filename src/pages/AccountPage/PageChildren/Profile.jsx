@@ -3,37 +3,37 @@ import { Button } from "@material-tailwind/react";
 import { useUser } from "../../../context/UserContext";
 import avt_false from "../../../assets/images/avatar-false.jpg";
 
-
 const Profile = () => {
-  const {selectedUser, fetchUser, handleUpdateUser} = useUser();
+  const { selectedUser, fetchUser, handleUpdateUser } = useUser();
 
   useEffect(() => {
-    fetchUser(); 
-  }, []); 
+    fetchUser();
+  }, []);
 
   const [formData, setFormData] = useState({
     user_name: selectedUser?.user_name || "Chưa cập nhật",
-    full_name: selectedUser?.full_name ,
+    full_name: selectedUser?.full_name,
     birth: selectedUser?.birth || "",
-    gender: selectedUser?.gender
+    gender: selectedUser?.gender,
+    avt_img: selectedUser?.avt_img || avt_false,
   });
 
-
-    // Cập nhật formData khi selectedUser thay đổi
+  // Cập nhật formData khi selectedUser thay đổi
   useEffect(() => {
     if (selectedUser) {
       setFormData({
         user_name: selectedUser.user_name || "Chưa cập nhật",
-        full_name: selectedUser.full_name ,
+        full_name: selectedUser.full_name,
         birth: selectedUser.birth || "",
         gender: selectedUser.gender || "",
+        avt_img: selectedUser.avt_img || avt_false,
       });
     }
-  }, [selectedUser]); 
+  }, [selectedUser]);
 
   const [originalData, setOriginalData] = useState({ ...formData });
   const [isChanged, setIsChanged] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleChange = (e) => {
     const updatedData = { ...formData, [e.target.name]: e.target.value };
@@ -48,21 +48,35 @@ const Profile = () => {
       fetchUser(); // Cập nhật lại thông tin người dùng sau khi lưu
       setOriginalData(formData);
       setIsChanged(false);
-      setIsEditing(false); 
+      setIsEditing(false);
     } else {
       console.error("Lỗi khi cập nhật thông tin:", res);
     }
   };
 
   const handleCancel = () => {
-    setFormData(originalData);
+    // setFormData(originalData);
     setIsChanged(false);
     setIsEditing(false); // Tắt chế độ chỉnh sửa
   };
 
   const handleEdit = () => {
-    setIsEditing(true); 
+    setIsEditing(true);
   };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, avt_img: reader.result });
+        setIsChanged(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  console.log("user", selectedUser);
 
   return (
     <div className="lg:px-6 bg-white">
@@ -74,20 +88,31 @@ const Profile = () => {
           </div>
         )}
       </div>
+      <div className="w-full flex flex-col items-center gap-y-2 mb-4">
+        <img
+          className="w-20 h-20 rounded-full object-cover shadow-md"
+          src={formData.avt_img}
+          alt="avatar"
+          onClick={() => {
+            handleEdit();
+            document.getElementById("avatar-input").click();
+          }}
+        />
+        <input
+          type="file"
+          id="avatar-input"
+          className="hidden"
+          accept="image/*"
+          onChange={handleAvatarChange}
+        />
+        <label
+          htmlFor="avt_img"
+          className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+        >
+          Ảnh đại diện
+        </label>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        <div className="w-full flex justify-center mb-4">
-          <label
-            htmlFor="avt_img"
-            className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
-          >
-            Ảnh đại diện
-          </label>
-          <img
-            className="w-20 h-20 rounded-full object-cover shadow-md"
-            src={avt_false || selectedUser?.avt_img}
-            alt="avatar"
-          />
-        </div>
         <div>
           <label
             htmlFor="user_name"
@@ -100,7 +125,9 @@ const Profile = () => {
             type="text"
             name="user_name"
             value={formData.user_name || ""}
-            className={"peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 cursor-not-allowed"}
+            className={
+              "peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 cursor-not-allowed"
+            }
             disabled
           />
         </div>
@@ -121,7 +148,7 @@ const Profile = () => {
             className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 ${
               !isEditing ? "cursor-not-allowed" : ""
             }`}
-            placeholder={"Nhập họ và tên" }
+            placeholder={"Nhập họ và tên"}
             disabled={!isEditing} // Chỉ cho phép chỉnh sửa khi isEditing = true
           />
         </div>
