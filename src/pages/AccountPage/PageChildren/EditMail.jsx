@@ -1,53 +1,77 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OTPComponent from "../../../components/OTPComponent/OTPComponent";
 import { Button } from "@material-tailwind/react";
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
+import { useUser } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const EditEmail = () => {
-  const [currentEmail, setCurrentEmail] = useState("user@example.com");
+  const { selectedUser, fetchUser, handleUpdateUser } = useUser();
+  const { handleSendOTP, handleVerifyOTP} = useAuth();
+  
   const [newEmail, setNewEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [serverCode, setServerCode] = useState("");
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [otpError, setOtpError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [formData, setFormData] = useState({
+    email: ""
+  });
 
-  const handleSendCode = () => {
+  useEffect(() => {
+    fetchUser(); 
+    // if(selectedUser){
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     email: selectedUser?.email
+    //   })); 
+    // }
+  }, []); 
+
+  useEffect(() => {
+    if (selectedUser){
+      setFormData((prev) => ({
+        ...prev,
+        email: selectedUser?.email
+      }));
+    }
+       
+  }, [selectedUser]); 
+
+  const handleSend = async ()=> {
     setErrors({});
 
-    if (!newEmail || !password) {
+    if (!newEmail) {
       setErrors((prev) => ({
         ...prev,
         email: !newEmail ? "Email không được để trống" : "",
-        password: !password ? "Mật khẩu không được để trống" : "",
       }));
       return;
     }
-
-    const generatedCode = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
-    setServerCode(generatedCode);
+    const res = await handleSendOTP(newEmail);
+    console.log(res);
     setStep(2);
-    alert(`Mã xác nhận của bạn là: ${generatedCode}`);
   };
 
-  const handleVerifyCode = (otp) => {
+  const handleVerifyCode = async (otp) => {
     const enteredCode = otp.join("");
-    if (enteredCode === serverCode) {
-      setCurrentEmail(newEmail);
+    const res = await handleVerifyOTP(newEmail,enteredCode);
+    console.log(res);
+    if (res?.EC === 0 ) {
+      console.log(newEmail);
+      setFormData((prev) => ({
+        ...prev,
+        email: newEmail
+      }));
       setNewEmail("");
-      setPassword("");
-      setServerCode("");
       setStep(1);
-      alert("Email đã được cập nhật thành công!");
     } else {
       setOtpError("Mã OTP không hợp lệ hoặc đã hết hạn");
     }
+    console.log(formData);
   };
 
+  // console.log(formData);
   return (
     <div className="lg:px-6 bg-white">
       <h1 className="text-3xl font-semibold">Đổi Email</h1>
@@ -64,7 +88,7 @@ const EditEmail = () => {
             <input
               id="currentEmail"
               type="email"
-              value={currentEmail}
+              value={selectedUser?.email || ""}
               disabled
               className={`cursor-not-allowed peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-0 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
             />
@@ -94,46 +118,7 @@ const EditEmail = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-col">
-            <div className="flex items-center">
-              <label
-                htmlFor="password"
-                className="min-w-[100px] block antialiased font-sans text-sm leading-normal text-inherit font-medium text-gray-900"
-              >
-                Mật khẩu
-              </label>
-              <div className="relative w-full">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"} // Toggle input type based on the state
-                  placeholder="Nhập mật khẩu"
-                  value={password}
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 `}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                >
-                  {showPassword ? (
-                    <IoIosEyeOff className="w-5 h-5 text-gray-500" />
-                  ) : (
-                    <IoIosEye className="w-5 h-5 text-gray-500" />
-                  )}
-                </button>
-              </div>
-            </div>
-            <div>
-              {errors.password && (
-                <p className="text-red-500 text-sm ml-[105px] mt-2">
-                  {errors.password}
-                </p>
-              )}
-            </div>
-          </div>
-          <Button onClick={handleSendCode} className="w-full">
+          <Button onClick={handleSend} className="w-full">
             Tiếp tục
           </Button>
         </div>
@@ -145,6 +130,7 @@ const EditEmail = () => {
             onVerify={handleVerifyCode}
             newEmail={newEmail}
             otpError={otpError}
+            onResend={handleSend}
           />
         </div>
       )}

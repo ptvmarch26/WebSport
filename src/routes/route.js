@@ -56,7 +56,7 @@ const publicRoutes = [
         component: ProductPage,
     },
     {
-        path: '/product-details',
+        path: '/product/:id',
         component: ProductDetailsPage,
     },
     {

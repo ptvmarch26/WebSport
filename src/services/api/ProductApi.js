@@ -198,10 +198,10 @@ export const deleteProduct = async (productId) => {
   }
 };
 
-export const getAllProducts = async (limit, page, filters) => {
+export const getAllProducts = async (filters) => {
   try {
     const response = await axios.get(`${API_URL}/get-all`, {
-      params: { limit, page, ...filters },
+      params: filters,
     });
     return response.data;
   } catch (error) {

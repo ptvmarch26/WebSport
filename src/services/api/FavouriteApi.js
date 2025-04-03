@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:5000/favourite";
 
 // Lấy token từ localStorage
-const getToken = () => localStorage.getItem("token");
+const getToken = () => localStorage.getItem("accessToken");
 
 // Thêm hoặc xóa sản phẩm khỏi danh sách yêu thích
 export const updateFavourite = async (productId) => {
