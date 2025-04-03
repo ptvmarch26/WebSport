@@ -186,7 +186,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="ml-[300px] mt-[64px] p-6 min-h-screen bg-gray-100">
+    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
         <div className="bg-white shadow-lg px-10 py-5 rounded-md">
           <div className="flex flex-wrap items-center justify-between mb-5">

@@ -1,7 +1,8 @@
+import { FiMenu } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 import user_img from "../../../assets/images/user_img.jpg";
 
-function TopbarComponent({ admin_name }) {
+function TopbarComponent({ admin_name, toggleSidebar }) {
   const location = useLocation();
 
   const pageTitles = {
@@ -15,7 +16,6 @@ function TopbarComponent({ admin_name }) {
   };
 
   let currentPage = "Admin Panel";
-
   if (location.pathname.startsWith("/admin/order-details/")) {
     currentPage = "Chi tiết đơn hàng";
   } else if (pageTitles[location.pathname]) {
@@ -23,8 +23,13 @@ function TopbarComponent({ admin_name }) {
   }
 
   return (
-    <div className="fixed top-0 left-[300px] z-10 bg-white right-0 h-16 flex items-center justify-between px-6 shadow-md transition-all duration-300">
-      <h1 className="text-xl font-semibold">{currentPage}</h1>
+    <div className="fixed top-0 left-0 lg:left-[300px] z-10 bg-white right-0 h-16 flex items-center justify-between px-2 lg:px-6 shadow-md transition-all duration-300">
+      <div className="flex items-center gap-3">
+        <button className="lg:hidden text-gray-700" onClick={toggleSidebar}>
+          <FiMenu size={24} />
+        </button>
+        <h1 className="text-xl font-semibold">{currentPage}</h1>
+      </div>
 
       <div className="flex items-center gap-3">
         <span className="text-md">{admin_name ? admin_name : "Admin"}</span>
