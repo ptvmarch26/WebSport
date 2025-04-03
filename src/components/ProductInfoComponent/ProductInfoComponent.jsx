@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import BackComponent from "../BackComponent/BackComponent";
 import NextComponent from "../NextComponent/NextComponent";
@@ -6,6 +6,7 @@ import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Button } from "@material-tailwind/react";
+import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi";
 
 const ProductInfoComponent = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -67,7 +68,24 @@ const ProductInfoComponent = ({ product }) => {
     mainSliderRef.current.slickGoTo(index); // Thay đổi slide của main slider
   };
 
-  const toggleFavorite = () => setIsFavorite(!isFavorite);
+  const toggleFavorite = async () => {
+    setIsFavorite(!isFavorite);
+    const res = await updateFavourite(product._id); // Gọi API để cập nhật danh sách yêu thích
+    console.log(res);
+  };
+
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      const favouritesData = await getFavourite();
+
+      if (favouritesData && favouritesData.result) {
+        setIsFavorite(favouritesData.result.includes(product._id));
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [product?._id]);
+
   const toggleDetails = () => setIsDetailsVisible(!isDetailsVisible);
 
   const increaseQuantity = () => setQuantity(quantity + 1);
@@ -143,7 +161,9 @@ const ProductInfoComponent = ({ product }) => {
 
       {/* Phần thông tin sản phẩm */}
       <div className="w-full">
-        <h1 className="text-2xl font-bold break-all">{product?.product_title}</h1>  
+        <h1 className="text-2xl font-bold break-all">
+          {product?.product_title}
+        </h1>
         <p className="text-lg text-gray-500">{product?.product_brand}</p>
 
         <div className="flex items-center mt-4">
@@ -176,7 +196,7 @@ const ProductInfoComponent = ({ product }) => {
                   <Button
                     key={variant._id}
                     color="white"
-                    className={`w-24 h-14 flex items-center justify-center p-2 border rounded-md shadow-md ${
+                    className={`w-24 h-14 border-gray-400 flex items-center justify-center p-2 border rounded-md shadow-md ${
                       selectedColor === variant.variant_color
                         ? "border-2 border-black"
                         : ""
@@ -206,7 +226,7 @@ const ProductInfoComponent = ({ product }) => {
                   <Button
                     key={variant._id}
                     color="white"
-                    className={`w-14 h-14 flex items-center justify-center border rounded-md shadow-md ${
+                    className={`w-14 h-14 border-gray-400 flex items-center justify-center border rounded-md shadow-md ${
                       selectedSize === variant.variant_size
                         ? "border-2 border-black"
                         : ""
@@ -223,7 +243,7 @@ const ProductInfoComponent = ({ product }) => {
 
         {/* Số lượng */}
         <p className="text-base font-medium my-3">Số lượng</p>
-        <div className="flex items-center">
+        <div className="flex items-center flex-wrap gap-3">
           <div className="inline-flex items-center border border-[#a1a8af]">
             <button
               className="px-4 py-2 hover:bg-gray-200"
@@ -244,11 +264,11 @@ const ProductInfoComponent = ({ product }) => {
               +
             </button>
           </div>
-          <p className="text-sm text-gray-500 ml-4">
+          <p className="text-sm text-gray-500">
             Còn lại: {product?.product_countInStock} sản phẩm
           </p>
           <div
-            className="flex items-center cursor-pointer ml-4"
+            className="flex items-center cursor-pointer"
             onClick={toggleFavorite}
           >
             {isFavorite ? (
@@ -262,7 +282,10 @@ const ProductInfoComponent = ({ product }) => {
 
         {/* Nút thêm giỏ hàng / mua ngay */}
         <div className="flex flex-wrap sm:flex-nowrap gap-2 mt-4">
-          <Button color="white" className="p-3 border border-gray-400 text-black w-full rounded uppercase">
+          <Button
+            color="white"
+            className="p-3 border border-gray-400 text-black w-full rounded uppercase"
+          >
             Thêm vào giỏ hàng
           </Button>
           <Button className="p-3 bg-black text-white w-full rounded uppercase">
