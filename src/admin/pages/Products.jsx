@@ -178,7 +178,7 @@ const Products = () => {
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap sm:flex-nowrap gap-4">
           <Input
             placeholder="Tìm kiếm theo tên sản phẩm..."
             value={searchText}
@@ -201,7 +201,7 @@ const Products = () => {
             Thêm sản phẩm
           </Button>
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap sm:flex-nowrap gap-4 justify-between">
           <Select
             placeholder="Trạng thái sản phẩm"
             value={filterStatus}
@@ -238,7 +238,7 @@ const Products = () => {
             onClick: () => navigate(`/admin/product-details/${record._id}`),
           })}
           className="rounded-none cursor-pointer"
-          scroll={{x:1000}}
+          scroll={{x: 'max-content'}}
         />
       </div>
 

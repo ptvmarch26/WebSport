@@ -1,5 +1,7 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { Table, Button, Tag } from "antd";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useOrder } from "../../context/OrderContext";
+import { Table, Tag } from "antd";
 
 const statusColors = {
   "Chờ xác nhận": "orange",
@@ -10,82 +12,183 @@ const statusColors = {
 };
 
 const OrderDetails = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const order = location.state?.order;
+  const { id } = useParams();
+  const { orderDetails, fetchOrderDetail } = useOrder();
+
+  useEffect(() => {
+    fetchOrderDetail(id);
+  }, [id]);
+
+  if (!orderDetails?.result)
+    return <p className="text-center text-gray-500">Loading...</p>;
+
+  const {
+    createdAt,
+    order_status,
+    order_total_price,
+    order_total_final,
+    delivery_fee,
+    order_payment_method,
+    order_total_discount,
+    order_note,
+    estimated_delivery_date,
+    products,
+    shipping_address,
+    is_feedback,
+  } = orderDetails.result;
+
+  const formattedProducts = products.map((product) => {
+    const variantData = product.product_id.variants.find(
+      (v) => v._id === product.variant
+    );
+
+    return {
+      product_id: product.product_id._id,
+      product_name: product.product_id.product_title,
+      product_img: product.product_id.product_img.image_main,
+      product_price: product.product_id.product_price,
+      quantity: product.quantity,
+      variant: variantData
+        ? `${variantData.variant_color} - ${variantData.variant_size}`
+        : "Không xác định",
+    };
+  });
 
   const columns = [
-    { title: "Mã sản phẩm", dataIndex: "id", key: "id" },
-    { title: "Tên sản phẩm", dataIndex: "name", key: "name" },
-    { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
     {
-      title: "Đơn giá",
-      dataIndex: "price",
-      key: "price",
-      render: (value) => `${value.toLocaleString()}đ`,
+      title: "Mã sản phẩm",
+      dataIndex: "product_id",
+      key: "product_id",
+      align: "left",
+      render: (id) => <span className="inline-block max-w-[100px]">{id}</span>,
     },
     {
-      title: "Thành tiền",
-      dataIndex: "total",
+      title: "Tên sản phẩm",
+      dataIndex: "product_name",
+      key: "product_name",
+      align: "left",
+      render: (_, record) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={record.product_img}
+            alt={record.product_name}
+            className="w-12 h-12 object-contain rounded"
+          />
+          <span className="line-clamp-2">{record.product_name}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Biến thể",
+      dataIndex: "variant",
+      key: "variant",
+      align: "left",
+    },
+    {
+      title: "Giá (đ)",
+      dataIndex: "product_price",
+      key: "product_price",
+      align: "left",
+      render: (price) => `${price.toLocaleString()}`,
+    },
+    {
+      title: "Số lượng",
+      dataIndex: "quantity",
+      key: "quantity",
+      align: "left",
+    },
+    {
+      title: "Thành tiền (đ)",
       key: "total",
-      render: (value) => `${value.toLocaleString()}đ`,
+      align: "left",
+      render: (_, record) =>
+        `${(record.product_price * record.quantity).toLocaleString()}`,
     },
   ];
 
-  const productsData = order.products.map((name, index) => ({
-    id: `SP00${index + 1}`,
-    name,
-    quantity: Math.floor(Math.random() * 3) + 1,
-    price: order.total / order.products.length,
-    total:
-      (order.total / order.products.length) *
-      (Math.floor(Math.random() * 3) + 1),
-  }));
+  console.log("enhancedProducts", orderDetails);
 
   return (
-    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
-      <div className="space-y-5">
-        <div className="flex justify-between items-center bg-[#e9eff5] py-5 px-2 rounded-md   ">
-          <p className="text-base leading-loose">
-            Mã đơn hàng: <span className="font-bold ml-1">{order.id}</span>
+    <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen bg-gray-100">
+      <div className="bg-white flex flex-col sm:flex-row gap-5 justify-between sm:items-center p-6 shadow-lg rounded-lg mt-4">
+        <p>
+          <strong>Ngày mua hàng:</strong> {new Date(createdAt).toLocaleString()}
+        </p>
+        <p>
+          <strong>Thanh toán:</strong> {order_payment_method.toUpperCase()}
+        </p>
+        <p>
+          <strong>Trạng thái:</strong>{" "}
+          <Tag className="py-1 px-2" color={statusColors[order_status]}>
+            {order_status}
+          </Tag>
+        </p>
+      </div>
+      <div className="bg-white p-6 shadow-lg rounded-lg mt-4 space-y-5">
+        <h3 className="font-semibold">Thông tin khách hàng</h3>
+        <div className="space-y-3 px-3 py-5 border rounded">
+          <p>
+            <strong>Họ tên:</strong> {shipping_address.full_name}
           </p>
-          <p className="text-base leading-loose">
-            Ngày mua hàng: <span className="font-bold ml-1">{order.date}</span>
+          <p>
+            <strong>Số điện thoại:</strong> {shipping_address.phone}
           </p>
-          <p className="text-base leading-loose">
-            Trạng thái:{" "}
-            <Tag className="py-2 px-3 ml-1" color={statusColors[order.status]}>{order.status}</Tag>
+          <p>
+            <strong>Địa chỉ:</strong> {shipping_address.address.home_address},{" "}
+            {shipping_address.address.commune},{" "}
+            {shipping_address.address.district},{" "}
+            {shipping_address.address.province}
           </p>
-        </div>
-
-        <div className="flex justify-between rounded-md">
-          <div className="border">
-            <h3>Thông tin khách hàng</h3>
-            <div>
-              <p><strong>Họ và tên: </strong>{order.customer}</p>
-              <p><strong>Số điện thoại: </strong>{order.name}</p>
-              <p><strong>Địa chỉ: </strong>{order.name}</p>
-            </div>
-          </div>
-          <div className="border">
-            <h3>Thông tin khách hàng</h3>
-          </div>
-        </div>
-
-        {/* Bảng chi tiết sản phẩm */}
-        <Table
-          columns={columns}
-          dataSource={productsData}
-          pagination={false}
-          rowKey="id"
-          rowClassName="cursor-pointer"
-        />
-
-        {/* Tổng tiền */}
-        <div className="text-right font-bold text-lg">
-          Tổng tiền phải thanh toán: {order.total.toLocaleString()}đ
+          <p>
+            <strong>Ghi chú:</strong> {order_note}
+          </p>
+          <p>
+            <strong>Ngày giao dự kiến:</strong>{" "}
+            {new Date(estimated_delivery_date).toLocaleString()}
+          </p>
         </div>
       </div>
+
+      <div className="bg-white p-4 shadow-lg rounded-lg mt-4 space-y-5 overflow-x-auto">
+        <h3 className="font-semibold">Sản phẩm</h3>
+        <Table
+          dataSource={formattedProducts}
+          rowKey="_id"
+          columns={columns}
+          pagination={false}
+          bordered
+          scroll={{x: 'max-content'}}
+          className="rounded-lg [&_.ant-table-thead_tr_th]:bg-[#e9eff5] [&_.ant-table-thead_tr_th]:text-black [&_.ant-table-thead_tr_th]:font-bold"
+        />
+      </div>
+
+      <div className="bg-white p-6 shadow-lg rounded-lg mt-4 space-y-5">
+        <h3 className="font-semibold">Thanh toán</h3>
+        <div className="space-y-3 px-3 py-5 border rounded">
+          <div className="flex justify-between">
+            <strong>Tổng tiền hàng:</strong>
+            <span>{order_total_price.toLocaleString()} đ</span>
+          </div>
+          <div className="flex justify-between">
+            <strong>Phí giao hàng:</strong>
+            <span>{delivery_fee.toLocaleString()} đ</span>
+          </div>
+          <div className="flex justify-between">
+            <strong>Giảm giá:</strong>
+            <span>{order_total_discount} %</span>
+          </div>
+          <div className="flex justify-between text-[#1890ff] font-semibold">
+            <strong>Tổng tiền phải thanh toán:</strong>
+            <span>{order_total_final.toLocaleString()} đ</span>
+          </div>
+        </div>
+      </div>
+
+      {is_feedback && (
+        <div className="bg-white p-6 shadow-lg rounded-lg mt-4 space-y-5">
+          <h3 className="font-semibold">Đánh giá sản phẩm</h3>
+        </div>
+      )}
     </div>
   );
 };

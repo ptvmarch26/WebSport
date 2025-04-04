@@ -21,11 +21,14 @@ function AdminLayout({ children }) {
         },
       }}
     >
-      <div className="bg-[#f5f5f5] min-h-screen flex">
-        <SidebarComponent isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className="bg-[#f5f5f5] min-h-screen">
+        <SidebarComponent
+          isOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
         <div className="flex-1">
           <TopbarComponent toggleSidebar={toggleSidebar} />
-          <div>{children}</div>
+          {children}
         </div>
       </div>
     </ConfigProvider>

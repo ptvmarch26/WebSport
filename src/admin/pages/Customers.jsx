@@ -63,7 +63,7 @@ const Customers = () => {
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap sm:flex-nowrap gap-4">
           <Input
             placeholder="Tìm kiếm theo tên khách hàng..."
             value={searchText}
@@ -100,6 +100,7 @@ const Customers = () => {
           pagination={{ pageSize: 8 }}
           rowKey="_id"
           className="rounded-none"
+          scroll={{x: 'max-content'}}
         />
       </div>
 

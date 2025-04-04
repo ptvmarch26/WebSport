@@ -188,7 +188,7 @@ const ProductDetails = () => {
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
-        <div className="bg-white shadow-lg px-10 py-5 rounded-md">
+        <div className="bg-white shadow-lg px-2 md:px-10 py-5 rounded-md">
           <div className="flex flex-wrap items-center justify-between mb-5">
             <h1 className="text-2xl font-bold">Chi tiết sản phẩm</h1>
             <div className="flex gap-x-5">
@@ -281,7 +281,7 @@ const ProductDetails = () => {
                     }
                   />
                 </Form.Item>
-                <div className="grid grid-cols-3 gap-x-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4">
                   <Form.Item label="Kho hàng">
                     <Input
                       type="number"
@@ -319,7 +319,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        <div className="bg-white shadow-lg px-10 py-5 rounded-md">
+        <div className="bg-white shadow-lg px-2 md:px-10 py-5 rounded-md">
           <h1 className="text-2xl font-bold mb-5">Biến thể</h1>
           {product.variants.map((variant, index) => (
             <Card key={index} className="mb-4">
@@ -348,7 +348,7 @@ const ProductDetails = () => {
                     />
                   </Form.Item>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Form.Item label="Giá">
                     <Input
                       type="number"
