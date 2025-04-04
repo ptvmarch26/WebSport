@@ -160,7 +160,7 @@ const Discounts = () => {
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap sm:flex-nowrap gap-4">
           <Input
             placeholder="Tìm kiếm theo code..."
             value={searchText}
@@ -177,7 +177,7 @@ const Discounts = () => {
             Thêm mã
           </Button>
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap sm:flex-nowrap gap-4 justify-between">
           <Select
             placeholder="Trạng thái mã giảm giá"
             value={filterStatus}
@@ -210,6 +210,7 @@ const Discounts = () => {
           columns={columns}
           pagination={{ pageSize: 8}}
           rowKey="_id"
+          scroll={{x: 'max-content'}}
         />
       </div>
       <Modal

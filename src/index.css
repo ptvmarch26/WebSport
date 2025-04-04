@@ -26,6 +26,11 @@ h6 {
   font-optical-sizing: auto;
 }
 
+::selection {
+  background-color: #1890ff;
+  color: #fff;
+}
+
 @media (max-width: 767px) {
   html {
     font-size: 80%;

@@ -47,19 +47,15 @@ const Orders = () => {
       title: "Sản phẩm",
       dataIndex: "products",
       key: "products",
-      render: (products) => (
-        <span>
-          {`${products.length} sản phẩm`}
-        </span>
-      ),
+      render: (products) => <span>{`${products.length} sản phẩm`}</span>,
     },
     {
       title: "Ngày đặt",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date) => {
-        return date ? moment(date).format("YYYY-MM-DD") : ""
-      }
+        return date ? moment(date).format("YYYY-MM-DD") : "";
+      },
     },
     {
       title: "Khách hàng",
@@ -70,6 +66,7 @@ const Orders = () => {
       title: "Hình thức",
       dataIndex: "order_payment_method",
       key: "order_payment_method",
+      render: (value) => value.toUpperCase(),
     },
     {
       title: "Tổng tiền",
@@ -131,12 +128,11 @@ const Orders = () => {
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="_id"
-          // onRow={(record) => ({
-          //   onClick: () =>
-          //     navigate(`/admin/order-details/${record._id}`, {
-          //       state: { order: record },
-          //     }),
-          // })}
+          onRow={(record) => ({
+            onClick: () => navigate(`/admin/order-details/${record._id}`),
+          })}
+          scroll={{x: 'max-content'}}
+          className="cursor-pointer"
         />
       </div>
     </div>

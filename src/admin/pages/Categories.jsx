@@ -15,7 +15,6 @@ import {
   ExportOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import moment from 'moment'
 import { useCategories } from "../../context/CategoriesContext";
 
 const { Option } = Select;
@@ -161,7 +160,7 @@ const Categories = () => {
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap sm:flex-nowrap gap-4">
          <Input
             placeholder="Tìm kiếm theo..."
             value={searchText}
@@ -178,7 +177,8 @@ const Categories = () => {
             Thêm danh mục
           </Button>
         </div>
-        <div className="flex justify-between">
+      </div>
+        <div className="my-4">
          <Button
             type="primary"
             danger
@@ -189,7 +189,6 @@ const Categories = () => {
             Xóa ({selectedRowKeys.length})
           </Button>
         </div>
-      </div>
       <div className="bg-white p-4 shadow-lg">
         <Table
           rowSelection={{
@@ -200,6 +199,7 @@ const Categories = () => {
           columns={columns}
           pagination={{ pageSize: 8}}
           rowKey="_id"
+          scroll={{x: 'max-content'}}
         />
       </div>
       <Modal
