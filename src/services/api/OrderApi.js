@@ -5,6 +5,7 @@ const API_URL = "http://localhost:5000/order";
 const getToken = () => localStorage.getItem("accessToken");
 
 export const createOrder = async (orderData) => {
+  console.log("orderData", orderData);
   try {
     const response = await axios.post(`${API_URL}/create`, orderData, {
       headers: {

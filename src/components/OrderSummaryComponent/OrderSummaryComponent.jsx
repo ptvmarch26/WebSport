@@ -5,7 +5,8 @@ const OrderSummaryComponent = ({
   subtotal,
   voucher,
   setVoucher,
-  handleApplyVoucher,
+  // handleApplyVoucher,
+  onClick,
 }) => {
   const [isVoucherValid, setIsVoucherValid] = useState(false);
 
@@ -64,7 +65,7 @@ const OrderSummaryComponent = ({
                   ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
                   : "bg-black hover:opacity-80"
               }`}
-              onClick={handleApplyVoucher}
+              // onClick={handleApplyVoucher}
               disabled={!isVoucherValid}
             >
               Áp dụng
@@ -84,7 +85,7 @@ const OrderSummaryComponent = ({
           <span>Tổng tiền</span>
           <span>{subtotal.toLocaleString()}₫</span>
         </div>
-        <button className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase">
+        <button onClick={onClick} className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase">
           Đặt hàng
         </button>
       </div>

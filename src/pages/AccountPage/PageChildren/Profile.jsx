@@ -6,9 +6,9 @@ import avt_false from "../../../assets/images/avatar-false.jpg";
 const Profile = () => {
   const { selectedUser, fetchUser, handleUpdateUser } = useUser();
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   fetchUser();
+  // }, []);
 
   const [formData, setFormData] = useState({
     user_name: selectedUser?.user_name || "Chưa cập nhật",

@@ -7,6 +7,9 @@ import { Button } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useCart } from "../../context/CartContext";
 import { useDiscount } from "../../context/DiscountContext";
+import { Button as MButton } from "@material-tailwind/react";
+import { useUser } from "../../context/UserContext";
+import { useOrder } from "../../context/OrderContext";
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
   {
@@ -24,44 +27,45 @@ const paymentMethods = [
 
 function CheckoutPage() {
   const { cart, fetchCart } = useCart();
+  const { fetchDiscounts, discounts} = useDiscount();
+
   useEffect(() => {
-    fetchCart(); // Gọi hàm fetchCart khi component mount
+    fetchCart(); 
+    fetchDiscounts();
   },[]);
 
-  const subtotal = cart?.reduce((acc, item) => {
+  useEffect(() => {
+    const addressesUser = cart?.user_id?.addresses || [];
+    setAddresses(addressesUser);
+  }, [cart]);
+  
+  const cartItems = cart?.products || [];
+
+  const subtotal = cartItems.reduce((acc, item) => {
     const discountedPrice = item.product_id.product_price * (1 - item.product_id.product_percent_discount / 100);
     return acc + discountedPrice * item.quantity;
   }, 0) || 0;
 
   const [newAddress, setNewAddress] = useState({
-    firstName: "",
-    lastName: "",
-    streetAddress: "",
-    province: "",
-    district: "",
-    ward: "",
-    phoneNumber: "",
+    name: "",
+    phone: "",
+    home_address: " ",
+    province: "Tỉnh/Thành phố",
+    district: "Quận/Huyện",
+    ward: "Phường/Xã",
+    is_default: "false",
   });
   const [formErrors, setFormErrors] = useState({
-    firstName: "",
-    lastName: "",
-    streetAddress: "",
-    province: "",
+    name: "",
+    phone: "",
+    home_address: "",
+    province:  "",
     district: "",
-    phoneNumber: "",
+    ward: "",
+    is_default: "",
   });
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [addresses, setAddresses] = useState([
-    {
-      firstName: "Phi",
-      lastName: "Thong",
-      streetAddress: "HCM",
-      province: "TPHCM",
-      district: "Linh Trung",
-      ward: "Thu Duc",
-      phoneNumber: "0909",
-    },
-  ]);
+  const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
   const [voucher, setVoucher] = useState("");
@@ -71,41 +75,61 @@ function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
   useEffect(() => {
-    if (addresses.length > 0 && !selectedAddress) {
-      setSelectedAddress(addresses[0]);
+    if (!selectedAddress && addresses.length > 0) {
+      const defaultAddress = addresses.find((address) => address.is_default);
+      if (defaultAddress) {
+        setSelectedAddress(defaultAddress);
+      }
     }
-  }, [addresses, selectedAddress]);
+  }, [addresses]);
 
-  const handleAddAddress = () => {
+  const { handleAddAddress, fetchUser, handleUpdateAddress, handleDeleteAddress } = useUser(); 
+
+  const handleAddAddresss = async () => {
     if (validateForm()) {
+      newAddress.is_default = addresses.length === 0; 
       setAddresses([...addresses, newAddress]);
+      await handleAddAddress(newAddress);
       setNewAddress({
-        firstName: "",
-        lastName: "",
-        streetAddress: "",
+        name: "",
+        phone: "",
+        home_address: "",
         province: "",
         district: "",
         ward: "",
-        phoneNumber: "",
+        is_default: "",
       });
     }
   };
 
-  const handleDeleteAddress = (index) => {
+  const handleDeleteAddresss = async (index) => {
+    const isDefaultAddress = addresses[index]?.is_default;
+
     const updatedAddresses = addresses.filter((_, i) => i !== index);
+
+    if (isDefaultAddress && updatedAddresses.length > 0) {
+      updatedAddresses[0].is_default = true;
+    };
+
+    await handleDeleteAddress(index);
     setAddresses(updatedAddresses);
 
     if (updatedAddresses.length === 0) {
       setSelectedAddress(null);
     }
-    // Reset form để không bị lỗi trước đó khi xóa form
+    else {
+      setSelectedAddress(updatedAddresses.find((address) => address.is_default));
+
+    }
+
     setFormErrors({
-      firstName: "",
-      lastName: "",
-      streetAddress: "",
+      name: "",
+      phone: "",
+      home_address: "",
       province: "",
       district: "",
-      phoneNumber: "",
+      ward: "",
+      is_default: "",
     });
   };
 
@@ -120,37 +144,33 @@ function CheckoutPage() {
     setIsOverlayOpen(true);
   };
 
-  const handleSaveEditedAddress = () => {
+  const handleSaveEditedAddress = async () => {
     if (validateForm()) {
       const updatedAddresses = [...addresses];
       updatedAddresses[editingIndex] = newAddress;
+      await handleUpdateAddress(editingIndex, newAddress);  
       setAddresses(updatedAddresses);
       setNewAddress({
-        firstName: "",
-        lastName: "",
-        streetAddress: "",
+        name: "",
+        phone: "",
+        home_address: "",
         province: "",
         district: "",
         ward: "",
-        phoneNumber: "",
+        is_default: "",
       });
       setEditingIndex(null);
     }
   };
 
-  const { fetchDiscounts, discounts} = useDiscount();
-  useEffect(() => {
-    fetchDiscounts(); // Gọi hàm fetchDiscounts khi component mount
-  }, []);
-  console.log(discounts);
-
-  const handleApplyVoucher = () => {
-    if (voucher === "SALE10") {
-      alert("Áp dụng mã giảm giá thành công! Giảm 10% tổng tiền.");
-    } else {
-      alert("Mã giảm giá không hợp lệ!");
-    }
-  };
+  // const handleApplyVoucher = () => {
+  //   discounts.map((discount) => {
+  //     if (discount.discount_code === voucher) {
+  //       alert("Mã giảm giá hợp lệ");
+  //       subtotal = subtotal - discount.discount_value;
+  //     }
+  //   });
+  // };
 
   const closeOverlay = () => setIsOverlayOpen(false);
 
@@ -158,16 +178,12 @@ function CheckoutPage() {
     const errors = {};
     let isValid = true;
 
-    if (!newAddress.firstName) {
-      errors.firstName = "Bạn chưa nhập Họ";
+    if (!newAddress.name) {
+      errors.name = "Bạn chưa nhập Họ và Tên";
       isValid = false;
     }
-    if (!newAddress.lastName) {
-      errors.lastName = "Bạn chưa nhập Tên";
-      isValid = false;
-    }
-    if (!newAddress.streetAddress) {
-      errors.streetAddress = "Bạn chưa nhập Địa chỉ";
+    if (!newAddress.home_address) {
+      errors.home_address = "Bạn chưa nhập Địa chỉ";
       isValid = false;
     }
     if (!newAddress.province) {
@@ -182,8 +198,8 @@ function CheckoutPage() {
       errors.ward = "Bạn chưa nhập Phường/Xã";
       isValid = false;
     }
-    if (!newAddress.phoneNumber) {
-      errors.phoneNumber = "Bạn chưa nhập Số điện thoại";
+    if (!newAddress.phone) {
+      errors.phone = "Bạn chưa nhập Số điện thoại";
       isValid = false;
     }
 
@@ -191,6 +207,25 @@ function CheckoutPage() {
     return isValid;
   };
 
+  const { handleCreateOrder } = useOrder();
+  
+  const CreateOrder = async () => {
+    const orderData = {
+      shipping_address: selectedAddress,
+      products: cartItems.map((item) => ({
+        product_id: item.product_id._id,
+        quantity: item.quantity,
+      })),
+      order_payment_method: selectedPayment,
+      order_note: " ",
+      discount_ids: [], 
+    };
+
+    const res = await handleCreateOrder(orderData);
+    console.log(res);
+  };
+
+  
   return (
     <div className="xl:max-w-[1200px] container mx-auto">
       <div className="px-2 lg:p-4">
@@ -208,18 +243,6 @@ function CheckoutPage() {
               )}
             </div>
             <h2 className="text-lg font-semibold mb-2">Địa chỉ</h2>
-            {addresses.length > 0 && !selectedAddress && (
-              <div className="p-4 rounded-lg space-y-3">
-                <p className="text-[#757575]">
-                  {addresses[0].firstName} {addresses[0].lastName}
-                </p>
-                <p className="text-[#757575]">
-                  {addresses[0].streetAddress}, {addresses[0].ward},{" "}
-                  {addresses[0].district}, {addresses[0].province}
-                </p>
-                <p className="text-[#757575]">{addresses[0].phoneNumber}</p>
-              </div>
-            )}
             {addresses.length === 0 && (
               <AddressFormComponent
                 newAddress={newAddress}
@@ -231,13 +254,13 @@ function CheckoutPage() {
             {selectedAddress && (
               <div className="px-4 rounded-lg space-y-3">
                 <p className="text-[#757575]">
-                  {selectedAddress.firstName} {selectedAddress.lastName}
+                  {selectedAddress.name} 
                 </p>
                 <p className="text-[#757575]">
-                  {selectedAddress.streetAddress}, {selectedAddress.ward},{" "}
+                  {selectedAddress.home_address}, {selectedAddress.ward},{" "}
                   {selectedAddress.district}, {selectedAddress.province}
                 </p>
-                <p className="text-[#757575]">{selectedAddress.phoneNumber}</p>
+                <p className="text-[#757575]">{selectedAddress.phone}</p>
               </div>
             )}
             <SelectionComponent
@@ -258,11 +281,12 @@ function CheckoutPage() {
               Tổng quan đơn hàng
             </h2>
             <OrderSummaryComponent
-              cart={cart}
+              cart={cartItems}
               subtotal={subtotal}
               voucher={voucher}
               setVoucher={setVoucher}
-              handleApplyVoucher={handleApplyVoucher}
+              // handleApplyVoucher={handleApplyVoucher}
+              onClick={CreateOrder}
             />
           </div>
         </div>
@@ -300,7 +324,7 @@ function CheckoutPage() {
               {editingIndex !== null ? (
                 <Button onClick={handleSaveEditedAddress}>Lưu địa chỉ</Button>
               ) : (
-                <Button onClick={handleAddAddress}>Thêm địa chỉ</Button>
+                <Button onClick={handleAddAddresss}>Thêm địa chỉ</Button>
               )}
             </div>
             <ul className="mt-4">
@@ -312,13 +336,14 @@ function CheckoutPage() {
                 >
                   <div>
                     <p className="text-sm">
-                      {address.firstName} {address.lastName}
+                      {address.name} 
                     </p>
                     <p className="text-sm">
-                      {address.streetAddress}, {address.ward},{" "}
+                      {address.home_address}, {address.ward},{" "}
                       {address.district}, {address.province}
                     </p>
-                    <p className="text-sm">{address.phoneNumber}</p>
+                    <p className="text-sm">{address.phone}</p>
+                   
                   </div>
                   <div className="flex flex-col md:flex-row items-center gap-2">
                     <Button
@@ -334,7 +359,7 @@ function CheckoutPage() {
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDeleteAddress(index);
+                        handleDeleteAddresss(index);
                         closeOverlay();
                       }}
                       className="bg-red-500 text-white"

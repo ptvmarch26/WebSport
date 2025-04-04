@@ -18,9 +18,8 @@ const FavoriteProductPage = () => {
   };
   const [cart, setCart] = useState([]);
   const { fetchProductDetails } = useProduct();
-  const { fetchCategoryDetail } = useCategories();
   const [products, setProducts] = useState([]);
-  const [category, setCategory] = useState([]);
+  
   useEffect(() => {
     fetchFavourites();
   }, []);
@@ -40,20 +39,6 @@ const FavoriteProductPage = () => {
     }
   }, [cart]);
 
-  useEffect(() => {
-    const fetchAllCategoryDetails = async () => {
-      const categoryDetails = await Promise.all(
-        products.map(async (item) => {
-          return await fetchCategoryDetail(item.product_category);
-        })
-      );
-      setCategory(categoryDetails);
-    };
-
-    if (products.length > 0) {
-      fetchAllCategoryDetails();
-    }
-  }, [products]);
 
   const handleRemove = async (id) => {
     const updatedFavourites = await updateFavourite(id);
@@ -94,7 +79,6 @@ const FavoriteProductPage = () => {
             <FavoriteItemComponent
               key={index}
               productDetails={item}
-              categoryDetail={category}
               onRemove={handleRemove}
             />
           ))

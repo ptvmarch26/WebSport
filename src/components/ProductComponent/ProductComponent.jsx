@@ -7,7 +7,7 @@ import {
   getFavourite,
   updateFavourite,
 } from "../../services/api/FavouriteApi"; // import API
-
+import { useCart } from "../../context/CartContext"; // import context
 const ProductComponent = ({
   src,
   productId,
@@ -27,6 +27,10 @@ const ProductComponent = ({
   };
   const { handleAddToCart } = useCart();
 
+  const handlePushToCart = async () => {
+    const res = await handleAddToCart(productId); // Gọi API để thêm sản phẩm vào giỏ hàng
+    console.log(res);
+  }
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
@@ -92,7 +96,7 @@ const ProductComponent = ({
 
         <div className="absolute top-[10px] left-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           {/* Button Thêm vào giỏ */}
-          <button className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg">
+          <button onClick={handlePushToCart} className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg">
             <HiOutlineShoppingCart className="text-xl" />
           </button>
 

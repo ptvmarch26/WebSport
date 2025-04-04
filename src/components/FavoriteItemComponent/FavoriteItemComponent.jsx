@@ -4,7 +4,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 
-const FavoriteItemComponent = ({ productDetails, onRemove, categoryDetail }) => {
+const FavoriteItemComponent = ({ productDetails, onRemove }) => {
   return (
     <div>
       <div className="flex gap-10 mt-10 sm:my-10">
@@ -20,15 +20,7 @@ const FavoriteItemComponent = ({ productDetails, onRemove, categoryDetail }) => 
             {productDetails.product_title}
           </h2>
           <p className="text-sm my-1">
-            Loại:
-            {categoryDetail && categoryDetail.length > 0
-              ? categoryDetail
-                  .filter(
-                    (category) =>
-                      category._id === productDetails.product_category
-                  )
-                  .map((category) => category.category_type)
-              : "Không xác định"}
+            Loại: {productDetails.product_category.category_type}
           </p>
           <div className="flex productDetailss-center">
             <p className="text-md font-weight text-[#9ca3af] line-through mr-4">

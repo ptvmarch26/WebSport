@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button as MButton } from "@material-tailwind/react";
 import AddressFormComponent from "../../../components/AddressFormComponent/AddressFormComponent";
 import { FaTrash } from "react-icons/fa";
@@ -6,7 +6,10 @@ import { FaRegEdit } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Button } from "antd";
 import { AiOutlineClose } from "react-icons/ai";
+import { useUser } from "../../../context/UserContext";
 function MyAddress() {
+  const { handleAddAddress, fetchUser, handleUpdateAddress, handleDeleteAddress } = useUser(); 
+
   const [addresses, setAddresses] = useState([]);
   const [editingAddress, setEditingAddress] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -14,18 +17,17 @@ function MyAddress() {
 
   const validateForm = (address) => {
     const errors = {};
-    if (!address.firstName) errors.firstName = "Vui lòng nhập Họ";
-    if (!address.lastName) errors.lastName = "Vui lòng nhập Tên";
-    if (!address.phoneNumber)
-      errors.phoneNumber = "Vui lòng nhập Số điện thoại";
-    if (!address.streetAddress) errors.streetAddress = "Vui lòng nhập Địa chỉ";
+    if (!address.name) errors.name = "Vui lòng nhập Họ và tên";
+    if (!address.phone)
+      errors.phone = "Vui lòng nhập Số điện thoại";
+    if (!address.home_address) errors.home_address = "Vui lòng nhập Địa chỉ";
     if (!address.province) errors.province = "Vui lòng chọn Tỉnh/Thành phố";
     if (!address.district) errors.district = "Vui lòng chọn Quận/Huyện";
     if (!address.ward) errors.ward = "Vui lòng chọn Phường/Xã";
     return errors;
   };
 
-  const handleAddAddress = () => {
+  const handleAddAddresss = () => {
     setEditingAddress(null);
     setShowForm(true);
     setFormErrors({});
@@ -37,7 +39,7 @@ function MyAddress() {
     setFormErrors({});
   };
 
-  const handleSaveAddress = () => {
+  const handleSaveAddress = async () => {
     const errors = validateForm(editingAddress || {});
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -45,36 +47,73 @@ function MyAddress() {
     }
 
     if (editingAddress.index !== undefined) {
-      const updatedAddresses = [...addresses];
-      updatedAddresses[editingAddress.index] = {
-        ...editingAddress,
-        index: undefined,
-      };
-      setAddresses(updatedAddresses);
-    } else {
-      setAddresses([
-        ...addresses,
-        { ...editingAddress, isDefault: addresses.length === 0 },
-      ]);
+      handleUpdateAddresss(editingAddress.index);
+    }
+     else {
+      handleAddNewAddress();
     }
     setShowForm(false);
   };
 
-  const handleSetDefault = (index) => {
-    setAddresses(
-      addresses.map((addr, i) => ({ ...addr, isDefault: i === index }))
-    );
+  const handleAddNewAddress = async () => {
+    const newAddress = {
+      ...editingAddress,
+      is_default: addresses.length === 0, 
+    };
+  
+    await handleAddAddress(newAddress);
+    setAddresses([...addresses, newAddress]);
+  }
+  
+  const handleUpdateAddresss = async () => {
+    const updatedAddresses = [...addresses];
+    updatedAddresses[editingAddress.index] = {
+      ...editingAddress,
+    };
+    await handleUpdateAddress(editingAddress.index, editingAddress);
+    setAddresses(updatedAddresses);
+  }
+
+  const handleSetDefault = async (index) => {
+    const updatedAddresses = addresses.map((addr, i) => ({
+      ...addr,
+      is_default: i === index, // Đặt is_default thành true cho địa chỉ được chọn
+    }));
+  
+    setAddresses(updatedAddresses);
+  
+    const updatedAddress = updatedAddresses[index];
+    if (updatedAddress) {
+      await handleUpdateAddress(index, updatedAddress);
+    }
   };
 
-  const handleDeleteAddress = (index) => {
-    setAddresses(addresses.filter((_, i) => i !== index));
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      const userData = await fetchUser();
+      setAddresses(userData?.result?.addresses);
+    };
+    fetchAddresses();
+  }, []);
+
+  const handleDeleteAddresss = async (index) => {
+    const isDefaultAddress = addresses[index]?.is_default;
+
+    const updatedAddresses = addresses.filter((_, i) => i !== index);
+
+    if (isDefaultAddress && updatedAddresses.length > 0) {
+      updatedAddresses[0].is_default = true;
+    };
+    
+    await handleDeleteAddress(index);
+    setAddresses(updatedAddresses);
   };
 
   return (
     <div className="lg:px-6 bg-white">
       <div className="flex flex-wrap justify-between items-center">
         <h1 className="text-3xl font-semibold">Địa chỉ của tôi</h1>
-        <MButton onClick={handleAddAddress} className="">
+        <MButton onClick={handleAddAddresss} className="">
           Thêm địa chỉ mới
         </MButton>
       </div>
@@ -85,15 +124,15 @@ function MyAddress() {
               <div className="flex flex-wrap items-center gap-5">
                 <div className="space-y-3">
                   <p>
-                    {address.firstName} {address.lastName}
+                    {address.name} 
                   </p>
                   <p>
-                    {address.streetAddress}, {address.ward}, {address.district},{" "}
+                    {address.home_address}, {address.ward}, {address.district},{" "}
                     {address.province}
                   </p>
-                  <p>{address.phoneNumber}</p>
+                  <p>{address.phone}</p>
                 </div>
-                {address.isDefault && (
+                {address.is_default && (
                   <MButton color="white" disabled className="h-full !shadow-lg">
                     Mặc định
                   </MButton>
@@ -112,12 +151,12 @@ function MyAddress() {
                   type="link"
                   icon={<FaTrash />}
                   danger
-                  onClick={() => handleDeleteAddress(index)}
+                  onClick={() => handleDeleteAddresss(index)}
                   key="delete"
                 >
                   Xóa
                 </Button>
-                {!address.isDefault && (
+                {!address.is_default && (
                   <Button
                     type="link"
                     icon={<IoSettingsSharp />}
