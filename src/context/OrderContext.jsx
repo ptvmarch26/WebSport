@@ -29,7 +29,7 @@ export const OrderProvider = ({ children }) => {
 
   const handleCreateOrder = async (orderData) => {
     const res = await createOrder(orderData);
-    if (res) fetchOrders(); 
+    return res;
 
   };
 

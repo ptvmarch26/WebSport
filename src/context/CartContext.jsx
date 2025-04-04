@@ -17,7 +17,8 @@ export const CartProvider = ({ children }) => {
 
   const fetchCart = async () => {
     const data = await getCart();
-    setCart(data.result.products);
+    setCart(data?.result || []);
+    return data;
   };
 
   const handleAddToCart = async (productId) => {
@@ -30,9 +31,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const handleClearCart = async () => {
-    const res = await clearCart();
-    console.log(res);
-    return res;
+    return await clearCart();
   };
 
   const handleDecreaseQuantity = async (productId) => {

@@ -46,7 +46,7 @@ export const removeFromCart = async (productId) => {
 
 export const clearCart = async () => {
   try {
-    const res = await axios.delete(`${API_URL}/clear`, {
+    const res = await axios.delete(`${API_URL}/`, {
       headers: { Authorization: `Bearer ${getToken()}` },
     });
     return res.data;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button as MButton } from "@material-tailwind/react";
 import AddressFormComponent from "../../../components/AddressFormComponent/AddressFormComponent";
 import { FaTrash } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { Button } from "antd";
 import { AiOutlineClose } from "react-icons/ai";
 import { useUser } from "../../../context/UserContext";
 function MyAddress() {
-  // const { handleAddAddress } = useUser(); 
+  const { handleAddAddress, fetchUser, handleUpdateAddress, handleDeleteAddress } = useUser(); 
 
   const [addresses, setAddresses] = useState([]);
   const [editingAddress, setEditingAddress] = useState(null);
@@ -27,11 +27,10 @@ function MyAddress() {
     return errors;
   };
 
-  const handleAddAddress = () => {
+  const handleAddAddresss = () => {
     setEditingAddress(null);
     setShowForm(true);
     setFormErrors({});
-    
   };
 
   const handleEditAddress = (index) => {
@@ -48,39 +47,73 @@ function MyAddress() {
     }
 
     if (editingAddress.index !== undefined) {
-      console.log(index);
-      const updatedAddresses = [...addresses];
-      updatedAddresses[editingAddress.index] = {
-        ...editingAddress,
-        index: undefined,
-      };
-      setAddresses(updatedAddresses);
-    } else {
-      setAddresses([
-        ...addresses,
-        { ...editingAddress, isDefault: addresses.length === 0 },
-      ]);
+      handleUpdateAddresss(editingAddress.index);
     }
-
+     else {
+      handleAddNewAddress();
+    }
     setShowForm(false);
   };
 
+  const handleAddNewAddress = async () => {
+    const newAddress = {
+      ...editingAddress,
+      is_default: addresses.length === 0, 
+    };
+  
+    await handleAddAddress(newAddress);
+    setAddresses([...addresses, newAddress]);
+  }
+  
+  const handleUpdateAddresss = async () => {
+    const updatedAddresses = [...addresses];
+    updatedAddresses[editingAddress.index] = {
+      ...editingAddress,
+    };
+    await handleUpdateAddress(editingAddress.index, editingAddress);
+    setAddresses(updatedAddresses);
+  }
 
-  const handleSetDefault = (index) => {
-    setAddresses(
-      addresses.map((addr, i) => ({ ...addr, isDefault: i === index }))
-    );
+  const handleSetDefault = async (index) => {
+    const updatedAddresses = addresses.map((addr, i) => ({
+      ...addr,
+      is_default: i === index, // Đặt is_default thành true cho địa chỉ được chọn
+    }));
+  
+    setAddresses(updatedAddresses);
+  
+    const updatedAddress = updatedAddresses[index];
+    if (updatedAddress) {
+      await handleUpdateAddress(index, updatedAddress);
+    }
   };
 
-  const handleDeleteAddress = (index) => {
-    setAddresses(addresses.filter((_, i) => i !== index));
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      const userData = await fetchUser();
+      setAddresses(userData?.result?.addresses);
+    };
+    fetchAddresses();
+  }, []);
+
+  const handleDeleteAddresss = async (index) => {
+    const isDefaultAddress = addresses[index]?.is_default;
+
+    const updatedAddresses = addresses.filter((_, i) => i !== index);
+
+    if (isDefaultAddress && updatedAddresses.length > 0) {
+      updatedAddresses[0].is_default = true;
+    };
+    
+    await handleDeleteAddress(index);
+    setAddresses(updatedAddresses);
   };
 
   return (
     <div className="lg:px-6 bg-white">
       <div className="flex flex-wrap justify-between items-center">
         <h1 className="text-3xl font-semibold">Địa chỉ của tôi</h1>
-        <MButton onClick={handleAddAddress} className="">
+        <MButton onClick={handleAddAddresss} className="">
           Thêm địa chỉ mới
         </MButton>
       </div>
@@ -99,7 +132,7 @@ function MyAddress() {
                   </p>
                   <p>{address.phone}</p>
                 </div>
-                {address.isDefault && (
+                {address.is_default && (
                   <MButton color="white" disabled className="h-full !shadow-lg">
                     Mặc định
                   </MButton>
@@ -118,12 +151,12 @@ function MyAddress() {
                   type="link"
                   icon={<FaTrash />}
                   danger
-                  onClick={() => handleDeleteAddress(index)}
+                  onClick={() => handleDeleteAddresss(index)}
                   key="delete"
                 >
                   Xóa
                 </Button>
-                {!address.isDefault && (
+                {!address.is_default && (
                   <Button
                     type="link"
                     icon={<IoSettingsSharp />}

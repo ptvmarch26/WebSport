@@ -18,7 +18,7 @@ function AddressFormComponent({
     province: "Tỉnh/Thành phố",
     district: "Quận/Huyện",
     ward: "Phường/Xã",
-    is_default: "Mặc định",
+    is_default: "false",
   };
 
   const [provinces, setProvinces] = useState([]);
@@ -93,7 +93,6 @@ function AddressFormComponent({
   return (
     <div>
       <div className="flex gap-2">
-        {/* First Name */}
         <div className="md:flex md:gap-2 w-full">
           <div className="relative w-full mb-3">
             <input

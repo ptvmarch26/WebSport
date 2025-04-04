@@ -57,6 +57,7 @@ export const updateUser = async (userData) => {
 };
 
 export const addAddress = async (addressData) => {
+  console.log("addressData", addressData);
   try {
     const response = await axios.post(`${API_URL}/address`, addressData, {
       headers: { Authorization: `Bearer ${getToken()}` },
@@ -76,6 +77,18 @@ export const updateAddress = async (index, updateData) => {
     return response.data;
   } catch (error) {
     console.error("Error updating address:", error);
+    throw error;
+  }
+};
+
+export const deleteAddress = async (index) => {
+  try {
+    const response = await axios.delete(`${API_URL}/address/${index}`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting address:", error);
     throw error;
   }
 };

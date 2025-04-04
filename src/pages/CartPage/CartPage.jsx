@@ -8,18 +8,20 @@ const CartPage = () => {
 
   useEffect(() => {
     fetchCart();
-  }, []); // Gọi hàm fetchCart khi component mount
+  }, []); 
+
   console.log(cart);
+
+  const cartItems = cart?.products || [];
   const navigate = useNavigate();
 
-  // Tính toán subtotal
-  const subtotal = cart?.reduce((acc, item) => {
+  const subtotal = cartItems?.reduce((acc, item) => {
     const discountedPrice = item.product_id.product_price * (1 - item.product_id.product_percent_discount / 100);
     return acc + discountedPrice * item.quantity;
   }, 0) || 0;
 
   const handleNavigateCheckout = () => {
-    navigate("/checkout"); // Truyền cart qua state
+    navigate("/checkout"); 
   };
 
   return (
@@ -28,12 +30,12 @@ const CartPage = () => {
         <div className="col-span-2">
           <h1 className="text-2xl font-bold uppercase mb-4">Giỏ hàng</h1>
           {
-              cart?.length === 0 ? (
+              cartItems?.length === 0 ? (
                 <p className="text-center uppercase text-xl font-semibold text-gray-600">
                   Hiện không có sản phẩm nào trong giỏ
                 </p>
               ) : (
-                cart?.map((item) => (
+                cartItems?.map((item) => (
                   <CartItemComponent
                     key={item.product_id._id}
                     item={item}
@@ -93,7 +95,7 @@ const CartPage = () => {
           </button>
           <button onClick={() => {
             handleClearCart();
-            // setCart([]);
+            setCart([]);
           }
           }>
             Xóa tất cả
