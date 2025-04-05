@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import {getAllOrders, getOrderByUser, getOrderDetail, createOrder, previewOrder, updateOrderStatus} from "../services/api/OrderApi";
+import {getAllOrders, getOrderByUser, getOrderDetail, createOrder,  updateOrderStatus} from "../services/api/OrderApi";
 
 const OrderContext = createContext();
 
@@ -17,13 +17,14 @@ export const OrderProvider = ({ children }) => {
 
   const fetchOrdersByUser = async (userId, orderStatus = "all") => {
     const res = await getOrderByUser(userId, orderStatus);
-    if (res) setOrders(res);
-
+    setOrders(res?.result);
+    return res;
   };
 
   const fetchOrderDetail = async (orderId) => {
     const res = await getOrderDetail(orderId);
-    if (res) setOrderDetails(res);
+    if (res) setOrderDetails(res?.result);
+    return res;
 
   };
 
@@ -33,15 +34,9 @@ export const OrderProvider = ({ children }) => {
 
   };
 
-  const handlePreviewOrder = async (orderData) => {
-    const res = await previewOrder(orderData);
-    return res; 
-  };
-
   const handleUpdateOrderStatus = async (orderId, status) => {
     const res = await updateOrderStatus(orderId, status);
     if (res) fetchOrders(); 
-
   };
 
   return (
@@ -53,7 +48,6 @@ export const OrderProvider = ({ children }) => {
         fetchOrdersByUser,
         fetchOrderDetail,
         handleCreateOrder,
-        handlePreviewOrder,
         handleUpdateOrderStatus,
       }}
     >

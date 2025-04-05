@@ -8,7 +8,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const {token } = useAuth();
+  // const {token } = useAuth();
   const fetchUsers = async () => {
     try {
       const data = await getAllUsers();

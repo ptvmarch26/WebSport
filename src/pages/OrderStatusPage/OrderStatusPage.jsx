@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@material-tailwind/react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
-
+import { useOrder } from "../../context/OrderContext";
 const OrderStatusPage = () => {
   const [activeTab, setActiveTab] = useState("all"); // Sử dụng 'all' để hiển thị tất cả
   const navigate = useNavigate();
@@ -18,77 +18,18 @@ const OrderStatusPage = () => {
     { id: "Hoàn hàng", label: "Hoàn hàng" },
   ];
 
-  const orders = [
-    {
-      id: 1,
-      status: "Hủy hàng",
-      products: [
-        {
-          name: "Gel vệ sinh răng miệng đánh bay mảng bám cao răng",
-          size: "14.8ml",
-          quantity: 1,
-          price: 83100,
-          oldPrice: 10000,
-          image:
-            "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
-        },
-      ],
-    },
-    {
-      id: 2,
-      status: "Hoàn thành",
-      products: [
-        {
-          name: "Dầu gội dưỡng ẩm cho thú cưng",
-          size: "250ml",
-          quantity: 1,
-          price: 129000,
-          oldPrice: 150000,
-          image:
-            "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
-        },
-        {
-          name: "Bàn chải đánh răng cho thú cưng",
-          size: "M",
-          quantity: 2,
-          price: 50000,
-          oldPrice: 60000,
-          image:
-            "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
-        },
-      ],
-    },
-    {
-      id: 3,
-      status: "Chờ xác nhận",
-      products: [
-        {
-          name: "Bàn chải đánh răng cho thú cưng",
-          size: "M",
-          quantity: 2,
-          price: 50000,
-          oldPrice: 60000,
-          image:
-            "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
-        },
-        {
-          name: "Bàn chải đánh răng cho thú cưng",
-          size: "M",
-          quantity: 2,
-          price: 50000,
-          oldPrice: 60000,
-          image:
-            "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/403542/01/sv01/fnd/PNA/fmt/png/ST-Miler-Camo-Sneakers",
-        },
-      ],
-    },
-  ];
+  const { orders, fetchOrdersByUser } = useOrder();
+  useEffect(() => {
+    fetchOrdersByUser();
+  }, []);
+  console.log("orders", orders);
 
+  
   // Lọc đơn hàng theo trạng thái, nếu chọn "Tất cả" thì không lọc
   const filteredOrders =
     activeTab === "all"
       ? orders
-      : orders.filter((order) => order.status === activeTab);
+      : orders.filter((order) => order.order_status === activeTab);
 
   const calculateTotalPrice = (products) => {
     return products.reduce(
@@ -134,11 +75,7 @@ const OrderStatusPage = () => {
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="lg:flex justify-between gap-6">
         <div className="lg:block pb-10 lg:pb-0">
-          <AccountInfoComponent
-            full_name="Dương Anh Vũ"
-            user_name="rain494"
-            // src_img=""
-          />
+          <AccountInfoComponent/>
         </div>
         <div className="min-h-[400px] flex-1 p-6 bg-white text-black border border-gray-300 rounded-lg">
           <div className="flex border-b border-gray-300 relative">
@@ -166,7 +103,7 @@ const OrderStatusPage = () => {
             ))}
           </div>
 
-          {filteredOrders.map((order) => (
+          {/* {filteredOrders.map((order) => (
             <div
               key={order.id}
               className="p-4 my-5 border border-gray-300 rounded-md"
@@ -250,7 +187,7 @@ const OrderStatusPage = () => {
                 )}
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
     </div>

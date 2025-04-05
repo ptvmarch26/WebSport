@@ -10,6 +10,7 @@ import { useDiscount } from "../../context/DiscountContext";
 import { Button as MButton } from "@material-tailwind/react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
+import { useNavigate } from "react-router-dom";
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
   {
@@ -26,7 +27,7 @@ const paymentMethods = [
 ];
 
 function CheckoutPage() {
-  const { cart, fetchCart } = useCart();
+  const { cart, fetchCart, setCart } = useCart();
   const { fetchDiscounts, discounts} = useDiscount();
 
   useEffect(() => {
@@ -209,6 +210,8 @@ function CheckoutPage() {
 
   const { handleCreateOrder } = useOrder();
   
+  const navigate = useNavigate();
+
   const CreateOrder = async () => {
     const orderData = {
       shipping_address: selectedAddress,
@@ -223,6 +226,13 @@ function CheckoutPage() {
 
     const res = await handleCreateOrder(orderData);
     console.log(res);
+    if (res.EC === 0 ){
+      setCart([]);
+      navigate(`/orders/order-details/${res.result._id}`);
+    }
+    else {
+      alert(res.EM);
+    }
   };
 
   
