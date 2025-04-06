@@ -1,10 +1,9 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@material-tailwind/react";
 import { useOrder } from "../../context/OrderContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
-import { useOrder } from "../../context/OrderContext";
 const OrderStatusPage = () => {
   const [activeTab, setActiveTab] = useState("all"); // Sử dụng 'all' để hiển thị tất cả
   const navigate = useNavigate();
@@ -24,11 +23,6 @@ const OrderStatusPage = () => {
     { id: "Hủy hàng", label: "Hủy hàng" },
     { id: "Hoàn hàng", label: "Hoàn hàng" },
   ];
-  const { orders, fetchOrdersByUser } = useOrder();
-  useEffect(() => {
-    fetchOrdersByUser();
-  }, []);
-  console.log("orders", orders);
 
   
   // Lọc đơn hàng theo trạng thái, nếu chọn "Tất cả" thì không lọc
@@ -198,7 +192,7 @@ const OrderStatusPage = () => {
                 )}
               </div>
             </div>
-          ))} */}
+          ))} 
         </div>
       </div>
     </div>

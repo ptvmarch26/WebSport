@@ -10,7 +10,7 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
       <div className="flex gap-10 mt-10 sm:my-10">
         <Link to={"/"}>
           <img
-            src={productDetails.product_img.image_main}
+            // src={productDetails.product_img.image_main}
             alt={productDetails.title}
             className="max-w-[128px] w-[128px] h-[128px] sm:max-w-[256px] sm:w-52 sm:h-52 md:w-64 md:h-64 object-cover"
           />
@@ -20,7 +20,7 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
             {productDetails.product_title}
           </h2>
           <p className="text-sm my-1">
-            Loại: {productDetails.product_category.category_type}
+            {/* Loại: {productDetails.product_category.category_type} */}
           </p>
           <div className="flex productDetailss-center">
             <p className="text-md font-weight text-[#9ca3af] line-through mr-4">

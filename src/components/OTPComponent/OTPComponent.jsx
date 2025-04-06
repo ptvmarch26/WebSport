@@ -1,9 +1,9 @@
 import { Button } from "@material-tailwind/react";
 import { useState, useRef, useEffect } from "react";
 
-const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height}) => {
+const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [timeLeft, setTimeLeft] = useState(30); 
+  const [timeLeft, setTimeLeft] = useState(30);
   const inputRefs = useRef([]);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height}) => {
 
   const handleResend = () => {
     onResend();
-    setTimeLeft(30); 
+    setTimeLeft(30);
     setOtp(["", "", "", "", "", ""]);
   };
 
@@ -54,35 +54,43 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height}) => {
         Mã xác minh đã được gửi đến
         <br /> <strong>{newEmail}</strong>
       </p>
-      <div className="flex gap-2 mb-4">
-        {otp.map((digit, index) => (
-          <input
-            key={index}
-            ref={(el) => (inputRefs.current[index] = el)}
-            type="text"
-            maxLength="1"
-            value={digit}
-            onChange={(e) => handleChange(index, e)}
-            onKeyDown={(e) => handleKeyDown(index, e)}
-            className="w-12 h-12 text-center text-xl border-2 border-[#ccc] rounded focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-          />
-        ))}
-      </div>
-      <p className="text-gray-500 text-sm mb-4">
-        {timeLeft > 0 ? `Vui lòng chờ ${timeLeft} giây để gửi lại.` : ""}
-      </p>
-      {timeLeft === 0 && (
-        <button
-          onClick={handleResend}
-          className="mb-3 -mt-4 text-black text-sm"
-        >
-          Gửi lại mã
-        </button>
-      )}
-      {otpError && <p className="text-red-500 text-sm mb-2">{otpError}</p>}
-      <Button onClick={handleVerify} className={`w-full ${height}`}>
-        Xác nhận
-      </Button>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleVerify();
+        }}
+        className="w-full flex flex-col"
+      >
+        <div className="flex justify-center gap-2 mb-4">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={(el) => (inputRefs.current[index] = el)}
+              type="text"
+              maxLength="1"
+              value={digit}
+              onChange={(e) => handleChange(index, e)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              className="w-12 h-12 text-center text-xl border-2 border-[#ccc] rounded focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+            />
+          ))}
+        </div>
+        <p className="text-gray-500 text-center text-sm mb-4">
+          {timeLeft > 0 ? `Vui lòng chờ ${timeLeft} giây để gửi lại.` : ""}
+        </p>
+        {timeLeft === 0 && (
+          <button
+            onClick={handleResend}
+            className="text-center mb-3 -mt-4 text-black text-sm"
+          >
+            Gửi lại mã
+          </button>
+        )}
+        {otpError && <p className="text-red-500 text-sm mb-2">{otpError}</p>}
+        <Button type="submit" className={`w-full ${height}`}>
+          Xác nhận
+        </Button>
+      </form>
     </div>
   );
 };
