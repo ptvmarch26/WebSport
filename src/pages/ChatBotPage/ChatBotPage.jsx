@@ -79,11 +79,11 @@ const ChatBotPage = () => {
 
             <div className="relative mt-4">
             <textarea
-  value={input}
-  onChange={(e) => setInput(e.target.value)}
-  className="w-full bg-[#f6f6f8] p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black resize-none overflow-y-auto"
-  placeholder="Nhập tin nhắn..."
-/>
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="w-full bg-[#f6f6f8] p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black resize-none overflow-y-auto"
+              placeholder="Nhập tin nhắn..."
+            />
               <button
                 onClick={handleSendMessage}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black hover:text-gray-600"
