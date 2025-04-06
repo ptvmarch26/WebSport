@@ -2,34 +2,33 @@ import React from "react";
 import { IoTrashOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 
-const CartItemComponent = ({ item, onRemove, onQuantityChange }) => {
+const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
   const decreaseQuantity = () => {
     if (item.quantity > 1) {
-      onQuantityChange(item.id, item.quantity - 1);
+      onDecrease(item._id, item.quantity - 1);
     }
   };
 
   const increaseQuantity = () => {
-    onQuantityChange(item.id, item.quantity + 1);
+    onIncrease(item.id, item.quantity + 1);
   };
 
   return (
     <>
       <div className="flex gap-4">
         <img
-          src={item.image}
-          alt={item.name}
+          src={item?.product_id?.product_img?.image_main}
+          alt={item?.product_id?.product_title}
           className="w-28 h-28 object-cover"
         />
         <div className="flex-1">
-          <h2 className="font-semibold line-clamp-2">{item.name}</h2>
-          <p className="text-sm my-1">Loại: {item.category}</p>
+          <h2 className="font-semibold line-clamp-2">{item?.product_id?.product_title}</h2>
           <div className="flex items-center">
             <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
-              {item.oldPrice.toLocaleString()}₫
+              {item.product_id?.product_price.toLocaleString()}₫
             </p>
             <p className="text-md font-bold text-[#ba2b20] mr-4">
-              {item.newPrice.toLocaleString()}₫
+              {(item.product_id?.product_price*(1-item.product_id?.product_percent_discount/100)).toLocaleString()}₫
             </p>
           </div>
         </div>
@@ -39,7 +38,7 @@ const CartItemComponent = ({ item, onRemove, onQuantityChange }) => {
               <FaRegHeart className="text-xl" />
             </button>
             <button
-              onClick={() => onRemove(item.id)}
+              onClick={onRemove}
               className="p-2 hover:bg-gray-200 transition-all duration-300 hover:rounded-full"
             >
               <IoTrashOutline className="text-xl text-red-500" />

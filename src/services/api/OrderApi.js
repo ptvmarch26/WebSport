@@ -5,6 +5,7 @@ const API_URL = "http://localhost:5000/order";
 const getToken = () => localStorage.getItem("accessToken");
 
 export const createOrder = async (orderData) => {
+  console.log("orderData", orderData);
   try {
     const response = await axios.post(`${API_URL}/create`, orderData, {
       headers: {
@@ -58,20 +59,6 @@ export const getOrderDetail = async (orderId) => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
-    return null;
-  }
-};
-
-export const previewOrder = async (orderData) => {
-  try {
-    const response = await axios.post(`${API_URL}/preview`, orderData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Lỗi khi xem trước đơn hàng:", error);
     return null;
   }
 };

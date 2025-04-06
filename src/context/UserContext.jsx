@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress } from "../services/api/UserApi";
+import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress, deleteAddress } from "../services/api/UserApi";
 import { message } from "antd";
 import { useAuth } from "./AuthContext";
 
@@ -8,7 +8,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const {token } = useAuth();
+  // const {token } = useAuth();
   const fetchUsers = async () => {
     try {
       const data = await getAllUsers();
@@ -36,6 +36,7 @@ export const UserProvider = ({ children }) => {
     } else {
       message.error("Không tìm thấy thông tin người dùng!");
     }
+    return data;
   };
 
   const handleUpdateUser = async (userData) => {
@@ -60,19 +61,23 @@ export const UserProvider = ({ children }) => {
   const handleUpdateAddress = async (index, updateData) => {
     return await updateAddress(index, updateData);
   };
+  
+  const handleDeleteAddress = async (index) => {
+    return await deleteAddress(index);
+  };
 
   return (
     <UserContext.Provider
       value={{
         users,
         selectedUser,
-
         fetchUsers,
         fetchUser,
         handleUpdateUser,
         handleChangePassword,
         handleAddAddress,
         handleUpdateAddress,
+        handleDeleteAddress
       }}
     >
       {children}

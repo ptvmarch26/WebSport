@@ -5,12 +5,13 @@ const OrderSummaryComponent = ({
   subtotal,
   voucher,
   setVoucher,
-  handleApplyVoucher,
+  // handleApplyVoucher,
+  onClick,
 }) => {
   const [isVoucherValid, setIsVoucherValid] = useState(false);
 
   const handleVoucherChange = (e) => {
-    const value = e.target.value.trim();
+    const value = e.target.value.trim().toUpperCase();
     setVoucher(value);
     setIsVoucherValid(value.length > 0);
   };
@@ -18,23 +19,23 @@ const OrderSummaryComponent = ({
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
       {cart.map((item) => (
-        <div key={item.id}>
+        <div key={item.product_id._id}>
           <div className="flex justify-between items-center">
             <div>
               <img
-                src={item.image}
-                alt={item.name}
+                src={item?.product_id?.product_img?.image_main}
+                alt={item?.product_id?.product_title}
                 className="w-16 h-16 object-cover"
               />
             </div>
             <div className="flex justify-between items-center flex-1 mx-4 space-x-2">
               <div>
-                <h4 className="text-sm line-clamp-1">{item.name}</h4>
-                <p className="text-xs">Size: {item.size}</p>
+                <h4 className="text-sm line-clamp-1">{item?.product_id?.product_title}</h4>
+                {/* <p className="text-xs">Size: {item.size}</p> */}
                 <p className="text-xs">x{item.quantity}</p>
               </div>
               <div>
-                <p className="text-sm">{item.newPrice.toLocaleString()}₫</p>
+                <p className="text-sm">{(item.product_id?.product_price*(1-item.product_id?.product_percent_discount/100)).toLocaleString()}₫</p>
               </div>
             </div>
           </div>
@@ -64,7 +65,7 @@ const OrderSummaryComponent = ({
                   ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
                   : "bg-black hover:opacity-80"
               }`}
-              onClick={handleApplyVoucher}
+              // onClick={handleApplyVoucher}
               disabled={!isVoucherValid}
             >
               Áp dụng
@@ -84,7 +85,7 @@ const OrderSummaryComponent = ({
           <span>Tổng tiền</span>
           <span>{subtotal.toLocaleString()}₫</span>
         </div>
-        <button className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase">
+        <button onClick={onClick} className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase">
           Đặt hàng
         </button>
       </div>

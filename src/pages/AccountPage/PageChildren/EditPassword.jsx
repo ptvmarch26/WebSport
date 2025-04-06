@@ -2,11 +2,11 @@ import { Button } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
-import { useAuth } from "../../../context/AuthContext";
+import { useUser } from "../../../context/UserContext";
 import { FaIgloo } from "react-icons/fa";
 
 const EditPassword = () => {
-  const { handleChangePassword , token} = useAuth();
+  const { handleChangePassword } = useUser();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
