@@ -77,8 +77,9 @@ export const previewOrder = async (orderData) => {
 };
 
 export const updateOrderStatus = async (orderId, status) => {
+  console.log(orderId, status);
   try {
-    const response = await axios.put(`${API_URL}/update-status/${orderId}`, { status }, {
+    const response = await axios.patch(`${API_URL}/update-status/${orderId}`, { status }, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },

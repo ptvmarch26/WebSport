@@ -6,6 +6,7 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import SelectionComponent from "../../components/SelectionComponent/SelectionComponent";
 import { Button } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
+import QRComponent from "../../components/QrComponent/QrComponent";
 
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
@@ -239,6 +240,9 @@ function CheckoutPage() {
               selected={selectedPayment}
               setSelected={setSelectedPayment}
             />
+            <div className="my-10 flex justify-center">
+              <QRComponent amount={100000} orderId="123456aa8666" />
+            </div>
           </div>
           <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">
             <h2 className="lg:hidden text-xl font-bold uppercase mb-4">

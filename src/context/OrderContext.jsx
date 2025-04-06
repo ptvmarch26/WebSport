@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {getAllOrders, getOrderByUser, getOrderDetail, createOrder, previewOrder, updateOrderStatus} from "../services/api/OrderApi";
+import { resetSceneState } from "three/src/renderers/common/RendererUtils.js";
 
 const OrderContext = createContext();
 
@@ -40,8 +41,8 @@ export const OrderProvider = ({ children }) => {
 
   const handleUpdateOrderStatus = async (orderId, status) => {
     const res = await updateOrderStatus(orderId, status);
-    if (res) fetchOrders(); 
-
+    console.log(res);
+    return res;
   };
 
   return (
