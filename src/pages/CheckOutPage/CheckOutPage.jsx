@@ -11,6 +11,7 @@ import { Button as MButton } from "@material-tailwind/react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
+
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
   {
@@ -285,6 +286,9 @@ function CheckoutPage() {
               selected={selectedPayment}
               setSelected={setSelectedPayment}
             />
+            <div className="my-10 flex justify-center">
+              <QRComponent amount={100000} orderId="123456aa8666" />
+            </div>
           </div>
           <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">
             <h2 className="lg:hidden text-xl font-bold uppercase mb-4">

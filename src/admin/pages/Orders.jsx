@@ -7,34 +7,56 @@ import moment from "moment";
 
 const { Option } = Select;
 
-const statusColors = {
-  "Chờ xác nhận": "orange",
-  "Đang giao": "blue",
-  "Hoàn thành": "green",
-  "Hủy hàng": "red",
-  "Hoàn hàng": "purple",
-};
+const statusColors = [
+  "Chờ xác nhận",
+  "Đang chuẩn bị hàng",
+  "Đang giao",
+  "Giao hàng thành công",
+  "Hoàn hàng",
+  "Hủy hàng",
+];
 
 const Orders = () => {
-  const { orders, fetchOrders } = useOrder();
+  const { orders, fetchOrders, handleUpdateOrderStatus } = useOrder();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const navigate = useNavigate();
 
+  const [ordersState, setOrdersState] = useState(orders);
+
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  console.log(orders);
-  const filteredOrders = orders.filter((order) => {
-    const matchesStatus = filterStatus ? order.status === filterStatus : true;
-    const matchesSearch = searchText
-      ? order.products.some((product) =>
-          product.name.toLowerCase().includes(searchText.toLowerCase())
-        )
+  useEffect(() => {
+    setOrdersState(orders);
+  }, [orders]);
+
+  const handleStatusChange = (orderId, newStatus) => {
+    const updatedOrders = ordersState.map((order) => {
+      if (order._id === orderId) {
+        return { ...order, order_status: newStatus };
+      }
+      return order;
+    });
+    setOrdersState(updatedOrders);
+
+    handleUpdateOrderStatus(orderId, newStatus);
+  };
+
+  console.log("orders", orders);
+  const filteredOrders = ordersState.filter((order) => {
+    const matchesStatus = filterStatus
+      ? order.order_status === filterStatus
       : true;
-    return matchesStatus && matchesSearch;
+    // const matchesSearch = searchText
+    //   ? order.products.some((product) =>
+    //       product.name.toLowerCase().includes(searchText.toLowerCase())
+    //     )
+    //   : true;
+    // return matchesStatus && matchesSearch;
+    return matchesStatus;
   });
 
   const columns = [
@@ -78,7 +100,21 @@ const Orders = () => {
       title: "Trạng thái",
       dataIndex: "order_status",
       key: "order_status",
-      render: (status) => <Tag color={statusColors[status]}>{status}</Tag>,
+      render: (status, record) => (
+        <Select
+          value={status}
+          onChange={(newStatus) => {
+            handleStatusChange(record._id, newStatus);
+          }}
+          className="min-w-[200px]"
+        >
+          {statusColors.map((s) => (
+            <Option key={s} value={s}>
+              {s}
+            </Option>
+          ))}
+        </Select>
+      ),
     },
   ];
 
@@ -109,8 +145,8 @@ const Orders = () => {
             allowClear
             className="w-[300px]"
           >
-            {Object.keys(statusColors).map((status) => (
-              <Option key={status} value={status}>
+            {statusColors.map((status, index) => (
+              <Option key={index} value={status}>
                 {status}
               </Option>
             ))}
@@ -129,9 +165,9 @@ const Orders = () => {
           pagination={{ pageSize: 5 }}
           rowKey="_id"
           onRow={(record) => ({
-            onClick: () => navigate(`/admin/order-details/${record._id}`),
+            onClick: () => navigate(`/admin/order-details/${record._id}`),  
           })}
-          scroll={{x: 'max-content'}}
+          scroll={{ x: "max-content" }}
           className="cursor-pointer"
         />
       </div>
