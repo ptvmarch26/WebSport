@@ -22,12 +22,11 @@ const HomePage = () => {
   const arrSlides = [slider1, slider1, slider1];
 
   const { products, fetchProducts } = useProduct();
-  useEffect (() => {
+  useEffect(() => {
     fetchProducts();
   }, []);
-  
+
   console.log(products);
-  
 
   const productsStatus = [
     {
@@ -190,7 +189,6 @@ const HomePage = () => {
                     />
                   ))}
                 </div>
-               
               </div>
             );
           })}

@@ -60,6 +60,12 @@ const EditPassword = () => {
   return (
     <div className="lg:px-6 bg-white">
       <h1 className="text-3xl font-semibold">Đổi mật khẩu</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmitChangePassword();
+        }}
+      >
       <div className="space-y-5 mt-8">
         <div className="flex flex-col">
           <div className="flex items-center">
@@ -176,7 +182,7 @@ const EditPassword = () => {
           </div>
         </div>
 
-        <Button onClick={handleSubmitChangePassword} className="w-full">
+        <Button type="submit" className="w-full">
           Đổi mật khẩu
         </Button>
         {failChangePassword && (
@@ -188,6 +194,7 @@ const EditPassword = () => {
           <p className="text-green-500 text-sm mt-3 text-center">{success}</p>
         )}
       </div>
+      </form>
     </div>
   );
 };

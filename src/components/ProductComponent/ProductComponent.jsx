@@ -3,16 +3,12 @@ import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import {
-  getFavourite,
-  updateFavourite,
-} from "../../services/api/FavouriteApi"; // import API
+import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi"; // import API
 import { useCart } from "../../context/CartContext"; // import context
-const ProductComponent = ({
-  item,
-  onClick,
-}) => {
+const ProductComponent = ({ item, onClick }) => {
+
   const [isFavorite, setIsFavorite] = useState(false);
+  
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
     const res = await updateFavourite(item._id); // Gọi API để cập nhật danh sách yêu thích
@@ -23,9 +19,10 @@ const ProductComponent = ({
   const handlePushToCart = async () => {
     const res = await handleAddToCart(item._id); // Gọi API để thêm sản phẩm vào giỏ hàng
     console.log(res);
-  }
+  };
 
   useEffect(() => {
+    console.log("aaaaa", item._id);
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
 
@@ -43,7 +40,11 @@ const ProductComponent = ({
         onClick={onClick}
         className="relative w-full h-[250px] overflow-hidden"
       >
-        <img src={item.product_img} alt={item.product_title} className="w-full h-full object-cover" />
+        <img
+          src={item.product_img}
+          alt={item.product_title}
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="p-4">
         <h4 className="text-base font-semibold line-clamp-2 min-h-[38.4px] md:min-h-[48px] mb-3">
@@ -55,7 +56,11 @@ const ProductComponent = ({
           </span>
           {item.product_percent_discount > 0 && (
             <span className="text-sm line-through text-gray-400">
-              {(item.product_price * (1 - item.product_percent_discount /100 ))?.toLocaleString()} đ
+              {(
+                item.product_price *
+                (1 - item.product_percent_discount / 100)
+              )?.toLocaleString()}{" "}
+              đ
             </span>
           )}
         </div>
@@ -65,7 +70,8 @@ const ProductComponent = ({
           <div className="flex items-center">
             {[...Array(5)].map((_, index) => {
               const fullStars = Math.floor(item.product_rate);
-              const isHalfStar = item.product_rate % 1 !== 0 && index === fullStars;
+              const isHalfStar =
+                item.product_rate % 1 !== 0 && index === fullStars;
 
               return isHalfStar ? (
                 <IoIosStarHalf
@@ -86,13 +92,16 @@ const ProductComponent = ({
 
         <div className="text-sm text-[#158857] font-semibold">
           {item.product_percent_discount > 0 && (
-            <span>{percent}% Off</span>
+            <span>{item.product_percent_discount}% Off</span>
           )}
         </div>
 
         <div className="absolute top-[10px] left-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           {/* Button Thêm vào giỏ */}
-          <button onClick={handlePushToCart} className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg">
+          <button
+            onClick={handlePushToCart}
+            className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg"
+          >
             <HiOutlineShoppingCart className="text-xl" />
           </button>
 

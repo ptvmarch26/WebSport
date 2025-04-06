@@ -11,6 +11,7 @@ import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi";
 const ProductInfoComponent = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
+  const [availableVariants, setAvailableVariants] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
@@ -21,7 +22,7 @@ const ProductInfoComponent = ({ product }) => {
   const thumbSliderRef = useRef(null);
 
   const mainSliderSettings = {
-    dots: true,
+    // dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -33,10 +34,8 @@ const ProductInfoComponent = ({ product }) => {
   };
 
   const thumbSliderSettings = {
-    // dots: true,
     infinite: true,
     speed: 500,
-    // centerMode: true,
     slidesToShow: Math.min(5),
     slidesToScroll: 1,
     nextArrow: (
@@ -65,7 +64,11 @@ const ProductInfoComponent = ({ product }) => {
 
   const handleThumbClick = (index) => {
     setCurrentIndex(index);
-    mainSliderRef.current.slickGoTo(index); // Thay đổi slide của main slider
+    mainSliderRef.current.slickGoTo(index);
+
+    if (thumbSliderRef.current) {
+      thumbSliderRef.current.slickGoTo(index);
+    }
   };
 
   const toggleFavorite = async () => {
@@ -88,16 +91,23 @@ const ProductInfoComponent = ({ product }) => {
 
   const toggleDetails = () => setIsDetailsVisible(!isDetailsVisible);
 
-  const increaseQuantity = () => setQuantity(quantity + 1);
+  const increaseQuantity = () => {
+    const maxStock =
+      availableVariants.find((v) => v.variant_size === selectedSize)
+        ?.variant_countInStock ?? 0;
+
+    if (quantity < maxStock) {
+      setQuantity(quantity + 1);
+    }
+  };
+
   const decreaseQuantity = () => quantity > 1 && setQuantity(quantity - 1);
 
   // Hàm lấy ảnh chính và biến thể đưa vào để hiển thị, nếu nhỏ hơn 5 thì gấp đôi lên tại setting đang để min là 5 á
   const getAllImages = (product) => {
     if (!product) return [];
 
-    let images = [
-      product?.product_img,
-    ];
+    let images = [product?.product_img];
 
     // Lấy ảnh từ biến thể
     product.colors?.forEach((color) => {
@@ -117,9 +127,23 @@ const ProductInfoComponent = ({ product }) => {
 
   const allImages = getAllImages(product);
 
-  const handleColorClick = (color) => {
-    setSelectedColor(color);
-    setSelectedSize(null); // Reset size khi thay đổi màu
+  const handleColorSelect = (color) => {
+    setSelectedColor(color.color_name);
+    setAvailableVariants(color.variants);
+    setSelectedSize(null);
+
+    const mainColorImg = color.imgs?.img_main;
+    const index = allImages.findIndex((img) => img === mainColorImg);
+
+    if (index !== -1 && mainSliderRef.current) {
+      mainSliderRef.current.slickGoTo(index);
+      setCurrentIndex(index);
+    }
+
+    // Cập nhật vị trí thumbnail
+    if (thumbSliderRef.current) {
+      thumbSliderRef.current.slickGoTo(index);
+    }
   };
 
   console.log("product", product);
@@ -150,7 +174,7 @@ const ProductInfoComponent = ({ product }) => {
                       : "border-transparent"
                   }`}
                   onClick={() => handleThumbClick(index)}
-                  onMouseEnter={() => handleThumbClick(index)}
+                  // onMouseEnter={() => handleThumbClick(index)}
                 />
               </div>
             ))}
@@ -185,58 +209,51 @@ const ProductInfoComponent = ({ product }) => {
           )}
         </div>
 
-        {product?.colors && product?.colors.length > 0 && (
+        {product?.colors && product.colors.length > 0 && (
           <div>
-            {/* Hiển thị màu sắc */}
+            {/* Chọn màu */}
             <p className="text-base my-3 font-lg font-semibold">Chọn màu</p>
             <div className="flex flex-wrap gap-2">
-              {product?.colors.map((color) =>
-                color.variant_color ? (
-                  <Button
-                    key={variant._id}
-                    color="white"
-                    className={`w-24 h-14 border-gray-400 flex items-center justify-center p-2 border rounded-md shadow-md ${
-                      selectedColor === color.color_name
-                        ? "border-2 border-black"
-                        : ""
-                    }`}
-                    onClick={() => handleColorClick(variant.variant_color)}
-                  >
-                    {variant.variant_img?.image_main && (
-                      <img
-                        src={variant.variant_img?.image_main}
-                        alt={variant.variant_color}
-                        className="w-8 h-8 border border-black object-cover rounded-full mr-2"
-                      />
-                    )}
-                    {variant.variant_color}
-                  </Button>
-                ) : null
-              )}
+              {product.colors.map((color, index) => (
+                <Button
+                  key={index}
+                  color="white"
+                  className={`w-24 h-14 border-gray-400 flex items-center justify-center p-2 border rounded-md shadow-md ${
+                    selectedColor === color.color_name
+                      ? "border-2 border-black"
+                      : ""
+                  }`}
+                  onClick={() => handleColorSelect(color)}
+                >
+                  {color.color_name}
+                </Button>
+              ))}
             </div>
 
-            {/* Hiển thị kích thước */}
-            <div>
-              <p className="text-base my-3 font-lg font-semibold">
-                Chọn kích cỡ
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {product?.variants.map((variant) => (
-                  <Button
-                    key={variant._id}
-                    color="white"
-                    className={`w-14 h-14 border-gray-400 flex items-center justify-center border rounded-md shadow-md ${
-                      selectedSize === variant.variant_size
-                        ? "border-2 border-black"
-                        : ""
-                    }`}
-                    onClick={() => setSelectedSize(variant.variant_size)}
-                  >
-                    {variant.variant_size}
-                  </Button>
-                ))}
-              </div>
-            </div>
+            {/* Chọn size dựa theo màu */}
+            {availableVariants?.length > 0 && (
+              <>
+                <p className="text-base my-3 font-lg font-semibold">
+                  Chọn kích cỡ
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {availableVariants.map((variant) => (
+                    <Button
+                      key={variant._id}
+                      color="white"
+                      className={`w-14 h-14 border-gray-400 flex items-center justify-center border rounded-md shadow-md ${
+                        selectedSize === variant.variant_size
+                          ? "border-2 border-black"
+                          : ""
+                      }`}
+                      onClick={() => setSelectedSize(variant.variant_size)}
+                    >
+                      {variant.variant_size}
+                    </Button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -264,7 +281,16 @@ const ProductInfoComponent = ({ product }) => {
             </button>
           </div>
           <p className="text-sm text-gray-500">
-            Còn lại: {product?.product_countInStock} sản phẩm
+            {selectedColor && selectedSize ? (
+              <>
+                Còn lại:{" "}
+                {availableVariants.find((v) => v.variant_size === selectedSize)
+                  ?.variant_countInStock ?? 0}{" "}
+                sản phẩm
+              </>
+            ) : (
+              ""
+            )}
           </p>
           <div
             className="flex items-center cursor-pointer"
