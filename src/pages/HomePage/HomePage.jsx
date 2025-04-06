@@ -26,6 +26,7 @@ const HomePage = () => {
     fetchProducts();
   }, []);
   
+  console.log(products);
   
 
   const productsStatus = [
@@ -184,14 +185,7 @@ const HomePage = () => {
                   {products.slice(0, 8).map((product) => (
                     <ProductComponent
                       key={product._id}
-                      productId={product._id} // Dùng _id làm key cho mỗi sản phẩm
-                      src={product.product_img.image_main} // Lấy ảnh chính
-                      alt={product.product_title}
-                      name={product.product_title}
-                      oldPrice={product.product_price} // Nếu có giảm giá, thêm oldPrice
-                      newPrice={product.product_price * (1 - product.product_percent_discount / 100)} // Giá sau giảm
-                      star={product.product_rate} // Số sao đánh giá
-                      percent={product.product_percent_discount} // % giảm giá
+                      item={product}
                       onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
                     />
                   ))}

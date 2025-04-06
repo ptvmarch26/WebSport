@@ -63,20 +63,6 @@ export const getOrderDetail = async (orderId) => {
   }
 };
 
-export const previewOrder = async (orderData) => {
-  try {
-    const response = await axios.post(`${API_URL}/preview`, orderData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Lỗi khi xem trước đơn hàng:", error);
-    return null;
-  }
-};
-
 export const updateOrderStatus = async (orderId, status) => {
   try {
     const response = await axios.put(`${API_URL}/update-status/${orderId}`, { status }, {

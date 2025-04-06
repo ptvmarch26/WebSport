@@ -24,7 +24,8 @@ const Categories = () => {
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAddCategoryModalVisible, setIsAddCategoryModalVisible] = useState(false);
+  const [isAddDadCategoryModalVisible, setIsAddDadCategoryModalVisible] = useState(false);
+  const [isAddChildCategoryModalVisible, setIsAddChildCategoryModalVisible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isEditCategoryModalVisible, setIsEditCategoryModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -51,30 +52,43 @@ const Categories = () => {
     }
   };
 
-  const handleAddCategory = async () => {
+  const handleAddDadCategory = async () => {
     try {
       await form.validateFields();
       const newCategory = form.getFieldsValue();
-
-      console.log("newCategory", newCategory);
-      if (newCategory.category_level === 1 && newCategory.category_parent_id !==undefined) {
-        console.error("Danh mục cấp 1 không thể có danh mục cha");
-        return;
-      }
-
-      if (newCategory.category_level === 2 && newCategory.category_parent_id === undefined) {
-        console.error("Danh mục cấp 2 phải có danh mục cha");
-        return;
-      }
       
       const res = await addCategory(newCategory);
       if (res?.data?.EC === 0) {
         fetchCategories();
         form.resetFields();
-        setIsAddCategoryModalVisible(false); 
-        console.log("Thêm danh mục thành công:", res);
+        setIsAddDadCategoryModalVisible(false); 
+        console.log("Thêm danh mục cha thành công:", res);
       }
     } catch (error) {
+      console.error("Lỗi khi thêm danh mục:", error);
+    }
+  };
+
+  const handleAddChildCategory = async () => {
+    try {
+      await form.validateFields();
+      const newCategory = form.getFieldsValue();
+
+      const parentCategory = categories.find(
+        (cat) => cat._id === newCategory.category_parent_id
+      );
+
+      newCategory.category_gender = parentCategory?.category_gender || null;
+
+      const res = await addCategory(newCategory);
+      if (res?.data?.EC === 0) {
+        fetchCategories();
+        form.resetFields();
+        setIsAddChildCategoryModalVisible(false); 
+        console.log("Thêm danh mục con thành công:", res);
+      }
+    }
+    catch (error) {
       console.error("Lỗi khi thêm danh mục:", error);
     }
   };
@@ -172,9 +186,16 @@ const Categories = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setIsAddCategoryModalVisible(true)}
+            onClick={() => setIsAddDadCategoryModalVisible(true)}
           >
-            Thêm danh mục
+            Thêm danh mục cha 
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setIsAddChildCategoryModalVisible(true)}
+          >
+            Thêm danh mục con 
           </Button>
         </div>
       </div>
@@ -216,17 +237,21 @@ const Categories = () => {
         <p>Bạn có chắc muốn xóa các danh mục đã chọn?</p>
       </Modal>
       <Modal
-        title="Thêm danh mục"
-        open={isAddCategoryModalVisible}
-        onOk={handleAddCategory}
-        onCancel={() => setIsAddCategoryModalVisible(false)}
+        title="Thêm danh mục cha"
+        open={isAddDadCategoryModalVisible}
+        onOk={handleAddDadCategory}
+        onCancel={() => setIsAddDadCategoryModalVisible(false)}
         okText="Thêm"
         cancelText="Hủy"
       >
         <Form
           form={form}
           layout="vertical"
-          onFinish={handleAddCategory}
+          onFinish={handleAddDadCategory}
+          initialValues={{
+            category_level: 1,
+            category_parent_id: null,
+          }}
         >
           <Form.Item
             label="Giới tính"
@@ -247,15 +272,49 @@ const Categories = () => {
             <InputNumber min={1} />
           </Form.Item>
           <Form.Item
+            label="Loại danh mục"
+            name="category_type"
+            rules={[{ required: true, message: "Loại danh mục là bắt buộc" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Thêm danh mục con"
+        open={isAddChildCategoryModalVisible}
+        onOk={handleAddChildCategory}
+        onCancel={() => setIsAddChildCategoryModalVisible(false)}
+        okText="Thêm"
+        cancelText="Hủy"
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleAddChildCategory}
+          initialValues={{
+            category_level: 2,
+          }}
+        >
+          <Form.Item
+            label="Level"
+            name="category_level"
+            rules={[{ required: true, message: "Level là bắt buộc" }]}
+          >
+            <InputNumber min={2} />
+          </Form.Item>
+          <Form.Item
             label="Thuộc danh mục"
             name="category_parent_id"
           >
             <Select placeholder="Chọn danh mục" allowClear>
-              {categories?.map((category) => (
-                <Option key={category._id} value={category._id}>
-                  {category.category_type}
-                </Option>
-              ))}
+              {categories
+                ?.filter((category) => category.category_level === 1)
+                .map((category) => (
+                  <Option key={category._id} value={category._id}>
+                    {category.category_type} - {category.category_gender}
+                  </Option>
+                ))}
             </Select>
           </Form.Item>
           <Form.Item

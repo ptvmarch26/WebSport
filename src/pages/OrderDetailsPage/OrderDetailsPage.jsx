@@ -1,15 +1,25 @@
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useParams } from "react-router-dom";
+import { useOrder } from "../../context/OrderContext";
+import { useEffect } from "react";
+import { useUser } from "../../context/UserContext";
 const OrderDetailsPage = () => {
   const location = useLocation();
-  const { products, totalPrice, orderStatus } =
-    location.state || {};
+  const { id } = useParams();
+
+  console.log("id ", id);
+  const { fetchOrderDetail, orderDetails } = useOrder();
+
+  useEffect(() => {
+    fetchOrderDetail(id);
+  },[]);
+
+  console.log("orderDetails ", orderDetails);
 
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold uppercase mb-4">Chi tiết đơn hàng</h1>
-        <p className="text-sm font-semibold">{orderStatus}</p>
+        <p className="text-sm font-semibold">{orderDetails?.order_status}</p>
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
         <h3 className="text-lg uppercase font-semibold">Thông tin nhận hàng</h3>
@@ -17,19 +27,22 @@ const OrderDetailsPage = () => {
           <strong className="text-sm inline-block font-semibold min-w-[100px]">
             Người nhận:{" "}
           </strong>
-          Phi Thông
+          {orderDetails?.shipping_address?.name}
         </p>
         <p>
           <strong className="text-sm inline-block font-semibold min-w-[100px]">
             Số điện thoại:{" "}
           </strong>
-          0909
+          {orderDetails?.shipping_address?.phone}
         </p>
         <p>
           <strong className="text-sm inline-block font-semibold min-w-[100px]">
             Địa chỉ:{" "}
           </strong>{" "}
-          KTX KHU A DHQG
+          {orderDetails?.shipping_address?.home_address},{" "}
+          {orderDetails?.shipping_address?.ward},{" "}
+          {orderDetails?.shipping_address?.district},{" "}
+          {orderDetails?.shipping_address?.province}
         </p>
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
@@ -40,31 +53,32 @@ const OrderDetailsPage = () => {
           <strong className="text-sm inline-block font-semibold min-w-[100px]">
             Thanh toán:{" "}
           </strong>
-          Khi nhận hàng
+          {orderDetails?.order_payment_method === "cod"
+            ? "Thanh toán khi nhận hàng" : ""}
         </p>
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
-        <h3 className="text-lg uppercase font-semibold">Thông tin nhận hàng</h3>
-        {products.map((product, index) => (
+        <h3 className="text-lg uppercase font-semibold">Thông tin đơn hàng</h3>
+        {orderDetails?.products.map((product, index) => (
           <div key={index} className="flex items-center gap-4 py-4 last:mb-0">
             <img
-              src={product.image}
-              alt={product.name}
+              src={product.product_id.product_img.image_main}
+              alt={product.product_id.product_title}
               className="w-16 h-16 object-cover border border-gray-300 rounded"
             />
             <div className="flex-1">
-              <p className="text-sm font-semibold line-clamp-1">{product.name}</p>
-              <p className="text-sm text-gray-500">{product.size}</p>
-              <p className="text-sm">x{product.quantity}</p>
+              <p className="text-sm font-semibold line-clamp-1">{product.product_id.product_title}</p>
+              {/* <p className="text-sm text-gray-500">{product.size}</p> */}
+              <p className="text-sm">x{product.product_id.quantity}</p>
             </div>
             <div className="flex space-x-2">
-              {product.oldPrice && (
+              {product.product_id.product_percent_discount !=="0" && (
                 <p className="text-[#9ca3af] line-through">
-                  {product.oldPrice.toLocaleString()}đ
+                  {product.product_id.product_price.toLocaleString()}đ
                 </p>
               )}
               <p className="font-medium text-[#ba2b20]">
-                {product.price.toLocaleString()}đ
+                {(product.product_id.product_price * (1- product.product_id.product_percent_discount /100)).toLocaleString()}đ
               </p>
             </div>
           </div>
@@ -72,7 +86,7 @@ const OrderDetailsPage = () => {
         <div className="flex justify-end space-x-4">
           <p className="font-medium">Tổng tiền:</p>
           <p className="font-bold text-[#ba2b20]">
-            {totalPrice.toLocaleString()}đ
+            {orderDetails.order_total_final.toLocaleString()}đ
           </p>
         </div>
       </div>

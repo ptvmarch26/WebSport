@@ -10,21 +10,19 @@ import { Upload, Switch, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useCategories } from "../../context/CategoriesContext";
 import { useNavigate } from "react-router-dom";
+import { Divider } from "antd";
 
 const { Option } = Select;
 
 const Products = () => {
-  const { products, fetchProducts, removeProduct, addProduct, editProduct } =
-    useProduct();
+  const { products, fetchProducts, removeProduct, addProduct, editProduct } = useProduct();
   const [form] = Form.useForm();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAddProductModalVisible, setIsAddProductModalVisible] =
-    useState(false);
-  const [isEditProductModalVisible, setIsEditProductgModalVisible] =
-    useState(false);
+  const [isAddProductModalVisible, setIsAddProductModalVisible] = useState(false);
+  const [isEditProductModalVisible, setIsEditProductgModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
@@ -48,13 +46,14 @@ const Products = () => {
 
   const normFile = (e) => {
     if (Array.isArray(e)) return e;
-    return e?.fileList;
+    return e?.fileList || [];
   };
 
   const handleAddProduct = async () => {
     try {
       await form.validateFields();
       const newProduct = form.getFieldsValue();
+      
       const res = await addProduct(newProduct);
       if (res?.EC === 0) {
         fetchProducts();
@@ -66,21 +65,35 @@ const Products = () => {
     }
   };
 
+  
   const handleEditProduct = (record) => {
     if (record) {
-      setSelectedProduct(record); // Cập nhật giá trị discount được chọn
-      form.setFieldsValue(record); // Điền thông tin discount vào form
-      setIsEditProductgModalVisible(true); // Mở modal chỉnh sửa
+      const recordWithoutImages = {
+        ...record,
+        product_img: undefined,
+        colors: record.colors?.map((color) => ({
+          ...color,
+          imgs: {
+            img_main: undefined,
+            img_subs: undefined,
+          },
+        })),
+      };
+  
+      setSelectedProduct(recordWithoutImages);
+      form.setFieldsValue(recordWithoutImages);
+      setIsEditProductgModalVisible(true);
     } else {
       console.error("Không có discount được chọn");
     }
   };
 
+
   const handleUpdate = async () => {
     try {
       await form.validateFields();
       const updatedFields = form.getFieldsValue();
-
+      console.log("Updated Fields:", updatedFields);
       const res = await editProduct(selectedProduct._id, updatedFields);
       console.log(res);
       if (res?.EC === 0) {
@@ -106,16 +119,13 @@ const Products = () => {
       title: "Ảnh",
       dataIndex: "product_img",
       key: "product_img",
-      render: (product_img) =>
-        product_img?.image_main ? (
-          <img
-            src={product_img.image_main}
-            alt="Ảnh sản phẩm"
-            className="w-16 h-16 object-cover rounded"
-          />
-        ) : (
-          "Không có ảnh"
-        ),
+      render: product_img => (
+        <img
+          src={product_img}
+          alt="Ảnh sản phẩm"
+          className="w-16 h-16 object-cover rounded"
+        />
+      ),
     },
     { title: "Tên sản phẩm", dataIndex: "product_title", key: "product_title" },
     { title: "Thương hiệu", dataIndex: "product_brand", key: "product_brand" },
@@ -234,9 +244,6 @@ const Products = () => {
           columns={columns}
           pagination={{ pageSize: 10 }}
           rowKey="_id"
-          onRow={(record) => ({
-            onClick: () => navigate(`/admin/product-details/${record._id}`),
-          })}
           className="rounded-none cursor-pointer"
           scroll={{x: 'max-content'}}
         />
@@ -265,6 +272,7 @@ const Products = () => {
         onCancel={() => setIsAddProductModalVisible(false)}
         okText="Thêm"
         cancelText="Hủy"
+        width={800}
       >
         <Form
           form={form}
@@ -272,13 +280,12 @@ const Products = () => {
           onFinish={handleAddProduct}
           initialValues={{
             product_price: 0,
-            product_countInStock: 0,
-            product_display: true,
-            product_famous: false,
             product_percent_discount: 0,
             product_rate: 0,
             product_selled: 0,
-            product_img_subs: [],
+            product_display: true,
+            product_famous: false,
+            colors: [],
           }}
         >
           <Form.Item
@@ -300,15 +307,6 @@ const Products = () => {
           <Form.Item
             label="Giá gốc"
             name="product_price"
-            rules={[{ required: true, message: "Vui lòng nhập giá" }]}
-          >
-            <InputNumber min={0} className="w-full" />
-          </Form.Item>
-
-          <Form.Item
-            label="Số lượng tồn"
-            name="product_countInStock"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
           >
             <InputNumber min={0} className="w-full" />
           </Form.Item>
@@ -317,7 +315,7 @@ const Products = () => {
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
-          <Form.Item label="Giảm giá (%)" name="product_percent_discount">
+          <Form.Item label="Giảm giá chung (%)" name="product_percent_discount">
             <InputNumber min={0} max={100} className="w-full" />
           </Form.Item>
 
@@ -348,24 +346,14 @@ const Products = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ảnh chính"
-            name="product_main_img"
+            label="Ảnh sản phẩm"
+            name="product_img"
             valuePropName="fileList"
             getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Vui lòng tải ảnh sản phẩm" }]}
           >
             <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
-              <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
-            </Upload>
-          </Form.Item>
-
-          <Form.Item
-            label="Ảnh phụ"
-            name="product_subs_img"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <Upload beforeUpload={() => false} listType="picture" multiple>
-              <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+              <Button icon={<UploadOutlined />}>Tải ảnh sản phẩm lên</Button>
             </Upload>
           </Form.Item>
 
@@ -384,110 +372,129 @@ const Products = () => {
           >
             <Switch />
           </Form.Item>
-          <Form.List name="variants">
-            {(fields, { add, remove }) => (
+
+          {/* Phần quản lý màu sắc */}
+          <Divider orientation="left">Màu sắc và kích thước</Divider>
+
+          <Form.List name="colors">
+            {(colorFields, { add: addColor, remove: removeColor }) => (
               <>
-                {fields.map(({ key, name, ...restField }) => (
+                {colorFields.map(({ key: colorKey, name: colorName, ...colorRestField }) => (
                   <Card
-                    key={key}
-                    title={`Biến thể ${key + 1}`}
+                    key={colorKey}
+                    title={`Màu sắc ${colorKey + 1}`}
                     className="mb-4"
                     extra={
-                      <Button danger onClick={() => remove(name)}>
-                        Xóa
+                      <Button danger onClick={() => removeColor(colorName)}>
+                        Xóa màu
                       </Button>
                     }
                   >
                     <Form.Item
-                      {...restField}
-                      name={[name, "variant_color"]}
-                      label="Màu sắc"
-                      rules={[{ required: true, message: "Vui lòng nhập màu" }]}
+                      {...colorRestField}
+                      name={[colorName, "color_name"]}
+                      label="Tên màu"
+                      rules={[{ required: true, message: "Vui lòng nhập tên màu" }]}
                     >
                       <Input />
                     </Form.Item>
+
                     <Form.Item
-                      {...restField}
-                      name={[name, "variant_size"]}
-                      label="Kích cỡ"
-                      rules={[
-                        { required: true, message: "Vui lòng nhập kích cỡ" },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_price"]}
-                      label="Giá"
-                      rules={[{ required: true, message: "Vui lòng nhập giá" }]}
-                    >
-                      <InputNumber min={0} className="w-full" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_countInStock"]}
-                      label="Số lượng tồn"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng nhập số lượng tồn",
-                        },
-                      ]}
-                    >
-                      <InputNumber min={0} className="w-full" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_percent_discount"]}
-                      label="Giảm giá (%)"
-                    >
-                      <InputNumber min={0} max={100} className="w-full" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_img_main"]}
-                      label="Ảnh chính"
+                      {...colorRestField}
+                      name={[colorName, "imgs", "img_main"]}
+                      label="Ảnh chính của màu"
                       valuePropName="fileList"
                       getValueFromEvent={normFile}
+                      rules={[{ required: true, message: "Vui lòng tải ảnh chính" }]}
                     >
-                      <Upload
-                        beforeUpload={() => false}
-                        listType="picture"
-                        maxCount={1}
-                      >
-                        <Button icon={<UploadOutlined />}>
-                          Tải ảnh chính lên
-                        </Button>
+                      <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
+                        <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
                       </Upload>
                     </Form.Item>
+
                     <Form.Item
-                      {...restField}
-                      name={[name, "variant_img_subs"]}
-                      label="Ảnh phụ"
+                      {...colorRestField}
+                      name={[colorName, "imgs", "img_subs"]}
+                      label="Ảnh phụ của màu"
                       valuePropName="fileList"
                       getValueFromEvent={normFile}
+                      rules={[{ required: true, message: "Vui lòng tải ít nhất một ảnh phụ" }]}
                     >
-                      <Upload
-                        beforeUpload={() => false}
-                        listType="picture"
-                        multiple
-                      >
-                        <Button icon={<UploadOutlined />}>
-                          Tải ảnh phụ lên
-                        </Button>
+                      <Upload beforeUpload={() => false} listType="picture" multiple>
+                        <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
                       </Upload>
                     </Form.Item>
+
+                    {/* Nested Form.List for variants within each color */}
+                    <Divider orientation="left">Các kích thước</Divider>
+                    <Form.List name={[colorName, "variants"]}>
+                      {(variantFields, { add: addVariant, remove: removeVariant }) => (
+                        <>
+                          {variantFields.map(({ key: variantKey, name: variantName, ...variantRestField }) => (
+                            <Card
+                              key={variantKey}
+                              type="inner"
+                              title={`Kích thước ${variantKey + 1}`}
+                              className="mb-2"
+                              extra={
+                                <Button danger size="small" onClick={() => removeVariant(variantName)}>
+                                  Xóa
+                                </Button>
+                              }
+                            >
+                              <Form.Item
+                                {...variantRestField}
+                                name={[variantName, "variant_size"]}
+                                label="Kích thước"
+                                rules={[{ required: true, message: "Vui lòng nhập kích thước" }]}
+                              >
+                                <Input placeholder="Ví dụ: S, M, L, XL" />
+                              </Form.Item>
+
+                              <Form.Item
+                                {...variantRestField}
+                                name={[variantName, "variant_price"]}
+                                label="Giá"
+                                rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+                              >
+                                <InputNumber min={0} className="w-full" />
+                              </Form.Item>
+
+                              <Form.Item
+                                {...variantRestField}
+                                name={[variantName, "variant_countInStock"]}
+                                label="Số lượng tồn"
+                                rules={[{ required: true, message: "Vui lòng nhập số lượng tồn" }]}
+                              >
+                                <InputNumber min={0} className="w-full" />
+                              </Form.Item>
+                            </Card>
+                          ))}
+
+                          <Form.Item>
+                            <Button
+                              type="dashed"
+                              onClick={() => addVariant()}
+                              block
+                              icon={<PlusOutlined />}
+                            >
+                              Thêm kích thước
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
                   </Card>
                 ))}
+
                 <Form.Item>
                   <Button
                     type="dashed"
-                    onClick={() => add()}
+                    onClick={() => addColor()}
                     block
                     icon={<PlusOutlined />}
                   >
-                    Thêm biến thể
+                    Thêm màu sắc
                   </Button>
                 </Form.Item>
               </>
@@ -535,19 +542,11 @@ const Products = () => {
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
-          <Form.Item
-            label="Số lượng tồn"
-            name="product_countInStock"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
-          >
-            <InputNumber min={0} className="w-full" />
-          </Form.Item>
-
           <Form.Item label="Đã bán" name="product_selled">
             <InputNumber min={0} className="w-full" />
           </Form.Item>
 
-          <Form.Item label="Giảm giá (%)" name="product_percent_discount">
+          <Form.Item label="Giảm giá chung (%)" name="product_percent_discount">
             <InputNumber min={0} max={100} className="w-full" />
           </Form.Item>
 
@@ -578,24 +577,13 @@ const Products = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ảnh chính"
-            name="product_main_img"
+            label="Ảnh sản phẩm"
+            name="product_img"
             valuePropName="fileList"
             getValueFromEvent={normFile}
           >
             <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
-              <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
-            </Upload>
-          </Form.Item>
-
-          <Form.Item
-            label="Ảnh phụ"
-            name="product_subs_img"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <Upload beforeUpload={() => false} listType="picture" multiple>
-              <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
+              <Button icon={<UploadOutlined />}>Tải ảnh sản phẩm lên</Button>
             </Upload>
           </Form.Item>
 
@@ -614,110 +602,127 @@ const Products = () => {
           >
             <Switch />
           </Form.Item>
-          <Form.List name="variants">
-            {(fields, { add, remove }) => (
+
+          {/* Phần quản lý màu sắc */}
+          <Divider orientation="left">Màu sắc và kích thước</Divider>
+
+          <Form.List name="colors">
+            {(colorFields, { add: addColor, remove: removeColor }) => (
               <>
-                {fields.map(({ key, name, ...restField }) => (
+                {colorFields.map(({ key: colorKey, name: colorName, ...colorRestField }) => (
                   <Card
-                    key={key}
-                    title={`Biến thể ${key + 1}`}
+                    key={colorKey}
+                    title={`Màu sắc ${colorKey + 1}`}
                     className="mb-4"
                     extra={
-                      <Button danger onClick={() => remove(name)}>
-                        Xóa
+                      <Button danger onClick={() => removeColor(colorName)}>
+                        Xóa màu
                       </Button>
                     }
                   >
                     <Form.Item
-                      {...restField}
-                      name={[name, "variant_color"]}
-                      label="Màu sắc"
-                      rules={[{ required: true, message: "Vui lòng nhập màu" }]}
+                      {...colorRestField}
+                      name={[colorName, "color_name"]}
+                      label="Tên màu"
+                      rules={[{ required: true, message: "Vui lòng nhập tên màu" }]}
                     >
                       <Input />
                     </Form.Item>
+
                     <Form.Item
-                      {...restField}
-                      name={[name, "variant_size"]}
-                      label="Kích cỡ"
-                      rules={[
-                        { required: true, message: "Vui lòng nhập kích cỡ" },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_price"]}
-                      label="Giá"
-                      rules={[{ required: true, message: "Vui lòng nhập giá" }]}
-                    >
-                      <InputNumber min={0} className="w-full" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_countInStock"]}
-                      label="Số lượng tồn"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng nhập số lượng tồn",
-                        },
-                      ]}
-                    >
-                      <InputNumber min={0} className="w-full" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_percent_discount"]}
-                      label="Giảm giá (%)"
-                    >
-                      <InputNumber min={0} max={100} className="w-full" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "variant_img_main"]}
-                      label="Ảnh chính"
+                      {...colorRestField}
+                      name={[colorName, "imgs", "img_main"]}
+                      label="Ảnh chính của màu"
                       valuePropName="fileList"
                       getValueFromEvent={normFile}
                     >
-                      <Upload
-                        beforeUpload={() => false}
-                        listType="picture"
-                        maxCount={1}
-                      >
-                        <Button icon={<UploadOutlined />}>
-                          Tải ảnh chính lên
-                        </Button>
+                      <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
+                        <Button icon={<UploadOutlined />}>Tải ảnh chính lên</Button>
                       </Upload>
                     </Form.Item>
+
                     <Form.Item
-                      {...restField}
-                      name={[name, "variant_img_subs"]}
-                      label="Ảnh phụ"
+                      {...colorRestField}
+                      name={[colorName, "imgs", "img_subs"]}
+                      label="Ảnh phụ của màu"
                       valuePropName="fileList"
                       getValueFromEvent={normFile}
                     >
-                      <Upload
-                        beforeUpload={() => false}
-                        listType="picture"
-                        multiple
-                      >
-                        <Button icon={<UploadOutlined />}>
-                          Tải ảnh phụ lên
-                        </Button>
+                      <Upload beforeUpload={() => false} listType="picture" multiple>
+                        <Button icon={<UploadOutlined />}>Tải ảnh phụ lên</Button>
                       </Upload>
                     </Form.Item>
+
+                    {/* Nested Form.List for variants within each color */}
+                    <Divider orientation="left">Các kích thước</Divider>
+                    <Form.List name={[colorName, "variants"]}>
+                      {(variantFields, { add: addVariant, remove: removeVariant }) => (
+                        <>
+                          {variantFields.map(({ key: variantKey, name: variantName, ...variantRestField }) => (
+                            <Card
+                              key={variantKey}
+                              type="inner"
+                              title={`Kích thước ${variantKey + 1}`}
+                              className="mb-2"
+                              extra={
+                                <Button danger size="small" onClick={() => removeVariant(variantName)}>
+                                  Xóa
+                                </Button>
+                              }
+                            >
+                              <Form.Item
+                                {...variantRestField}
+                                name={[variantName, "variant_size"]}
+                                label="Kích thước"
+                                rules={[{ required: true, message: "Vui lòng nhập kích thước" }]}
+                              >
+                                <Input placeholder="Ví dụ: S, M, L, XL" />
+                              </Form.Item>
+
+                              <Form.Item
+                                {...variantRestField}
+                                name={[variantName, "variant_price"]}
+                                label="Giá"
+                                rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+                              >
+                                <InputNumber min={0} className="w-full" />
+                              </Form.Item>
+
+                              <Form.Item
+                                {...variantRestField}
+                                name={[variantName, "variant_countInStock"]}
+                                label="Số lượng tồn"
+                                rules={[{ required: true, message: "Vui lòng nhập số lượng tồn" }]}
+                              >
+                                <InputNumber min={0} className="w-full" />
+                              </Form.Item>
+                            </Card>
+                          ))}
+
+                          <Form.Item>
+                            <Button
+                              type="dashed"
+                              onClick={() => addVariant()}
+                              block
+                              icon={<PlusOutlined />}
+                            >
+                              Thêm kích thước
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
                   </Card>
                 ))}
+
                 <Form.Item>
                   <Button
                     type="dashed"
-                    onClick={() => add()}
+                    onClick={() => addColor()}
                     block
                     icon={<PlusOutlined />}
                   >
-                    Thêm biến thể
+                    Thêm màu sắc
                   </Button>
                 </Form.Item>
               </>
