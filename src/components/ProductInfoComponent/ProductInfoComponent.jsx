@@ -96,14 +96,13 @@ const ProductInfoComponent = ({ product }) => {
     if (!product) return [];
 
     let images = [
-      product?.product_img?.image_main,
-      ...(product?.product_img?.image_subs || []),
+      product?.product_img,
     ];
 
     // Lấy ảnh từ biến thể
-    product.variants?.forEach((variant) => {
-      images.push(variant?.variant_img?.image_main);
-      images.push(...(variant?.variant_img?.image_subs || []));
+    product.colors?.forEach((color) => {
+      images.push(color?.imgs?.img_main);
+      images.push(...(color?.imgs?.img_subs || []));
     });
 
     // Lọc bỏ ảnh null hoặc undefined
@@ -186,18 +185,18 @@ const ProductInfoComponent = ({ product }) => {
           )}
         </div>
 
-        {product?.variants && product?.variants.length > 0 && (
+        {product?.colors && product?.colors.length > 0 && (
           <div>
             {/* Hiển thị màu sắc */}
             <p className="text-base my-3 font-lg font-semibold">Chọn màu</p>
             <div className="flex flex-wrap gap-2">
-              {product?.variants.map((variant) =>
-                variant.variant_color ? (
+              {product?.colors.map((color) =>
+                color.variant_color ? (
                   <Button
                     key={variant._id}
                     color="white"
                     className={`w-24 h-14 border-gray-400 flex items-center justify-center p-2 border rounded-md shadow-md ${
-                      selectedColor === variant.variant_color
+                      selectedColor === color.color_name
                         ? "border-2 border-black"
                         : ""
                     }`}

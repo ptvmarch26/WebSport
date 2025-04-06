@@ -9,39 +9,33 @@ import {
 } from "../../services/api/FavouriteApi"; // import API
 import { useCart } from "../../context/CartContext"; // import context
 const ProductComponent = ({
-  src,
-  productId,
-  alt,
-  name,
-  oldPrice,
-  newPrice,
-  star,
-  percent,
+  item,
   onClick,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
-    const res = await updateFavourite(productId); // Gọi API để cập nhật danh sách yêu thích
+    const res = await updateFavourite(item._id); // Gọi API để cập nhật danh sách yêu thích
     console.log(res);
   };
   const { handleAddToCart } = useCart();
 
   const handlePushToCart = async () => {
-    const res = await handleAddToCart(productId); // Gọi API để thêm sản phẩm vào giỏ hàng
+    const res = await handleAddToCart(item._id); // Gọi API để thêm sản phẩm vào giỏ hàng
     console.log(res);
   }
+
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
 
       if (favouritesData && favouritesData.result) {
-        setIsFavorite(favouritesData.result.includes(productId));
+        setIsFavorite(favouritesData.result.includes(item._id));
       }
     };
 
     fetchFavoriteStatus();
-  }, [productId]);
+  }, [item._id]);
 
   return (
     <div className="relative group text-black overflow-hidden shadow-sm hover:shadow-xl transition-transform duration-300 transform cursor-pointer">
@@ -49,19 +43,19 @@ const ProductComponent = ({
         onClick={onClick}
         className="relative w-full h-[250px] overflow-hidden"
       >
-        <img src={src} alt={alt} className="w-full h-full object-cover" />
+        <img src={item.product_img} alt={item.product_title} className="w-full h-full object-cover" />
       </div>
       <div className="p-4">
         <h4 className="text-base font-semibold line-clamp-2 min-h-[38.4px] md:min-h-[48px] mb-3">
-          {name}
+          {item.product_title}
         </h4>
         <div className="flex items-center justify-between mb-2">
           <span className="text-base font-bold text-[#ba2b20]">
-            {newPrice?.toLocaleString()} đ
+            {item.product_price.toLocaleString()} đ
           </span>
-          {oldPrice > 0 && (
+          {item.product_percent_discount > 0 && (
             <span className="text-sm line-through text-gray-400">
-              {oldPrice?.toLocaleString()} đ
+              {(item.product_price * (1 - item.product_percent_discount /100 ))?.toLocaleString()} đ
             </span>
           )}
         </div>
@@ -70,8 +64,8 @@ const ProductComponent = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, index) => {
-              const fullStars = Math.floor(star);
-              const isHalfStar = star % 1 !== 0 && index === fullStars;
+              const fullStars = Math.floor(item.product_rate);
+              const isHalfStar = item.product_rate % 1 !== 0 && index === fullStars;
 
               return isHalfStar ? (
                 <IoIosStarHalf
@@ -91,7 +85,9 @@ const ProductComponent = ({
         </div>
 
         <div className="text-sm text-[#158857] font-semibold">
-          <span>{percent}% Off</span>
+          {item.product_percent_discount > 0 && (
+            <span>{percent}% Off</span>
+          )}
         </div>
 
         <div className="absolute top-[10px] left-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
