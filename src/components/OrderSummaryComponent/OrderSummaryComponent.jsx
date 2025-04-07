@@ -15,35 +15,62 @@ const OrderSummaryComponent = ({
     setVoucher(value);
     setIsVoucherValid(value.length > 0);
   };
-  
-  console.log(cart);
-  
+
+  // console.log("cart", cart);
+
+  const cartDetails = cart.map((item) => {
+    const selectedColor = item?.product_id?.colors.find(
+      (color) => color.color_name === item.color_name
+    );
+
+    const selectedVariant = selectedColor?.variants.find(
+      (variant) => variant.variant_size === item.variant_name
+    );
+
+    const imageToDisplay =
+      selectedVariant?.imgs?.img_main ||
+      selectedColor?.imgs?.img_main ||
+      item?.product_id?.product_img;
+
+    const variantPrice = selectedVariant?.variant_price;
+
+    return {
+      item,
+      imageToDisplay,
+      variantPrice,
+    };
+  });
+
+  console.log("cart", cartDetails);
 
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
-      {cart.map((item) => (
-        <div key={item.product_id._id}>
+      {cartDetails.map((item, index) => (
+        <div key={index}>
           <div className="flex justify-between items-center">
             <div>
               <img
-                src={item?.product_id?.product_img}
-                alt={item?.product_id?.product_title}
+                src={item?.imageToDisplay}
+                alt={item?.item.product_id?.product_title}
                 className="w-16 h-16 object-cover"
               />
             </div>
             <div className="flex justify-between items-center flex-1 mx-4 space-x-2">
               <div>
                 <h4 className="text-sm line-clamp-1">
-                  {item?.product_id?.product_title}
+                  {item?.item?.product_id?.product_title}
                 </h4>
                 {/* <p className="text-xs">Size: {item.size}</p> */}
-                <p className="text-xs">x{item.quantity}</p>
+                <p className="text-xs">
+                  {item.item.color_name} - {item.item.variant_name}
+                </p>
+                <p className="text-xs">x{item.item.quantity}</p>
               </div>
               <div>
                 <p className="text-sm">
                   {(
-                    item.product_id?.product_price *
-                    (1 - item.product_id?.product_percent_discount / 100)
+                    item?.variantPrice *
+                    (1 - item.item.product_id?.product_percent_discount / 100)
                   ).toLocaleString()}
                   ₫
                 </p>

@@ -26,20 +26,23 @@ const paymentMethods = [
 function CheckoutPage() {
   const { cart, fetchCart, setCart } = useCart();
   useEffect(() => {
-    fetchCart(); 
-  },[]);
+    fetchCart();
+  }, []);
 
   useEffect(() => {
     const addressesUser = cart?.user_id?.addresses || [];
     setAddresses(addressesUser);
   }, [cart]);
-  
+
   const cartItems = cart?.products || [];
 
-  const subtotal = cartItems.reduce((acc, item) => {
-    const discountedPrice = item.product_id.product_price * (1 - item.product_id.product_percent_discount / 100);
-    return acc + discountedPrice * item.quantity;
-  }, 0) || 0;
+  const subtotal =
+    cartItems.reduce((acc, item) => {
+      const discountedPrice =
+        item.product_id.product_price *
+        (1 - item.product_id.product_percent_discount / 100);
+      return acc + discountedPrice * item.quantity;
+    }, 0) || 0;
 
   const [newAddress, setNewAddress] = useState({
     name: "",
@@ -54,7 +57,7 @@ function CheckoutPage() {
     name: "",
     phone: "",
     home_address: "",
-    province:  "",
+    province: "",
     district: "",
     ward: "",
     is_default: "",
@@ -78,11 +81,12 @@ function CheckoutPage() {
     }
   }, [addresses]);
 
-  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress} = useUser(); 
+  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress } =
+    useUser();
 
   const handleAddAddresss = async () => {
     if (validateForm()) {
-      newAddress.is_default = addresses.length === 0; 
+      newAddress.is_default = addresses.length === 0;
       setAddresses([...addresses, newAddress]);
       await handleAddAddress(newAddress);
       setNewAddress({
@@ -104,17 +108,17 @@ function CheckoutPage() {
 
     if (isDefaultAddress && updatedAddresses.length > 0) {
       updatedAddresses[0].is_default = true;
-    };
+    }
 
     await handleDeleteAddress(index);
     setAddresses(updatedAddresses);
 
     if (updatedAddresses.length === 0) {
       setSelectedAddress(null);
-    }
-    else {
-      setSelectedAddress(updatedAddresses.find((address) => address.is_default));
-
+    } else {
+      setSelectedAddress(
+        updatedAddresses.find((address) => address.is_default)
+      );
     }
 
     setFormErrors({
@@ -143,7 +147,7 @@ function CheckoutPage() {
     if (validateForm()) {
       const updatedAddresses = [...addresses];
       updatedAddresses[editingIndex] = newAddress;
-      await handleUpdateAddress(editingIndex, newAddress);  
+      await handleUpdateAddress(editingIndex, newAddress);
       setAddresses(updatedAddresses);
       setNewAddress({
         name: "",
@@ -203,7 +207,7 @@ function CheckoutPage() {
   };
 
   const { handleCreateOrder } = useOrder();
-  
+
   const navigate = useNavigate();
 
   const CreateOrder = async () => {
@@ -217,21 +221,19 @@ function CheckoutPage() {
       })),
       order_payment_method: selectedPayment,
       order_note: " ",
-      discount_ids: [], 
+      discount_ids: [],
     };
 
     const res = await handleCreateOrder(orderData);
     console.log(res);
-    if (res.EC === 0 ){
+    if (res.EC === 0) {
       setCart([]);
       navigate(`/orders/order-details/${res.result._id}`);
-    }
-    else {
+    } else {
       alert(res.EM);
     }
   };
 
-  
   return (
     <div className="xl:max-w-[1200px] container mx-auto">
       <div className="px-2 lg:p-4">
@@ -259,9 +261,7 @@ function CheckoutPage() {
             )}
             {selectedAddress && (
               <div className="px-4 rounded-lg space-y-3">
-                <p className="text-[#757575]">
-                  {selectedAddress.name} 
-                </p>
+                <p className="text-[#757575]">{selectedAddress.name}</p>
                 <p className="text-[#757575]">
                   {selectedAddress.home_address}, {selectedAddress.ward},{" "}
                   {selectedAddress.district}, {selectedAddress.province}
@@ -344,15 +344,12 @@ function CheckoutPage() {
                   onClick={() => handleSelectAddress(index)}
                 >
                   <div>
+                    <p className="text-sm">{address.name}</p>
                     <p className="text-sm">
-                      {address.name} 
-                    </p>
-                    <p className="text-sm">
-                      {address.home_address}, {address.ward},{" "}
-                      {address.district}, {address.province}
+                      {address.home_address}, {address.ward}, {address.district}
+                      , {address.province}
                     </p>
                     <p className="text-sm">{address.phone}</p>
-                   
                   </div>
                   <div className="flex flex-col md:flex-row items-center gap-2">
                     <Button

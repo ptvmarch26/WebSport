@@ -1,20 +1,39 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import { useEffect } from "react";
+
 const OrderDetailsPage = () => {
   const { id } = useParams();
-
-  // Lấy ảnh và giá của varient truyền qua state cho đỡ làm lại
-  const { variantPrice, productImage } = location.state || {};
-
-  console.log("id ", id);
   const { fetchOrderDetail, orderDetails } = useOrder();
 
   useEffect(() => {
     fetchOrderDetail(id);
-  }, []);
+  }, [id, fetchOrderDetail]);
 
-  console.log("orderDetails ", orderDetails);
+  // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
+  const findProductDetails = (product) => {
+    const colorOption = product.product_id.colors.find(
+      (c) => c.color_name === product.color
+    );
+
+    let variantPrice = product.product_id.product_price;
+    let productImage = product.product_id.product_img;
+
+    if (colorOption) {
+      productImage = colorOption.imgs.img_main;
+
+      // Tìm biến thể tương ứng
+      const variantOption = colorOption.variants.find(
+        (v) => v.variant_size === product.variant
+      );
+
+      if (variantOption) {
+        variantPrice = variantOption.variant_price;
+      }
+    }
+
+    return { variantPrice, productImage };
+  };
 
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
@@ -61,38 +80,44 @@ const OrderDetailsPage = () => {
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
         <h3 className="text-lg uppercase font-semibold">Thông tin đơn hàng</h3>
-        {orderDetails?.products.map((product, index) => (
-          <div key={index} className="flex items-center gap-4 py-4 last:mb-0">
-            <img
-              src={productImage}
-              alt={product.product_id.product_title}
-              className="w-16 h-16 object-cover border border-gray-300 rounded"
-            />
-            <div className="flex-1">
-              <p className="text-sm font-semibold line-clamp-1">
-                {product.product_id.product_title}
-              </p>
-              <p className="text-sm text-gray-500">
-                {product.color} - {product.variant}
-              </p>
-              <p className="text-sm">x{product.quantity}</p>
-            </div>
-            <div className="flex space-x-2">
-              {product.product_id.product_percent_discount !== "0" && (
-                <p className="text-[#9ca3af] line-through">
-                  {variantPrice.toLocaleString()}đ
+        {orderDetails?.products.map((product, index) => {
+          const { variantPrice, productImage } = findProductDetails(product);
+          const discountedPrice =
+            product.product_id.product_percent_discount > 0
+              ? (variantPrice *
+                  (100 - product.product_id.product_percent_discount)) /
+                100
+              : variantPrice;
+
+          return (
+            <div key={index} className="flex items-center gap-4 py-4 last:mb-0">
+              <img
+                src={productImage}
+                alt={product.product_id.product_title}
+                className="w-16 h-16 object-cover border border-gray-300 rounded"
+              />
+              <div className="flex-1">
+                <p className="text-sm font-semibold line-clamp-1">
+                  {product.product_id.product_title}
                 </p>
-              )}
-              <p className="font-medium text-[#ba2b20]">
-                {(
-                  variantPrice *
-                  (1 - product.product_id.product_percent_discount / 100)
-                ).toLocaleString()}
-                đ
-              </p>
+                <p className="text-sm text-gray-500">
+                  {product.color} - {product.variant}
+                </p>
+                <p className="text-sm">x{product.quantity}</p>
+              </div>
+              <div className="flex space-x-2">
+                {product.product_id.product_percent_discount > 0 && (
+                  <p className="text-[#9ca3af] line-through">
+                    {variantPrice.toLocaleString()}đ
+                  </p>
+                )}
+                <p className="font-medium text-[#ba2b20]">
+                  {discountedPrice.toLocaleString()}đ
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div className="flex justify-end space-x-4">
           <p className="font-medium">Tổng tiền:</p>
           <p className="font-bold text-[#ba2b20]">
