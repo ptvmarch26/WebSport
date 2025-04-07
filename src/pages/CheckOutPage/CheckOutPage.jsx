@@ -287,7 +287,7 @@ function CheckoutPage() {
               setSelected={setSelectedPayment}
             />
             <div className="my-10 flex justify-center">
-              <QRComponent amount={100000} orderId="123456aa8666" />
+              {/* <QRComponent amount={100000} orderId="123456aa8666" /> */}
             </div>
           </div>
           <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">

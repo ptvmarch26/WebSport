@@ -19,7 +19,7 @@ const FavoriteProductPage = () => {
   const [cart, setCart] = useState([]);
   const { fetchProductDetails } = useProduct();
   const [products, setProducts] = useState([]);
-  
+
   useEffect(() => {
     fetchFavourites();
   }, []);
@@ -38,7 +38,6 @@ const FavoriteProductPage = () => {
       fetchAllProductDetails();
     }
   }, [cart]);
-
 
   const handleRemove = async (id) => {
     const updatedFavourites = await updateFavourite(id);
@@ -62,7 +61,7 @@ const FavoriteProductPage = () => {
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="border rounded-lg p-10">
-        <div className="flex justify-between gap-2 flex-wrap">
+        <div className="flex md:flex-nowrap justify-between gap-2 flex-wrap">
           <h2 className="uppercase text-xl font-semibold">
             Danh sách sản phẩm yêu thích
           </h2>

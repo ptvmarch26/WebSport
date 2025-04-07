@@ -1,27 +1,62 @@
-import React, {useEffect} from "react";
+import { useEffect } from "react";
 import CartItemComponent from "../../components/CartItemComponent/CartItemComponent";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 
 const CartPage = () => {
-  const { cart, setCart, handleRemoveFromCart, handleDecreaseQuantity, fetchCart, handleAddToCart, handleClearCart } = useCart();
+  const {
+    cart,
+    setCart,
+    handleRemoveFromCart,
+    handleDecreaseQuantity,
+    fetchCart,
+    handleAddToCart,
+    handleClearCart,
+  } = useCart();
 
   useEffect(() => {
     fetchCart();
-  }, []); 
+  }, []);
 
-  console.log(cart);
+  console.log("cart", cart);
 
   const cartItems = cart?.products || [];
   const navigate = useNavigate();
 
-  const subtotal = cartItems?.reduce((acc, item) => {
-    const discountedPrice = item.product_id.product_price * (1 - item.product_id.product_percent_discount / 100);
-    return acc + discountedPrice * item.quantity;
-  }, 0) || 0;
+  const findProductDetails = (product) => {
+    const colorOption = product.product_id.colors.find(
+      (c) => c.color_name === product.color
+    );
+
+    let variantPrice = product.product_id.product_price;
+    let productImage = product.product_id.product_img;
+
+    if (colorOption) {
+      productImage = colorOption.imgs.img_main;
+
+      // Tìm biến thể tương ứng
+      const variantOption = colorOption.variants.find(
+        (v) => v.variant_size === product.variant
+      );
+
+      if (variantOption) {
+        variantPrice = variantOption.variant_price;
+      }
+    }
+
+    return { variantPrice, productImage };
+  };
+
+  const subtotal =
+    cartItems?.reduce((acc, item) => {
+      const discountedPrice =
+        item.product_id.product_price *
+        (1 - item.product_id.product_percent_discount / 100);
+      return acc + discountedPrice * item.quantity;
+    }, 0) || 0;
 
   const handleNavigateCheckout = () => {
-    navigate("/checkout"); 
+    navigate("/checkout");
   };
 
   return (
@@ -29,45 +64,51 @@ const CartPage = () => {
       <div className="px-2 py-5 lg:p-5 grid grid-cols-1 lg:grid-cols-3 gap-y-8 lg:gap-8">
         <div className="col-span-2">
           <h1 className="text-2xl font-bold uppercase mb-4">Giỏ hàng</h1>
-          {
-              cartItems?.length === 0 ? (
-                <p className="text-center uppercase text-xl font-semibold text-gray-600">
-                  Hiện không có sản phẩm nào trong giỏ
-                </p>
-              ) : (
-                cartItems?.map((item) => (
-                  <CartItemComponent
-                    key={item.product_id._id}
-                    item={item}
-                    onRemove={() => {
-                      handleRemoveFromCart(item?.product_id._id);
-                      setCart((prevCart) => prevCart.filter((cartItem) => cartItem.product_id._id !== item.product_id._id));
-                    }}
-                    onDecrease={() => {
-                      const newQuantity = item.quantity - 1;
-                      if (newQuantity > 0) {
-                        handleDecreaseQuantity(item?.product_id._id);
-                        setCart((prevCart) => prevCart.map((cartItem) =>
-                          cartItem.product_id._id === item.product_id._id
-                            ? { ...cartItem, quantity: newQuantity }
-                            : cartItem
-                        ));
-                      }
-                    }}
-                    onIncrease={() => {
-                      const newQuantity = item.quantity + 1;
-                      handleAddToCart(item?.product_id._id);
-                      setCart((prevCart) => prevCart.map((cartItem) =>
+          {cartItems?.length === 0 ? (
+            <p className="text-center uppercase text-xl font-semibold text-gray-600">
+              Hiện không có sản phẩm nào trong giỏ
+            </p>
+          ) : (
+            cartItems?.map((item) => (
+              <CartItemComponent
+                key={item.product_id._id}
+                item={item}
+                onRemove={() => {
+                  handleRemoveFromCart(item?.product_id._id);
+                  setCart((prevCart) =>
+                    prevCart.filter(
+                      (cartItem) =>
+                        cartItem.product_id._id !== item.product_id._id
+                    )
+                  );
+                }}
+                onDecrease={() => {
+                  const newQuantity = item.quantity - 1;
+                  if (newQuantity > 0) {
+                    handleDecreaseQuantity(item?.product_id._id);
+                    setCart((prevCart) =>
+                      prevCart.map((cartItem) =>
                         cartItem.product_id._id === item.product_id._id
                           ? { ...cartItem, quantity: newQuantity }
                           : cartItem
-                      ));
-                    }}
-                  />
-                ))
-              )
-            }
-
+                      )
+                    );
+                  }
+                }}
+                onIncrease={() => {
+                  const newQuantity = item.quantity + 1;
+                  handleAddToCart(item?.product_id._id);
+                  setCart((prevCart) =>
+                    prevCart.map((cartItem) =>
+                      cartItem.product_id._id === item.product_id._id
+                        ? { ...cartItem, quantity: newQuantity }
+                        : cartItem
+                    )
+                  );
+                }}
+              />
+            ))
+          )}
         </div>
         <div>
           <h2 className="text-xl font-semibold uppercase mb-4">Tổng kết</h2>
@@ -86,18 +127,19 @@ const CartPage = () => {
           </div>
           <button
             className={`mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase ${
-              cart?.length === 0? "cursor-not-allowed " : ""
+              cart?.length === 0 ? "cursor-not-allowed " : ""
             }`}
             onClick={handleNavigateCheckout}
             disabled={cart?.length === 0}
           >
             Thanh toán
           </button>
-          <button onClick={() => {
-            handleClearCart();
-            setCart([]);
-          }
-          }>
+          <button
+            onClick={() => {
+              handleClearCart();
+              setCart([]);
+            }}
+          >
             Xóa tất cả
           </button>
         </div>

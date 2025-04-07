@@ -2,22 +2,13 @@
 import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { HiOutlineShoppingCart } from "react-icons/hi";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi"; // import API
-import { useCart } from "../../context/CartContext"; // import context
 const ProductComponent = ({ item, onClick }) => {
-
   const [isFavorite, setIsFavorite] = useState(false);
-  
+
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
     const res = await updateFavourite(item._id); // Gọi API để cập nhật danh sách yêu thích
-    console.log(res);
-  };
-  const { handleAddToCart } = useCart();
-
-  const handlePushToCart = async () => {
-    const res = await handleAddToCart(item._id); // Gọi API để thêm sản phẩm vào giỏ hàng
     console.log(res);
   };
 
@@ -96,16 +87,7 @@ const ProductComponent = ({ item, onClick }) => {
           )}
         </div>
 
-        <div className="absolute top-[10px] left-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          {/* Button Thêm vào giỏ */}
-          <button
-            onClick={handlePushToCart}
-            className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg"
-          >
-            <HiOutlineShoppingCart className="text-xl" />
-          </button>
-
-          {/* Button Yêu thích */}
+        <div className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           <button
             className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
             onClick={toggleFavorite}
