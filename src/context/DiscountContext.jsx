@@ -5,6 +5,7 @@ import {
   createDiscount,
   updateDiscount,
   deleteDiscount,
+  getDiscountForOrder
 } from "../services/api/DiscountApi";
 
 const DiscountContext = createContext();
@@ -57,6 +58,17 @@ export const DiscountProvider = ({ children }) => {
     );
     return res;
   };
+  
+  const fetchDiscountForOrder = async (product_id) => {
+    const response = await getDiscountForOrder(product_id);
+    console.log(response);
+    return response;
+    // if (response?.EM === "Get all discount successfully") {
+    //   setDiscounts(response.result);
+    // } else {
+    //   console.error(response?.EM || "Lỗi khi lấy danh sách mã giảm giá");
+    // }
+  }
 
   return (
     <DiscountContext.Provider
@@ -69,6 +81,7 @@ export const DiscountProvider = ({ children }) => {
         handleCreateDiscount,
         handleUpdateDiscount,
         handleDeleteDiscount,
+        fetchDiscountForOrder,
       }}
     >
       {children}

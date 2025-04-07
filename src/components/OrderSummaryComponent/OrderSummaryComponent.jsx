@@ -3,26 +3,36 @@ import React, { useState } from "react";
 const OrderSummaryComponent = ({
   cart,
   subtotal,
-  voucher,
-  setVoucher,
-  // handleApplyVoucher,
+  voucherProduct,
+  setVoucherProduct,
+  handleApplyVoucherProduct,
+  voucherShipping,
+  setVoucherShipping,
+  handleApplyVoucherShipping,
   onClick,
 }) => {
-  const [isVoucherValid, setIsVoucherValid] = useState(false);
+  const [isVoucherProductValid, setIsVoucherProductValid] = useState(false);
+  const [isVoucherShippingValid, setIsVoucherShippingValid] = useState(false);
 
-  const handleVoucherChange = (e) => {
+  const handleVoucherProductChange = (e) => {
     const value = e.target.value.trim().toUpperCase();
-    setVoucher(value);
-    setIsVoucherValid(value.length > 0);
+    setVoucherProduct(value);
+    setIsVoucherProductValid(value.length > 0);
+  };
+
+  const handleVoucherShippingChange = (e) => {
+    const value = e.target.value.trim().toUpperCase();
+    setVoucherShipping(value);
+    setIsVoucherShippingValid(value.length > 0);
   };
   
-  console.log(cart);
+  // console.log(cart);
   
 
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
       {cart.map((item) => (
-        <div key={item.product_id._id}>
+        <div key={`${item.product_id?._id}-${item.color_name}-${item.variant_name}`}>
           <div className="flex justify-between items-center">
             <div>
               <img
@@ -33,6 +43,7 @@ const OrderSummaryComponent = ({
             </div>
             <div className="flex justify-between items-center flex-1 mx-4 space-x-2">
               <div>
+
                 <h4 className="text-sm line-clamp-1">
                   {item?.product_id?.product_title}
                 </h4>
@@ -59,8 +70,8 @@ const OrderSummaryComponent = ({
             <input
               id="voucher"
               type="text"
-              value={voucher}
-              onChange={handleVoucherChange}
+              value={voucherProduct}
+              onChange={handleVoucherProductChange}
               className="flex-1 peer p-2 border rounded focus:ring-black placeholder-transparent"
               placeholder="Mã giảm giá"
             />
@@ -72,16 +83,47 @@ const OrderSummaryComponent = ({
             </label>
             <button
               className={`p-3 text-sm w-[150px] lg:w-full text-white rounded uppercase ${
-                !isVoucherValid
+                !isVoucherProductValid
                   ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
                   : "bg-black hover:opacity-80"
               }`}
-              // onClick={handleApplyVoucher}
-              disabled={!isVoucherValid}
+              onClick={handleApplyVoucherProduct}
+              disabled={!isVoucherProductValid}
             >
               Áp dụng
             </button>
           </div>
+          
+        </div>
+        <div className="flex items-center my-4 space-x-2">
+          <div className="relative w-full mb-3 flex flex-nowrap lg:flex-wrap xl:flex-nowrap space-x-2 lg:space-x-0 xl:space-x-2 gap-y-2">
+            <input
+              id="voucher"
+              type="text"
+              value={voucherShipping}
+              onChange={handleVoucherShippingChange}
+              className="flex-1 peer p-2 border rounded focus:ring-black placeholder-transparent"
+              placeholder="Mã vận chuyển"
+            />
+            <label
+              htmlFor="voucher"
+              className="absolute !text-sm bg-white px-1 left-1.5 top-3 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-3 peer-focus:left-1.5 peer-[&:not(:placeholder-shown)]:-top-3 peer-[&:not(:placeholder-shown)]:left-1.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
+            >
+              Mã vận chuyển
+            </label>
+            <button
+              className={`p-3 text-sm w-[150px] lg:w-full text-white rounded uppercase ${
+                !isVoucherShippingValid
+                  ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
+                  : "bg-black hover:opacity-80"
+              }`}
+              onClick={handleApplyVoucherShipping}
+              disabled={!isVoucherShippingValid}
+            >
+              Áp dụng
+            </button>
+          </div>
+          
         </div>
         <div className="flex justify-between text-sm">
           <span>Tạm tính</span>

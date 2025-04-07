@@ -21,8 +21,8 @@ export const CartProvider = ({ children }) => {
     return data;
   };
 
-  const handleAddToCart = async (productId, color_name, variant_name) => {
-    return await addToCart(productId, color_name, variant_name);
+  const handleAddToCart = async (productId, color_name, variant_name, quantity) => {
+    return await addToCart(productId, color_name, variant_name, quantity);
   };
 
   const handleRemoveFromCart = async (productId, color_name, variant_name) => {
