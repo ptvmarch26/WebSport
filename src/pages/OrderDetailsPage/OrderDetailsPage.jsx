@@ -1,17 +1,19 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import { useEffect } from "react";
-import { useUser } from "../../context/UserContext";
 const OrderDetailsPage = () => {
   const location = useLocation();
   const { id } = useParams();
+
+  // Lấy ảnh và giá của varient truyền qua state cho đỡ làm lại
+  const { variantPrice, productImage } = location.state || {};
 
   console.log("id ", id);
   const { fetchOrderDetail, orderDetails } = useOrder();
 
   useEffect(() => {
     fetchOrderDetail(id);
-  },[]);
+  }, []);
 
   console.log("orderDetails ", orderDetails);
 
@@ -54,7 +56,8 @@ const OrderDetailsPage = () => {
             Thanh toán:{" "}
           </strong>
           {orderDetails?.order_payment_method === "cod"
-            ? "Thanh toán khi nhận hàng" : ""}
+            ? "Thanh toán khi nhận hàng"
+            : orderDetails?.order_payment_method}
         </p>
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
@@ -62,23 +65,31 @@ const OrderDetailsPage = () => {
         {orderDetails?.products.map((product, index) => (
           <div key={index} className="flex items-center gap-4 py-4 last:mb-0">
             <img
-              src={product.product_id.product_img.image_main}
+              src={productImage}
               alt={product.product_id.product_title}
               className="w-16 h-16 object-cover border border-gray-300 rounded"
             />
             <div className="flex-1">
-              <p className="text-sm font-semibold line-clamp-1">{product.product_id.product_title}</p>
-              {/* <p className="text-sm text-gray-500">{product.size}</p> */}
-              <p className="text-sm">x{product.product_id.quantity}</p>
+              <p className="text-sm font-semibold line-clamp-1">
+                {product.product_id.product_title}
+              </p>
+              <p className="text-sm text-gray-500">
+                {product.color} - {product.variant}
+              </p>
+              <p className="text-sm">x{product.quantity}</p>
             </div>
             <div className="flex space-x-2">
-              {product.product_id.product_percent_discount !=="0" && (
+              {product.product_id.product_percent_discount !== "0" && (
                 <p className="text-[#9ca3af] line-through">
-                  {product.product_id.product_price.toLocaleString()}đ
+                  {variantPrice.toLocaleString()}đ
                 </p>
               )}
               <p className="font-medium text-[#ba2b20]">
-                {(product.product_id.product_price * (1- product.product_id.product_percent_discount /100)).toLocaleString()}đ
+                {(
+                  variantPrice *
+                  (1 - product.product_id.product_percent_discount / 100)
+                ).toLocaleString()}
+                đ
               </p>
             </div>
           </div>
@@ -86,7 +97,7 @@ const OrderDetailsPage = () => {
         <div className="flex justify-end space-x-4">
           <p className="font-medium">Tổng tiền:</p>
           <p className="font-bold text-[#ba2b20]">
-            {orderDetails.order_total_final.toLocaleString()}đ
+            {orderDetails?.order_total_final.toLocaleString()}đ
           </p>
         </div>
       </div>

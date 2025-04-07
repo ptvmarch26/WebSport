@@ -30,12 +30,20 @@ const OrderSummaryComponent = ({
             </div>
             <div className="flex justify-between items-center flex-1 mx-4 space-x-2">
               <div>
-                <h4 className="text-sm line-clamp-1">{item?.product_id?.product_title}</h4>
+                <h4 className="text-sm line-clamp-1">
+                  {item?.product_id?.product_title}
+                </h4>
                 {/* <p className="text-xs">Size: {item.size}</p> */}
                 <p className="text-xs">x{item.quantity}</p>
               </div>
               <div>
-                <p className="text-sm">{(item.product_id?.product_price*(1-item.product_id?.product_percent_discount/100)).toLocaleString()}₫</p>
+                <p className="text-sm">
+                  {(
+                    item.product_id?.product_price *
+                    (1 - item.product_id?.product_percent_discount / 100)
+                  ).toLocaleString()}
+                  ₫
+                </p>
               </div>
             </div>
           </div>
@@ -85,7 +93,10 @@ const OrderSummaryComponent = ({
           <span>Tổng tiền</span>
           <span>{subtotal.toLocaleString()}₫</span>
         </div>
-        <button onClick={onClick} className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase">
+        <button
+          onClick={onClick}
+          className="mt-4 p-3 bg-black hover:opacity-80 text-white w-full rounded uppercase"
+        >
           Đặt hàng
         </button>
       </div>
