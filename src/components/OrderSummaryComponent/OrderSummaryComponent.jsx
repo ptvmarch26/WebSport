@@ -15,6 +15,9 @@ const OrderSummaryComponent = ({
     setVoucher(value);
     setIsVoucherValid(value.length > 0);
   };
+  
+  console.log(cart);
+  
 
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
@@ -23,7 +26,7 @@ const OrderSummaryComponent = ({
           <div className="flex justify-between items-center">
             <div>
               <img
-                src={item?.product_id?.product_img?.image_main}
+                src={item?.product_id?.product_img}
                 alt={item?.product_id?.product_title}
                 className="w-16 h-16 object-cover"
               />

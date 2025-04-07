@@ -11,14 +11,10 @@ import { Button as MButton } from "@material-tailwind/react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
+import QRComponent from "../../components/QRComponent/QRComponent";
 
 const shippingMethods = [
-  { id: "standard", label: "Giao hàng tiêu chuẩn", price: "35.000 đ" },
-  {
-    id: "express",
-    label: "Giao hàng hoả tốc 4H-6H (Chỉ nội thành TP.HCM)",
-    price: "60.000 đ",
-  },
+  { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
 
 const paymentMethods = [
@@ -29,11 +25,8 @@ const paymentMethods = [
 
 function CheckoutPage() {
   const { cart, fetchCart, setCart } = useCart();
-  const { fetchDiscounts, discounts} = useDiscount();
-
   useEffect(() => {
     fetchCart(); 
-    fetchDiscounts();
   },[]);
 
   useEffect(() => {
@@ -85,7 +78,7 @@ function CheckoutPage() {
     }
   }, [addresses]);
 
-  const { handleAddAddress, fetchUser, handleUpdateAddress, handleDeleteAddress } = useUser(); 
+  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress} = useUser(); 
 
   const handleAddAddresss = async () => {
     if (validateForm()) {
@@ -219,6 +212,8 @@ function CheckoutPage() {
       products: cartItems.map((item) => ({
         product_id: item.product_id._id,
         quantity: item.quantity,
+        color_name: item.color_name,
+        variant_name: item.variant_name,
       })),
       order_payment_method: selectedPayment,
       order_note: " ",

@@ -9,28 +9,44 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
     }
   };
 
+  console.log(item);
+  
   const increaseQuantity = () => {
-    onIncrease(item.id, item.quantity + 1);
+    onIncrease(item._id, item.quantity + 1);
   };
+
+  const selectedColor = item?.product_id?.colors.find(
+    (color) => color.color_name === item.color_name
+  );
+
+  const selectedVariant = selectedColor?.variants.find(
+    (variant) => variant.variant_size === item.variant_name
+  );
+
+  const imageToDisplay = selectedVariant?.imgs?.img_main || selectedColor?.imgs?.img_main || item?.product_id?.product_img;
 
   return (
     <>
       <div className="flex gap-4">
         <img
-          src={item?.product_id?.product_img?.image_main}
+          src={imageToDisplay}
           alt={item?.product_id?.product_title}
           className="w-28 h-28 object-cover"
         />
         <div className="flex-1">
           <h2 className="font-semibold line-clamp-2">{item?.product_id?.product_title}</h2>
           <div className="flex items-center">
-            <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
-              {item.product_id?.product_price.toLocaleString()}₫
-            </p>
-            <p className="text-md font-bold text-[#ba2b20] mr-4">
-              {(item.product_id?.product_price*(1-item.product_id?.product_percent_discount/100)).toLocaleString()}₫
-            </p>
+            {
+              item.product_id?.product_percent_discount > 0 ? (
+                <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
+                {selectedVariant.variant_price?.toLocaleString()}₫
+              </p>): (
+              <p className="text-md font-bold text-[#ba2b20] mr-4">
+                {(selectedVariant.variant_price * (1-item.product_id?.product_percent_discount/100)).toLocaleString()}₫
+              </p>)
+            }
           </div>
+          <p className="text-md">{selectedColor.color_name} - Size {selectedVariant.variant_size} </p>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">

@@ -14,15 +14,8 @@ const ProductComponent = ({ item, onClick }) => {
     const res = await updateFavourite(item._id); // Gọi API để cập nhật danh sách yêu thích
     console.log(res);
   };
-  const { handleAddToCart } = useCart();
-
-  const handlePushToCart = async () => {
-    const res = await handleAddToCart(item._id); // Gọi API để thêm sản phẩm vào giỏ hàng
-    console.log(res);
-  };
 
   useEffect(() => {
-    console.log("aaaaa", item._id);
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
 
@@ -97,14 +90,6 @@ const ProductComponent = ({ item, onClick }) => {
         </div>
 
         <div className="absolute top-[10px] left-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          {/* Button Thêm vào giỏ */}
-          <button
-            onClick={handlePushToCart}
-            className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer font-semibold shadow-md hover:shadow-lg"
-          >
-            <HiOutlineShoppingCart className="text-xl" />
-          </button>
-
           {/* Button Yêu thích */}
           <button
             className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
