@@ -13,7 +13,6 @@ const ProductComponent = ({ item, onClick }) => {
   };
 
   useEffect(() => {
-    console.log("aaaaa", item._id);
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
 

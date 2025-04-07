@@ -64,51 +64,64 @@ const CartPage = () => {
       <div className="px-2 py-5 lg:p-5 grid grid-cols-1 lg:grid-cols-3 gap-y-8 lg:gap-8">
         <div className="col-span-2">
           <h1 className="text-2xl font-bold uppercase mb-4">Giỏ hàng</h1>
-          {cartItems?.length === 0 ? (
-            <p className="text-center uppercase text-xl font-semibold text-gray-600">
-              Hiện không có sản phẩm nào trong giỏ
-            </p>
-          ) : (
-            cartItems?.map((item) => (
-              <CartItemComponent
-                key={item.product_id._id}
-                item={item}
-                onRemove={() => {
-                  handleRemoveFromCart(item?.product_id._id);
-                  setCart((prevCart) =>
-                    prevCart.filter(
-                      (cartItem) =>
-                        cartItem.product_id._id !== item.product_id._id
-                    )
-                  );
-                }}
-                onDecrease={() => {
-                  const newQuantity = item.quantity - 1;
-                  if (newQuantity > 0) {
-                    handleDecreaseQuantity(item?.product_id._id);
-                    setCart((prevCart) =>
-                      prevCart.map((cartItem) =>
-                        cartItem.product_id._id === item.product_id._id
-                          ? { ...cartItem, quantity: newQuantity }
-                          : cartItem
-                      )
-                    );
-                  }
-                }}
-                onIncrease={() => {
-                  const newQuantity = item.quantity + 1;
-                  handleAddToCart(item?.product_id._id);
-                  setCart((prevCart) =>
-                    prevCart.map((cartItem) =>
-                      cartItem.product_id._id === item.product_id._id
-                        ? { ...cartItem, quantity: newQuantity }
-                        : cartItem
-                    )
-                  );
-                }}
-              />
-            ))
-          )}
+          {
+              cartItems?.length === 0 ? (
+                <p className="text-center uppercase text-xl font-semibold text-gray-600">
+                  Hiện không có sản phẩm nào trong giỏ
+                </p>
+              ) : (
+                cartItems?.map((item) => (
+                  <CartItemComponent
+                    key={item.product_id?._id}
+                    item={item}
+                    onRemove={() => {
+                      handleRemoveFromCart(item?.product_id?._id, item?.color_name, item?.variant_name);
+                      setCart((prevCart) => ({
+                        ...prevCart,
+                        products: prevCart.products.filter((cartItem) => 
+                          !(cartItem.product_id._id === item.product_id._id &&
+                            cartItem.color_name === item.color_name &&
+                            cartItem.variant_name === item.variant_name
+                          )
+                        ),
+                      }));
+      
+                    }}
+                    onDecrease={() => {
+                      const newQuantity = item.quantity - 1;
+                      if (newQuantity > 0) {
+                        handleDecreaseQuantity(item?.product_id?._id, item?.color_name, item?.variant_name);
+                        console.log(item?.product_id?._id, item?.color_name, item?.variant_name);
+                        setCart((prevCart) => ({
+                          ...prevCart,
+                          products: prevCart.products.map((cartItem) =>
+                            cartItem.product_id._id === item.product_id._id &&
+                            cartItem.color_name === item.color_name &&
+                            cartItem.variant_name === item.variant_name
+                              ? { ...cartItem, quantity: newQuantity }
+                              : cartItem
+                          ),
+                        }));
+                      }
+                    }}
+                    onIncrease={() => {
+                      const newQuantity = item.quantity + 1;
+                      handleAddToCart(item?.product_id._id, item?.color_name, item?.variant_name);
+                      setCart((prevCart) => ({
+                        ...prevCart,
+                        products: prevCart.products.map((cartItem) =>
+                          cartItem.product_id._id === item.product_id._id &&
+                          cartItem.color_name === item.color_name &&
+                          cartItem.variant_name === item.variant_name
+                            ? { ...cartItem, quantity: newQuantity }
+                            : cartItem
+                        ),
+                      }));
+                    }}
+                  />
+                ))
+              )
+            }
         </div>
         <div>
           <h2 className="text-xl font-semibold uppercase mb-4">Tổng kết</h2>

@@ -2,7 +2,6 @@ import { useLocation, useParams } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import { useEffect } from "react";
 const OrderDetailsPage = () => {
-  const location = useLocation();
   const { id } = useParams();
 
   // Lấy ảnh và giá của varient truyền qua state cho đỡ làm lại
