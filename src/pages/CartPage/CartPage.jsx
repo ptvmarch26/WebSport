@@ -37,7 +37,7 @@ const CartPage = () => {
               ) : (
                 cartItems?.map((item) => (
                   <CartItemComponent
-                    key={item.product_id?._id}
+                    key={`${item.product_id?._id}-${item.color_name}-${item.variant_name}`}
                     item={item}
                     onRemove={() => {
                       handleRemoveFromCart(item?.product_id?._id, item?.color_name, item?.variant_name);
