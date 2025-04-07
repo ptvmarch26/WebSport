@@ -7,6 +7,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Button } from "@material-tailwind/react";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi";
+import { useCart } from "../../context/CartContext";
 
 const ProductInfoComponent = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -73,10 +74,16 @@ const ProductInfoComponent = ({ product }) => {
 
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
-    const res = await updateFavourite(product._id); // Gọi API để cập nhật danh sách yêu thích
+    await updateFavourite(product._id); 
+  };
+
+  const { handleAddToCart } = useCart();
+  const handlePushtoCart = async () => {
+    const res = await handleAddToCart(product._id, selectedColor, selectedSize);
     console.log(res);
   };
 
+  console.log(product);
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
@@ -146,7 +153,6 @@ const ProductInfoComponent = ({ product }) => {
     }
   };
 
-  console.log("product", product);
   return (
     <div className="flex flex-col lg:flex-row lg:p-10 gap-10">
       <div className="w-full h-full lg:w-[500px] flex flex-col">
@@ -308,6 +314,8 @@ const ProductInfoComponent = ({ product }) => {
         {/* Nút thêm giỏ hàng / mua ngay */}
         <div className="flex flex-wrap sm:flex-nowrap gap-2 mt-4">
           <Button
+            onClick={handlePushtoCart}
+            disabled={!selectedSize || !selectedColor}
             color="white"
             className="p-3 border border-gray-400 text-black w-full rounded uppercase"
           >

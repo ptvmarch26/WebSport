@@ -3,10 +3,8 @@ import { useOrder } from "../../context/OrderContext";
 import { useEffect } from "react";
 import { useUser } from "../../context/UserContext";
 const OrderDetailsPage = () => {
-  const location = useLocation();
   const { id } = useParams();
 
-  console.log("id ", id);
   const { fetchOrderDetail, orderDetails } = useOrder();
 
   useEffect(() => {
@@ -86,7 +84,7 @@ const OrderDetailsPage = () => {
         <div className="flex justify-end space-x-4">
           <p className="font-medium">Tổng tiền:</p>
           <p className="font-bold text-[#ba2b20]">
-            {orderDetails.order_total_final.toLocaleString()}đ
+            {orderDetails?.order_total_final.toLocaleString()}đ
           </p>
         </div>
       </div>

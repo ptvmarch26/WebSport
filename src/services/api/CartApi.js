@@ -16,11 +16,11 @@ export const getCart = async () => {
   }
 };
 
-export const addToCart = async (productId) => {
+export const addToCart = async (product_id, color_name, variant_name) => {
   try {
     const res = await axios.post(
       API_URL,
-      { productId },
+      { product_id , color_name, variant_name },
       {
         headers: { Authorization: `Bearer ${getToken()}` },
       }
@@ -32,9 +32,11 @@ export const addToCart = async (productId) => {
   }
 };
 
-export const removeFromCart = async (productId) => {
+export const removeFromCart = async (productId, color_name, variant_name) => {
+  console.log(productId, color_name, variant_name);
   try {
     const res = await axios.delete(`${API_URL}/${productId}`, {
+      data: { color_name, variant_name },
       headers: { Authorization: `Bearer ${getToken()}` },
     });
     return res.data;
@@ -56,11 +58,11 @@ export const clearCart = async () => {
   }
 };
 
-export const decreaseQuantity = async (productId) => {
+export const decreaseQuantity = async (productId, color_name, variant_name) => {
   try {
     const res = await axios.patch(
       `${API_URL}/decrease_quantity`,
-      { productId },
+      { productId, color_name, variant_name },
       {
         headers: { Authorization: `Bearer ${getToken()}` },
       }

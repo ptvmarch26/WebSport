@@ -118,7 +118,7 @@ const OrderStatusPage = () => {
                   onClick={() => handleProductClick(order)}
                 >
                   <img
-                    src={product.product_id.product_img.image_main}
+                    src={product.product_id.product_img}
                     alt={product.product_id.product_title}
                     className="w-16 h-16 object-cover border border-gray-300 rounded"
                   />

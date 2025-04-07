@@ -10,7 +10,7 @@ const CartPage = () => {
     fetchCart();
   }, []); 
 
-  console.log(cart);
+  console.log("cart", cart);
 
   const cartItems = cart?.products || [];
   const navigate = useNavigate();
@@ -37,31 +37,51 @@ const CartPage = () => {
               ) : (
                 cartItems?.map((item) => (
                   <CartItemComponent
-                    key={item.product_id._id}
+                    key={item.product_id?._id}
                     item={item}
                     onRemove={() => {
-                      handleRemoveFromCart(item?.product_id._id);
-                      setCart((prevCart) => prevCart.filter((cartItem) => cartItem.product_id._id !== item.product_id._id));
+                      handleRemoveFromCart(item?.product_id?._id, item?.color_name, item?.variant_name);
+                      setCart((prevCart) => ({
+                        ...prevCart,
+                        products: prevCart.products.filter((cartItem) => 
+                          !(cartItem.product_id._id === item.product_id._id &&
+                            cartItem.color_name === item.color_name &&
+                            cartItem.variant_name === item.variant_name
+                          )
+                        ),
+                      }));
+      
                     }}
                     onDecrease={() => {
                       const newQuantity = item.quantity - 1;
                       if (newQuantity > 0) {
-                        handleDecreaseQuantity(item?.product_id._id);
-                        setCart((prevCart) => prevCart.map((cartItem) =>
-                          cartItem.product_id._id === item.product_id._id
-                            ? { ...cartItem, quantity: newQuantity }
-                            : cartItem
-                        ));
+                        handleDecreaseQuantity(item?.product_id?._id, item?.color_name, item?.variant_name);
+                        console.log(item?.product_id?._id, item?.color_name, item?.variant_name);
+                        setCart((prevCart) => ({
+                          ...prevCart,
+                          products: prevCart.products.map((cartItem) =>
+                            cartItem.product_id._id === item.product_id._id &&
+                            cartItem.color_name === item.color_name &&
+                            cartItem.variant_name === item.variant_name
+                              ? { ...cartItem, quantity: newQuantity }
+                              : cartItem
+                          ),
+                        }));
                       }
                     }}
                     onIncrease={() => {
                       const newQuantity = item.quantity + 1;
-                      handleAddToCart(item?.product_id._id);
-                      setCart((prevCart) => prevCart.map((cartItem) =>
-                        cartItem.product_id._id === item.product_id._id
-                          ? { ...cartItem, quantity: newQuantity }
-                          : cartItem
-                      ));
+                      handleAddToCart(item?.product_id._id, item?.color_name, item?.variant_name);
+                      setCart((prevCart) => ({
+                        ...prevCart,
+                        products: prevCart.products.map((cartItem) =>
+                          cartItem.product_id._id === item.product_id._id &&
+                          cartItem.color_name === item.color_name &&
+                          cartItem.variant_name === item.variant_name
+                            ? { ...cartItem, quantity: newQuantity }
+                            : cartItem
+                        ),
+                      }));
                     }}
                   />
                 ))

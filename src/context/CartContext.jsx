@@ -21,21 +21,20 @@ export const CartProvider = ({ children }) => {
     return data;
   };
 
-  const handleAddToCart = async (productId) => {
-    return await addToCart(productId);
+  const handleAddToCart = async (productId, color_name, variant_name) => {
+    return await addToCart(productId, color_name, variant_name);
   };
 
-  const handleRemoveFromCart = async (productId) => {
-    return await removeFromCart(productId);
-    
+  const handleRemoveFromCart = async (productId, color_name, variant_name) => {
+    return await removeFromCart(productId, color_name, variant_name);
   };
 
   const handleClearCart = async () => {
     return await clearCart();
   };
 
-  const handleDecreaseQuantity = async (productId) => {
-    return await decreaseQuantity(productId);
+  const handleDecreaseQuantity = async (productId, color_name, variant_name) => {
+    return await decreaseQuantity(productId, color_name, variant_name);
   };
 
   
