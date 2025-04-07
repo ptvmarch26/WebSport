@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Select, Button, Tag } from "antd";
+import { Table, Input, Select, Button } from "antd";
 import { ExportOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
@@ -76,7 +76,7 @@ const Orders = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date) => {
-        return date ? moment(date).format("YYYY-MM-DD") : "";
+        return moment(date).format("YYYY-MM-DD HH:mm");
       },
     },
     {
@@ -107,6 +107,7 @@ const Orders = () => {
             handleStatusChange(record._id, newStatus);
           }}
           className="min-w-[200px]"
+          onClick={(e) => e.stopPropagation()}
         >
           {statusColors.map((s) => (
             <Option key={s} value={s}>
@@ -115,6 +116,12 @@ const Orders = () => {
           ))}
         </Select>
       ),
+      onCell: () => ({
+        onClick: (e) => {
+          // Chỉ ngăn chặn sự kiện click không lan truyền lên hàng
+          e.stopPropagation();
+        },
+      }),
     },
   ];
 
@@ -165,7 +172,7 @@ const Orders = () => {
           pagination={{ pageSize: 5 }}
           rowKey="_id"
           onRow={(record) => ({
-            onClick: () => navigate(`/admin/order-details/${record._id}`),  
+            onClick: () => navigate(`/admin/order-details/${record._id}`),
           })}
           scroll={{ x: "max-content" }}
           className="cursor-pointer"

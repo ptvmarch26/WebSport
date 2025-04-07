@@ -9,8 +9,8 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
     }
   };
 
-  console.log(item);
-  
+  console.log("item", item);
+
   const increaseQuantity = () => {
     onIncrease(item._id, item.quantity + 1);
   };
@@ -23,7 +23,10 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
     (variant) => variant.variant_size === item.variant_name
   );
 
-  const imageToDisplay = selectedVariant?.imgs?.img_main || selectedColor?.imgs?.img_main || item?.product_id?.product_img;
+  const imageToDisplay =
+    selectedVariant?.imgs?.img_main ||
+    selectedColor?.imgs?.img_main ||
+    item?.product_id?.product_img;
 
   return (
     <>
@@ -33,20 +36,28 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
           alt={item?.product_id?.product_title}
           className="w-28 h-28 object-cover"
         />
-        <div className="flex-1">
-          <h2 className="font-semibold line-clamp-2">{item?.product_id?.product_title}</h2>
+        <div className="flex-1 space-y-2">
+          <h2 className="font-semibold line-clamp-2">
+            {item?.product_id?.product_title}
+          </h2>
           <div className="flex items-center">
-            {
-              item.product_id?.product_percent_discount > 0 ? (
-                <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
+            {item.product_id?.product_percent_discount > 0 ? (
+              <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
                 {selectedVariant.variant_price?.toLocaleString()}₫
-              </p>): (
+              </p>
+            ) : (
               <p className="text-md font-bold text-[#ba2b20] mr-4">
-                {(selectedVariant.variant_price * (1-item.product_id?.product_percent_discount/100)).toLocaleString()}₫
-              </p>)
-            }
+                {(
+                  selectedVariant.variant_price *
+                  (1 - item.product_id?.product_percent_discount / 100)
+                ).toLocaleString()}
+                ₫
+              </p>
+            )}
           </div>
-          <p className="text-md">{selectedColor.color_name} - Size {selectedVariant.variant_size} </p>
+          <p className="text-md">
+            {selectedColor.color_name} - Size {selectedVariant.variant_size}{" "}
+          </p>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">

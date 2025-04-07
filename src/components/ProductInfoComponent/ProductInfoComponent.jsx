@@ -74,7 +74,7 @@ const ProductInfoComponent = ({ product }) => {
 
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
-    await updateFavourite(product._id); 
+    await updateFavourite(product._id);
   };
 
   const { handleAddToCart } = useCart();
@@ -196,14 +196,26 @@ const ProductInfoComponent = ({ product }) => {
         <p className="text-lg text-gray-500">{product?.product_brand}</p>
 
         <div className="flex items-center mt-4">
-          <p className="text-xl font-bold text-[#ba2b20] mr-4">
-            {product?.product_price?.toLocaleString()}₫
-          </p>
+          {selectedColor && !selectedSize ? (
+            <p className="text-xl font-bold text-[#ba2b20] mr-4">
+              {product?.product_price?.toLocaleString()}₫
+            </p>
+          ) : (
+            <p className="text-xl font-bold text-[#ba2b20] mr-4">
+              {availableVariants
+                .find((v) => v.variant_size === selectedSize)
+                ?.variant_price.toLocaleString()}
+              ₫
+            </p>
+          )}
           {product?.product_percent_discount > 0 && (
             <>
               <p className="text-md text-[#9ca3af] line-through mr-4">
                 {(
-                  (product.product_price * 100) /
+                  (availableVariants.find(
+                    (v) => v.variant_size === selectedSize
+                  )?.variant_price *
+                    100) /
                   (100 - product.product_percent_discount)
                 ).toLocaleString()}
                 ₫

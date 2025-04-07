@@ -44,40 +44,33 @@ const OrderStatusPage = () => {
     navigate(`/orders?tab=${index + 1}`);
   };
 
-    // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
-    const findProductDetails = (product) => {
-      const colorOption = product.product_id.colors.find(
-        (c) => c.color_name === product.color
+  // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
+  const findProductDetails = (product) => {
+    const colorOption = product.product_id.colors.find(
+      (c) => c.color_name === product.color
+    );
+
+    let variantPrice = product.product_id.product_price;
+    let productImage = product.product_id.product_img;
+
+    if (colorOption) {
+      productImage = colorOption.imgs.img_main;
+
+      // Tìm biến thể tương ứng
+      const variantOption = colorOption.variants.find(
+        (v) => v.variant_size === product.variant
       );
-  
-      let variantPrice = product.product_id.product_price;
-      let productImage = product.product_id.product_img;
-  
-      if (colorOption) {
-        productImage = colorOption.imgs.img_main;
-  
-        // Tìm biến thể tương ứng
-        const variantOption = colorOption.variants.find(
-          (v) => v.variant_size === product.variant
-        );
-  
-        if (variantOption) {
-          variantPrice = variantOption.variant_price;
-        }
+
+      if (variantOption) {
+        variantPrice = variantOption.variant_price;
       }
-  
-      return { variantPrice, productImage };
-    };
+    }
 
-  const handleProductClick = (order, product) => {
-    const { variantPrice, productImage } = findProductDetails(product);
+    return { variantPrice, productImage };
+  };
 
-    navigate(`order-details/${order._id}`, {
-      state: {
-        variantPrice,
-        productImage
-      },
-    });
+  const handleProductClick = (order) => {
+    navigate(`order-details/${order._id}`);
   };
 
   const handleFeedback = (order) => {
@@ -142,7 +135,7 @@ const OrderStatusPage = () => {
                   <div
                     key={index}
                     className="flex items-center gap-4 py-4 last:mb-0 cursor-pointer"
-                    onClick={() => handleProductClick(order, product)}
+                    onClick={() => handleProductClick(order)}
                   >
                     <img
                       src={productImage}
