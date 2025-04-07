@@ -16,11 +16,11 @@ export const getCart = async () => {
   }
 };
 
-export const addToCart = async (product_id, color_name, variant_name) => {
+export const addToCart = async (product_id, color_name, variant_name, quantity) => {
   try {
     const res = await axios.post(
       API_URL,
-      { product_id , color_name, variant_name },
+      { product_id , color_name, variant_name, quantity },
       {
         headers: { Authorization: `Bearer ${getToken()}` },
       }
