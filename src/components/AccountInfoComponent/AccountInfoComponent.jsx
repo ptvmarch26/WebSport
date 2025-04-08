@@ -72,7 +72,7 @@ const AccountInfoComponent = () => {
 
   return (
     <div className="relative w-full lg:w-72 bg-white lg:bg-[#f6f7f8] shadow-none lg:shadow-md p-0 lg:p-6">
-      <div className="flex flex-col items-center">
+      <div className="hidden lg:flex flex-col items-center">
         <label className="cursor-pointer">
           <img
             className="w-20 h-20 rounded-full object-cover shadow-md"
