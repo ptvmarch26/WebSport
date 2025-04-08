@@ -165,7 +165,7 @@ const Header = () => {
                   <img
                     src={selectedUser?.avt_img || avatar_false}
                     alt="User avatar"
-                    className="w-7 h-7 rounded-full"
+                    className="w-7 h-7 rounded-full ml-1"
                   />
                 </div>
               </Link>
