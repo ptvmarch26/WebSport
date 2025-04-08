@@ -33,10 +33,8 @@ const CartPage = () => {
       const selectedVariant = selectedColor?.variants.find(
         (variant) => variant.variant_size === item.variant_name
       );
-      const discountedPrice =
-        selectedVariant.variant_price *
-        (1 - item.product_id.product_percent_discount / 100);
-      return acc + discountedPrice * item.quantity;
+
+      return acc + selectedVariant.variant_price * item.quantity;
     }, 0) || 0;
 
   const handleNavigateCheckout = () => {
@@ -135,16 +133,6 @@ const CartPage = () => {
           )}
         </div>
         <div>
-          <h2 className="text-xl font-semibold uppercase mb-4">Tổng kết</h2>
-          <div className="flex justify-between text-lg">
-            <span>Tạm tính</span>
-            <span>{subtotal.toLocaleString()}₫</span>
-          </div>
-          <div className="flex justify-between text-lg mt-2">
-            <span>Tiền vận chuyển</span>
-            <span>Free</span>
-          </div>
-          <hr className="my-4" />
           <div className="flex justify-between text-xl font-bold">
             <span>Tổng tiền</span>
             <span>{subtotal.toLocaleString()}₫</span>

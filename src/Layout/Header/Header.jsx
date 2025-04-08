@@ -4,7 +4,6 @@ import clsx from "clsx";
 import {
   FaHeart,
   FaShoppingCart,
-  FaUser,
   FaSearch,
   FaBars,
 } from "react-icons/fa";
@@ -20,20 +19,14 @@ import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
 
-
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
-  const { selectedUser, fetchUser } = useUser();
+  const { selectedUser } = useUser();
 
   const { token } = useAuth();
-
-  
-    useEffect(() => {
-      fetchUser(); 
-    }, []); 
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -154,33 +147,52 @@ const Header = () => {
               <FaSearch className="text-base" />
               <p className="text-base">Tìm kiếm</p>
             </button>
-            <Link to={"/favorite"} className="hidden lg:block">
-              <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-                <FaHeart />
-              </div>
-            </Link>
             {token ? (
-              <Link to={"/account"} className="order-1">
-                <div>
-                  <img
-                    src={selectedUser?.avt_img || avatar_false}
-                    alt="User avatar"
-                    className="w-7 h-7 rounded-full ml-1"
-                  />
-                </div>
-              </Link>
-            ) : (
-              <Link to={"/sign-in"} className="order-1">
-                <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-                  <FaUser />
-                </div>
-              </Link>
-            )}
-            <Link to={"/cart"}>
-              <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
-                <FaShoppingCart />
+              <div className="flex items-center space-x-4 text-white text-xl">
+                <Link to={"/favorite"} className="hidden lg:block">
+                  <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
+                    <FaHeart />
+                  </div>
+                </Link>
+                <Link to={"/account"} className="order-1">
+                  <div>
+                    <img
+                      src={selectedUser?.avt_img || avatar_false}
+                      alt="User avatar"
+                      className="w-7 h-7 rounded-full ml-1"
+                    />
+                  </div>
+                </Link>
+                <Link to={"/cart"}>
+                  <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
+                    <FaShoppingCart />
+                  </div>
+                </Link>
               </div>
-            </Link>
+            ) : (
+              <div className="order-1 flex items-center space-x-4 text-sm font-medium">
+                <Link
+                  to="/sign-up"
+                  className="relative group text-white uppercase transition-all duration-300 ease-in-out
+      hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
+      after:h-[2px] after:bg-[#8a7350] after:-bottom-[3px]
+      after:scale-x-0 hover:after:scale-x-100 
+      after:transition-transform after:duration-300"
+                >
+                  Đăng ký
+                </Link>
+                <Link
+                  to="/sign-in"
+                  className="relative group text-white uppercase transition-all duration-300 ease-in-out
+    hover:opacity-100 after:content-[''] after:absolute after:left-0 after:right-0 
+    after:h-[2px] after:bg-[#8a7350] after:-bottom-[3px]
+    after:scale-x-0 hover:after:scale-x-100 
+    after:transition-transform after:duration-300"
+                >
+                  Đăng nhập
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -252,12 +264,20 @@ const Header = () => {
                       Về chúng tôi
                     </Link>
                   </p>
-                  <div className="border-t-[1px] border-[rgba(0, 0, 0, 0.1)] w-full my-4"></div>
-                  <p>
-                    <Link className="block" to="/favorite" onClick={toggleMenu}>
-                      Yêu thích
-                    </Link>
-                  </p>
+                  {token && (
+                    <div>
+                      <div className="border-t-[1px] border-[rgba(0, 0, 0, 0.1)] w-full my-4"></div>
+                      <p>
+                        <Link
+                          className="block"
+                          to="/favorite"
+                          onClick={toggleMenu}
+                        >
+                          Yêu thích
+                        </Link>
+                      </p>
+                    </div>
+                  )}
                   <div className="border-t-[1px] border-[rgba(0, 0, 0, 0.1)] w-full my-4"></div>
                   <button
                     onClick={toggleLanguage}

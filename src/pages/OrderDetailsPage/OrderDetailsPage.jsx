@@ -8,7 +8,7 @@ const OrderDetailsPage = () => {
 
   useEffect(() => {
     fetchOrderDetail(id);
-  }, [id, fetchOrderDetail]);
+  }, [id]);
 
   // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
   const findProductDetails = (product) => {

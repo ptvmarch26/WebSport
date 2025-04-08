@@ -46,7 +46,7 @@ const OrderStatusPage = () => {
 
   // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
   const findProductDetails = (product) => {
-    const colorOption = product.product_id.colors.find(
+    const colorOption = product.product_id?.colors.find(
       (c) => c.color_name === product.color
     );
 
