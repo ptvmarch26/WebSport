@@ -87,3 +87,20 @@ export const deleteDiscount = async (discountId) => {
     throw error;
   }
 };
+
+export const getDiscountForOrder = async (productIds) => {
+  console.log(productIds);
+  try {
+    const response = await axios.post(`${API_URL}/get-for-order`,{ productIds },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, 
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching discount for order:", error);
+    throw error;
+  }
+};

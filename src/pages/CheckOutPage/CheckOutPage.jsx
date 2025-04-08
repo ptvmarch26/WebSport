@@ -12,7 +12,6 @@ import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
 import QRComponent from "../../components/QRComponent/QRComponent";
-
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
@@ -25,6 +24,7 @@ const paymentMethods = [
 
 function CheckoutPage() {
   const { cart, fetchCart, setCart } = useCart();
+  const [products, setProducts] = useState([]);
   useEffect(() => {
     fetchCart();
   }, []);
@@ -35,6 +35,28 @@ function CheckoutPage() {
   }, [cart]);
 
   const cartItems = cart?.products || [];
+  const { fetchDiscountForOrder, discounts } = useDiscount();
+ 
+  useEffect(() => {
+    const cartItems = cart?.products || [];
+
+    if (cartItems.length > 0) {
+      const productIds = cartItems.reduce((acc, item) => {
+        if (!acc.includes(item.product_id._id)) {
+          acc.push(item.product_id._id);
+        }
+        return acc;
+      }, []);
+
+      setProducts(productIds);  
+    }
+  }, [cart]);  
+
+  useEffect(() => {
+    fetchDiscountForOrder(products);
+  }, [products]);
+  
+  console.log(products);
 
   const subtotal =
     cartItems.reduce((acc, item) => {
@@ -66,7 +88,8 @@ function CheckoutPage() {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
-  const [voucher, setVoucher] = useState("");
+  const [voucherProduct, setVoucherProduct] = useState("");
+  const [voucherShipping, setVoucherShipping] = useState("");
   const [selectedShipping, setSelectedShipping] = useState(
     shippingMethods[0].id
   );
@@ -224,6 +247,7 @@ function CheckoutPage() {
       discount_ids: [],
     };
 
+    console.log(orderData);
     const res = await handleCreateOrder(orderData);
     console.log(res);
     if (res.EC === 0) {
@@ -292,8 +316,10 @@ function CheckoutPage() {
             <OrderSummaryComponent
               cart={cartItems}
               subtotal={subtotal}
-              voucher={voucher}
-              setVoucher={setVoucher}
+              voucherProduct={voucherProduct}
+              setVoucherProduct={setVoucherProduct}
+              voucherShipping={voucherShipping}
+              setVoucherShipping={setVoucherShipping}
               // handleApplyVoucher={handleApplyVoucher}
               onClick={CreateOrder}
             />

@@ -79,7 +79,7 @@ const ProductInfoComponent = ({ product }) => {
 
   const { handleAddToCart } = useCart();
   const handlePushtoCart = async () => {
-    const res = await handleAddToCart(product._id, selectedColor, selectedSize);
+    const res = await handleAddToCart(product._id, selectedColor, selectedSize, quantity);
     console.log(res);
   };
 
