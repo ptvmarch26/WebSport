@@ -61,7 +61,7 @@ export const DiscountProvider = ({ children }) => {
   
   const fetchDiscountForOrder = async (product_id) => {
     const response = await getDiscountForOrder(product_id);
-    console.log(response);
+    setDiscounts(response?.result);
     return response;
     // if (response?.EM === "Get all discount successfully") {
     //   setDiscounts(response.result);
