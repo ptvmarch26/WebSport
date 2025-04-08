@@ -56,7 +56,7 @@ function CheckoutPage() {
     fetchDiscountForOrder(products);
   }, [products]);
   
-  console.log(products);
+  console.log(discounts);
 
   const subtotal =
     cartItems.reduce((acc, item) => {
