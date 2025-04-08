@@ -47,16 +47,23 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
           </h2>
           <div className="flex items-center">
             {item.product_id?.product_percent_discount > 0 ? (
-              <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
-                {selectedVariant.variant_price?.toLocaleString()}₫
-              </p>
+              <div>
+                <p className="text-md font-bold text-[#ba2b20] mr-4">
+                  {selectedVariant.variant_price?.toLocaleString()}₫
+                </p>
+                <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
+                  {(
+                    selectedVariant.variant_price /
+                    (1 - item.product_id?.product_percent_discount / 100)
+                  ).toLocaleString()}đ
+                </p>
+              </div>
             ) : (
               <p className="text-md font-bold text-[#ba2b20] mr-4">
                 {(
-                  selectedVariant.variant_price *
+                  selectedVariant.variant_price /
                   (1 - item.product_id?.product_percent_discount / 100)
-                ).toLocaleString()}
-                ₫
+                ).toLocaleString()}đ
               </p>
             )}
           </div>

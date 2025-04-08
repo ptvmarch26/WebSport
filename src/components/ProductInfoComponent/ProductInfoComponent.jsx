@@ -8,6 +8,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Button } from "@material-tailwind/react";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
 const ProductInfoComponent = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -17,6 +18,7 @@ const ProductInfoComponent = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const { token } = useAuth();
 
   // Tham chiếu tới main slider và thumb slider
   const mainSliderRef = useRef(null);
@@ -79,7 +81,12 @@ const ProductInfoComponent = ({ product }) => {
 
   const { handleAddToCart } = useCart();
   const handlePushtoCart = async () => {
-    const res = await handleAddToCart(product._id, selectedColor, selectedSize, quantity);
+    const res = await handleAddToCart(
+      product._id,
+      selectedColor,
+      selectedSize,
+      quantity
+    );
     console.log(res);
   };
 
@@ -196,35 +203,39 @@ const ProductInfoComponent = ({ product }) => {
         <p className="text-lg text-gray-500">{product?.product_brand}</p>
 
         <div className="flex items-center mt-4">
-          {selectedColor && !selectedSize ? (
-            <p className="text-xl font-bold text-[#ba2b20] mr-4">
-              {product?.product_price?.toLocaleString()}₫
-            </p>
+          {!selectedColor || !selectedSize ? (
+            <div className="flex items-center">
+              <p className="text-xl font-bold text-[#ba2b20] mr-4">
+                {product?.product_price?.toLocaleString()}₫
+              </p>
+            </div>
           ) : (
             <p className="text-xl font-bold text-[#ba2b20] mr-4">
               {availableVariants
                 .find((v) => v.variant_size === selectedSize)
                 ?.variant_price.toLocaleString()}
-              ₫
+              đ
             </p>
           )}
-          {product?.product_percent_discount > 0 && (
-            <>
-              <p className="text-md text-[#9ca3af] line-through mr-4">
-                {(
-                  (availableVariants.find(
-                    (v) => v.variant_size === selectedSize
-                  )?.variant_price *
-                    100) /
-                  (100 - product.product_percent_discount)
-                ).toLocaleString()}
-                ₫
-              </p>
-              <p className="text-md font-semibold text-[#158857]">
-                {product?.product_percent_discount}% Off
-              </p>
-            </>
-          )}
+          {product?.product_percent_discount > 0 &&
+            selectedColor &&
+            selectedSize && (
+              <>
+                <p className="text-md text-[#9ca3af] line-through mr-4">
+                  {(
+                    (availableVariants.find(
+                      (v) => v.variant_size === selectedSize
+                    )?.variant_price *
+                      100) /
+                    (100 - product.product_percent_discount)
+                  ).toLocaleString()}
+                  đ
+                </p>
+                <p className="text-md font-semibold text-[#158857]">
+                  {product?.product_percent_discount}% Off
+                </p>
+              </>
+            )}
         </div>
 
         {product?.colors && product.colors.length > 0 && (
@@ -265,6 +276,7 @@ const ProductInfoComponent = ({ product }) => {
                           : ""
                       }`}
                       onClick={() => setSelectedSize(variant.variant_size)}
+                      disabled={variant.variant_countInStock === 0}
                     >
                       {variant.variant_size}
                     </Button>
@@ -310,24 +322,26 @@ const ProductInfoComponent = ({ product }) => {
               ""
             )}
           </p>
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={toggleFavorite}
-          >
-            {isFavorite ? (
-              <FaHeart className="text-red-500 text-xl mx-2" />
-            ) : (
-              <FaRegHeart className="text-xl mx-2" />
-            )}
-            <p>Yêu thích</p>
-          </div>
+          {token && (
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={toggleFavorite}
+            >
+              {isFavorite ? (
+                <FaHeart className="text-red-500 text-xl mx-2" />
+              ) : (
+                <FaRegHeart className="text-xl mx-2" />
+              )}
+              <p>Yêu thích</p>
+            </div>
+          )}
         </div>
 
         {/* Nút thêm giỏ hàng / mua ngay */}
         <div className="flex flex-wrap sm:flex-nowrap gap-2 mt-4">
           <Button
             onClick={handlePushtoCart}
-            disabled={!selectedSize || !selectedColor}
+            disabled={!selectedSize || !selectedColor || !token}
             color="white"
             className="p-3 border border-gray-400 text-black w-full rounded uppercase"
           >
