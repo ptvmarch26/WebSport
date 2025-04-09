@@ -78,8 +78,8 @@ const Categories = () => {
         (cat) => cat._id === newCategory.category_parent_id
       );
 
+      console.log("parentCategory", parentCategory);
       newCategory.category_gender = parentCategory?.category_gender || null;
-
       const res = await addCategory(newCategory);
       if (res?.data?.EC === 0) {
         fetchCategories();
@@ -150,8 +150,8 @@ const Categories = () => {
       key: "category_gender",
       render: (gender) => {
         const genderMap = {
-          Male: "Nam",
-          Female: "Nữ",
+          Nam: "Nam",
+          Nữ: "Nữ",
           Unisex: "Unisex"
         };
         return genderMap[gender];
@@ -259,8 +259,8 @@ const Categories = () => {
             rules={[{ required: true, message: "Giới tính là bắt buộc" }]}
           >
             <Select placeholder="Chọn giới tính" allowClear>
-              <Option value="Male">Nam</Option>
-              <Option value="Female">Nữ</Option>
+              <Option value="Nam">Nam</Option>
+              <Option value="Nữ">Nữ</Option>
               <Option value="Unisex">Unisex</Option>
             </Select>
           </Form.Item>
@@ -346,8 +346,8 @@ const Categories = () => {
             rules={[{ required: true, message: "Giới tính là bắt buộc" }]}
           >
             <Select placeholder="Chọn giới tính" allowClear>
-              <Option value="Male">Nam</Option>
-              <Option value="Female">Nữ</Option>
+              <Option value="Nam">Nam</Option>
+              <Option value="Nữ">Nữ</Option>
               <Option value="Unisex">Unisex</Option>
             </Select>
           </Form.Item>

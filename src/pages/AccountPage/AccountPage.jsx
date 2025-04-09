@@ -23,7 +23,7 @@ const AccountPage = () => {
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="lg:flex justify-between">
-        <div className="lg:block pb-10 lg:pb-0">
+        <div className="pb-10 lg:pb-0">
           <AccountInfoComponent />
         </div>
 

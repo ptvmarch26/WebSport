@@ -98,6 +98,12 @@ const Profile = () => {
             document.getElementById("avatar-input").click();
           }}
         />
+        <h2 className="block lg:hidden text-lg font-semibold text-gray-800">
+          {selectedUser?.full_name || "Chưa cập nhật"}
+        </h2>
+        <p className="block lg:hidden text-gray-500 text-sm">
+          {selectedUser?.user_name || "Chưa cập nhật"}
+        </p>
         <input
           type="file"
           id="avatar-input"
@@ -107,7 +113,7 @@ const Profile = () => {
         />
         <label
           htmlFor="avt_img"
-          className="block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
+          className="hidden lg:block antialiased font-sans text-sm leading-normal text-inherit mb-2 font-medium text-gray-900"
         >
           Ảnh đại diện
         </label>

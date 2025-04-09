@@ -312,7 +312,7 @@ const Discounts = () => {
             <Select mode="multiple">
               {categories?.map((category) => (
                 <Option key={category._id} value={category._id}>
-                  {category.category_type}
+                  {category.category_type} - {category.category_gender}
                 </Option>  
               ))}
             </Select>

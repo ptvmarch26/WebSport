@@ -12,8 +12,8 @@ const statusColors = [
   "Đang chuẩn bị hàng",
   "Đang giao",
   "Giao hàng thành công",
-  "Hoàn hàng",
-  "Hủy hàng",
+  // "Hoàn hàng",
+  // "Hủy hàng",
 ];
 
 const Orders = () => {

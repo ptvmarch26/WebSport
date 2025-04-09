@@ -4,6 +4,7 @@ import HeaderLogo from "../Header/HeaderLogo";
 import ScrollToTopComponent from "../../components/ScrollToTopComponent/ScrollToTopComponent";
 import BottomMenuComponent from "../../components/BottomMenuComponent/BottomMenuComponent";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const DefaultLayout = ({ children }) => {
   const location = useLocation();
@@ -12,6 +13,7 @@ const DefaultLayout = ({ children }) => {
     "/sign-up": "Đăng ký",
     "/forgot-password": "Quên mật khẩu",
   };
+  const { token } = useAuth();
 
   return (
     <div>
@@ -21,7 +23,7 @@ const DefaultLayout = ({ children }) => {
         <Header />
       )}
       <div className="mt-[100px]">{children}</div>
-      <BottomMenuComponent />
+      {token && <BottomMenuComponent />}
       <ScrollToTopComponent />
       <Footer />
     </div>

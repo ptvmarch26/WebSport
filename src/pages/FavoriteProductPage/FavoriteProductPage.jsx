@@ -6,7 +6,6 @@ import {
 } from "../../services/api/FavouriteApi"; // import API
 import FavoriteItemComponent from "../../components/FavoriteItemComponent/FavoriteItemComponent";
 import { useProduct } from "../../context/ProductContext";
-import { useCategories } from "../../context/CategoriesContext";
 import { Button } from "@material-tailwind/react";
 
 const FavoriteProductPage = () => {

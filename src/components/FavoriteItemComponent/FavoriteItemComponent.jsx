@@ -1,10 +1,12 @@
 import { Button } from "@material-tailwind/react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const FavoriteItemComponent = ({ productDetails, onRemove }) => {
   console.log("productDetails", productDetails);
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="flex gap-10 mt-10 sm:my-10">
@@ -41,7 +43,7 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
               <IoTrashOutline className="text-2xl text-red-500" />
             </button>
           </div>
-          <Button className="w-full mt-4 p-3 bg-black hover:opacity-80 text-white rounded uppercase block">
+          <Button onClick={() => navigate(`/product/${productDetails._id}`)} className="w-full mt-4 p-3 bg-black hover:opacity-80 text-white rounded uppercase block">
             Thêm vào giỏ
           </Button>
         </div>

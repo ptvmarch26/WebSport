@@ -26,26 +26,42 @@ const HomePage = () => {
     fetchProducts();
   }, []);
 
-  console.log(products);
+  // console.log(products);
 
+  const productFamous = products.filter(
+    (product) => product.product_famous === true
+  );
+
+  const productSelled = products.filter(
+    (product) => product.product_selled >= 10
+  );
+
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // 7 ngày tính bằng milliseconds
+  const now = Date.now();
+
+  const productNew = products.filter((product) => {
+    const createdDate = new Date(product.createdAt).getTime();
+    return now - createdDate <= SEVEN_DAYS;
+  });
+  console.log(productFamous);
   const productsStatus = [
     {
       name: "Sản phẩm nổi bật",
-      products: products,
+      products: productFamous,
       onClick: () => {
         navigate("/");
       },
     },
     {
       name: "Sản phẩm bán chạy",
-      products: products,
+      products: productSelled,
       onClick: () => {
         navigate("/");
       },
     },
     {
       name: "Sản phẩm mới về",
-      products: products,
+      products: productNew,
       onClick: () => {
         navigate("/");
       },
@@ -171,17 +187,17 @@ const HomePage = () => {
         </Carousel>
 
         <div>
-          {productsStatus.map((product, index) => {
+          {productsStatus.map((productStatus, index) => {
             return (
               <div
                 key={index}
                 className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-8"
               >
                 <p className="uppercase text-4xl font-extrabold text-center my-8">
-                  {product.name}
+                  {productStatus.name}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {products.slice(0, 8).map((product) => (
+                  {productStatus.products.slice(0, 8).map((product) => (
                     <ProductComponent
                       key={product._id}
                       item={product}

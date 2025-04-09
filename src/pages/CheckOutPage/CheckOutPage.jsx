@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import AddressFormComponent from "../../components/AddressFormComponent/AddressFormComponent";
 import OrderSummaryComponent from "../../components/OrderSummaryComponent/OrderSummaryComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -107,17 +107,54 @@ function CheckoutPage() {
     fetchDiscountForOrder(products);
   }, [products]);
 
-  console.log(discounts);
+  const [shippingVouchers, setShippingVouchers] = useState([]);
+  const [productVouchers, setProductVouchers] = useState([]);
 
-  // const generateQRCode()
+  useEffect(() => {
+    const tempShippingVouchers = [];
+    const tempProductVouchers = [];
 
-  const subtotal =
-    cartItems.reduce((acc, item) => {
-      const discountedPrice =
-        item.product_id.product_price *
-        (1 - item.product_id.product_percent_discount / 100);
-      return acc + discountedPrice * item.quantity;
-    }, 0) || 0;
+    if (cart && cart.products) {
+      cart.products.forEach((product) => {
+        const productId = product.product_id._id;
+
+        if (discounts) {
+          discounts.forEach((discount) => {
+            const isApplicableProduct =
+              discount.applicable_products &&
+              discount.applicable_products.includes(productId);
+
+            if (isApplicableProduct) {
+              const voucherInfo = {
+                id: discount._id,
+                code: discount.discount_code,
+                amount: discount.discount_amount,
+                title: discount.discount_title,
+                description: discount.discount_description,
+                discount_start_day: discount.discount_start_day,
+                discount_end_day: discount.discount_end_day,
+                discount_number: discount.discount_number
+              };
+
+              if (discount.discount_type === "shipping") {
+                tempShippingVouchers.push(voucherInfo);
+              } else if (discount.discount_type === "product") {
+                tempProductVouchers.push(voucherInfo);
+              }
+            }
+          });
+        }
+      });
+    }
+
+    setShippingVouchers(tempShippingVouchers);
+    setProductVouchers(tempProductVouchers);
+  }, [cart, discounts]);
+  console.log("shippingVouchers", shippingVouchers);
+  console.log("productVouchers", productVouchers);
+
+  console.log("cart", cart);
+  console.log("discounts", discounts);
 
   const [newAddress, setNewAddress] = useState({
     name: "",
@@ -300,7 +337,7 @@ function CheckoutPage() {
       discount_ids: [],
     };
 
-    console.log(orderData);
+    console.log("orderData", orderData);
     const res = await handleCreateOrder(orderData);
     console.log(res);
     if (res.EC === 0) {
@@ -383,12 +420,12 @@ function CheckoutPage() {
             </h2>
             <OrderSummaryComponent
               cart={cartItems}
-              subtotal={subtotal}
               voucherProduct={voucherProduct}
               setVoucherProduct={setVoucherProduct}
               voucherShipping={voucherShipping}
               setVoucherShipping={setVoucherShipping}
-              // handleApplyVoucher={handleApplyVoucher}
+              productVouchers={productVouchers}
+              shippingVouchers={shippingVouchers}
               onClick={CreateOrder}
             />
           </div>
