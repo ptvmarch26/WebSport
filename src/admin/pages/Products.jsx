@@ -331,7 +331,7 @@ const Products = () => {
             <Select>
               {categories?.map((cat) => (
                 <Select.Option key={cat._id} value={cat._id}>
-                  {cat.category_type}
+                  {cat.category_type} - {cat.category_gender}
                 </Select.Option>
               ))}
             </Select>
