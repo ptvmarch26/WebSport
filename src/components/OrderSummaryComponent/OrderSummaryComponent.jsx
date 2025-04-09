@@ -1,30 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const OrderSummaryComponent = ({
   cart,
-  subtotal,
+  //  4 dòng dưới bỏ cũng được không cần á thầy, tui để v nếu cần thì dùng
   voucherProduct,
   setVoucherProduct,
-  handleApplyVoucherProduct,
   voucherShipping,
   setVoucherShipping,
-  handleApplyVoucherShipping,
+  productVouchers = [],
+  shippingVouchers = [],
   onClick,
 }) => {
-  const [isVoucherProductValid, setIsVoucherProductValid] = useState(false);
-  const [isVoucherShippingValid, setIsVoucherShippingValid] = useState(false);
+  const [vouchers, setVouchers] = useState({
+    product: {
+      code: "",
+      isValid: false,
+      showList: false,
+      applied: false,
+      selectedVoucher: null,
+    },
+    shipping: {
+      code: "",
+      isValid: false,
+      showList: false,
+      applied: false,
+      selectedVoucher: null,
+    },
+  });
 
-  const handleVoucherProductChange = (e) => {
-    const value = e.target.value.trim().toUpperCase();
-    setVoucherProduct(value);
-    setIsVoucherProductValid(value.length > 0);
-  };
-
-  const handleVoucherShippingChange = (e) => {
-    const value = e.target.value.trim().toUpperCase();
-    setVoucherShipping(value);
-    setIsVoucherShippingValid(value.length > 0);
-  };
   const cartDetails = cart.map((item) => {
     const selectedColor = item?.product_id?.colors.find(
       (color) => color.color_name === item.color_name
@@ -48,8 +51,125 @@ const OrderSummaryComponent = ({
     };
   });
 
-  console.log("cart", cartDetails);
+  const subtotal = cartDetails.reduce((acc, item) => {
+    return acc + item.variantPrice * item.item.quantity;
+  }, 0);
 
+  const shippingCost = 50000;
+  const [finalTotal, setFinalTotal] = useState(subtotal + shippingCost);
+
+  useEffect(() => {
+    let total = subtotal;
+
+    if (vouchers.shipping.applied && vouchers.shipping.selectedVoucher) {
+      total -= shippingCost;
+    }
+
+    if (vouchers.product.applied && vouchers.product.selectedVoucher) {
+      total =
+        subtotal * (1 - vouchers.product.selectedVoucher.discount_number / 100);
+    }
+
+    if (
+      vouchers.shipping.applied &&
+      vouchers.shipping.selectedVoucher &&
+      vouchers.product.applied &&
+      vouchers.product.selectedVoucher
+    ) {
+      total =
+        subtotal *
+          (1 - vouchers.product.selectedVoucher.discount_number / 100) -
+        shippingCost;
+    }
+
+    setFinalTotal(total + shippingCost);
+  }, [vouchers.shipping.applied, vouchers.product.applied, subtotal]);
+
+  // Nhập voucher
+  const handleVoucherChange = (type, e) => {
+    const value = e.target.value.trim().toUpperCase();
+
+    setVouchers((prev) => ({
+      ...prev,
+      [type]: {
+        ...prev[type],
+        code: value,
+        isValid: value.length > 0,
+        applied: false,
+      },
+    }));
+  };
+
+  // Chọn voucher
+  const handleSelectVoucher = (type, voucher) => {
+    setVouchers((prev) => ({
+      ...prev,
+      [type]: {
+        ...prev[type],
+        code: voucher.code,
+        isValid: true,
+        showList: false,
+        applied: false,
+        selectedVoucher: voucher,
+      },
+    }));
+  };
+
+  // Áp dụng voucher
+  const applyVoucher = (type) => {
+    if (type === "product") {
+      const foundVoucher = productVouchers.find(
+        (voucher) =>
+          voucher.code.toUpperCase() === vouchers.product.code.toUpperCase()
+      );
+
+      if (foundVoucher) {
+        setVouchers((prev) => ({
+          ...prev,
+          product: {
+            ...prev.product,
+            applied: true,
+            showList: false,
+            selectedVoucher: foundVoucher,
+          },
+        }));
+      } else {
+        alert("Mã giảm giá sản phẩm không tồn tại.");
+      }
+    } else if (type === "shipping") {
+      const foundVoucher = shippingVouchers.find(
+        (voucher) =>
+          voucher.code.toUpperCase() === vouchers.shipping.code.toUpperCase()
+      );
+
+      if (foundVoucher) {
+        setVouchers((prev) => ({
+          ...prev,
+          shipping: {
+            ...prev.shipping,
+            applied: true,
+            showList: false,
+            selectedVoucher: foundVoucher,
+          },
+        }));
+      } else {
+        alert("Mã giảm giá vận chuyển không tồn tại.");
+      }
+    }
+  };
+
+  // Hiển thị danh sách voucher
+  const toggleVoucherList = (type) => {
+    setVouchers((prev) => ({
+      ...prev,
+      [type]: {
+        ...prev[type],
+        showList: !prev[type].showList,
+      },
+    }));
+  };
+
+  console.log("voucer", vouchers);
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
       {cartDetails.map((item, index) => (
@@ -64,11 +184,9 @@ const OrderSummaryComponent = ({
             </div>
             <div className="flex justify-between items-center flex-1 mx-4 space-x-2">
               <div>
-
                 <h4 className="text-sm line-clamp-1">
                   {item?.item?.product_id?.product_title}
                 </h4>
-                {/* <p className="text-xs">Size: {item.size}</p> */}
                 <p className="text-xs">
                   {item.item.color_name} - {item.item.variant_name}
                 </p>
@@ -76,11 +194,7 @@ const OrderSummaryComponent = ({
               </div>
               <div>
                 <p className="text-sm">
-                  {(
-                    item?.variantPrice *
-                    (1 - item.item.product_id?.product_percent_discount / 100)
-                  ).toLocaleString()}
-                  ₫
+                  {(item?.variantPrice * item.item.quantity).toLocaleString()}₫
                 </p>
               </div>
             </div>
@@ -89,78 +203,165 @@ const OrderSummaryComponent = ({
         </div>
       ))}
       <div>
-        <div className="flex items-center my-4 space-x-2">
-          <div className="relative w-full mb-3 flex flex-nowrap lg:flex-wrap xl:flex-nowrap space-x-2 lg:space-x-0 xl:space-x-2 gap-y-2">
+        <div className="mb-4">
+          <div className="flex justify-between mb-2">
+            <span className="text-sm font-medium">Chọn mã giảm giá</span>
+            {productVouchers.length > 0 && (
+              <span
+                className="text-sm text-blue-600 cursor-pointer"
+                onClick={() => toggleVoucherList("product")}
+              >
+                Xem tất cả
+              </span>
+            )}
+          </div>
+          <div className="relative w-full flex flex-nowrap lg:flex-wrap xl:flex-nowrap space-x-2 lg:space-x-0 xl:space-x-2">
             <input
-              id="voucher"
+              id="productVoucher"
               type="text"
-              value={voucherProduct}
-              onChange={handleVoucherProductChange}
-              className="flex-1 peer p-2 border rounded focus:ring-black placeholder-transparent"
-              placeholder="Mã giảm giá"
+              value={vouchers.product.code}
+              onChange={(e) => handleVoucherChange("product", e)}
+              className="flex-1 peer p-2 border rounded focus:ring-black"
+              placeholder="Nhập mã giảm giá"
             />
-            <label
-              htmlFor="voucher"
-              className="absolute !text-sm bg-white px-1 left-1.5 top-3 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-3 peer-focus:left-1.5 peer-[&:not(:placeholder-shown)]:-top-3 peer-[&:not(:placeholder-shown)]:left-1.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
-            >
-              Mã giảm giá
-            </label>
             <button
-              className={`p-3 text-sm w-[150px] lg:w-full text-white rounded uppercase ${
-                !isVoucherProductValid
+              className={`p-3 text-sm w-[120px] lg:w-full xl:w-[120px] lg:mt-2 xl:mt-0 text-white rounded uppercase ${
+                !vouchers.product.isValid || vouchers.product.applied
                   ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
                   : "bg-black hover:opacity-80"
               }`}
-              onClick={handleApplyVoucherProduct}
-              disabled={!isVoucherProductValid}
+              onClick={() => applyVoucher("product")}
+              disabled={!vouchers.product.isValid || vouchers.product.applied}
             >
               Áp dụng
             </button>
           </div>
-          
         </div>
-        <div className="flex items-center my-4 space-x-2">
-          <div className="relative w-full mb-3 flex flex-nowrap lg:flex-wrap xl:flex-nowrap space-x-2 lg:space-x-0 xl:space-x-2 gap-y-2">
+
+        {/* Danh sách mã giảm giá sản phẩm */}
+        {vouchers.product.showList && productVouchers.length > 0 && (
+          <div className="bg-white border rounded shadow-lg p-3 mb-4 max-h-48 overflow-y-auto">
+            <h3 className="text-sm font-semibold mb-2">
+              Chọn mã giảm giá sản phẩm
+            </h3>
+            <ul>
+              {productVouchers.map((voucher, index) => (
+                <li
+                  key={index}
+                  className="p-2 hover:bg-gray-100 cursor-pointer border-b space-y-1"
+                  onClick={() => handleSelectVoucher("product", voucher)}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">{voucher.code}</p>
+                      <p className="text-xs">
+                        - {voucher.discount_number}% đơn hàng
+                      </p>
+                    </div>
+                    <p className="text-sm text-green-600">x{voucher.amount}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Mã giảm phí vận chuyển */}
+        <div className="mb-4">
+          <div className="flex justify-between mb-2">
+            <span className="text-sm font-medium">Chọn mã vận chuyển</span>
+            {shippingVouchers.length > 0 && (
+              <span
+                className="text-sm text-blue-600 cursor-pointer"
+                onClick={() => toggleVoucherList("shipping")}
+              >
+                Xem tất cả
+              </span>
+            )}
+          </div>
+          <div className="relative w-full flex flex-nowrap lg:flex-wrap xl:flex-nowrap space-x-2 lg:space-x-0 xl:space-x-2">
             <input
-              id="voucher"
+              id="shippingVoucher"
               type="text"
-              value={voucherShipping}
-              onChange={handleVoucherShippingChange}
-              className="flex-1 peer p-2 border rounded focus:ring-black placeholder-transparent"
-              placeholder="Mã vận chuyển"
+              value={vouchers.shipping.code}
+              onChange={(e) => handleVoucherChange("shipping", e)}
+              className="flex-1 peer p-2 border rounded focus:ring-black"
+              placeholder="Nhập mã vận chuyển"
             />
-            <label
-              htmlFor="voucher"
-              className="absolute !text-sm bg-white px-1 left-1.5 top-3 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-3 peer-focus:left-1.5 peer-[&:not(:placeholder-shown)]:-top-3 peer-[&:not(:placeholder-shown)]:left-1.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
-            >
-              Mã vận chuyển
-            </label>
             <button
-              className={`p-3 text-sm w-[150px] lg:w-full text-white rounded uppercase ${
-                !isVoucherShippingValid
+              className={`p-3 text-sm w-[120px] lg:w-full xl:w-[120px] lg:mt-2 xl:mt-0 text-white rounded uppercase ${
+                !vouchers.shipping.isValid || vouchers.shipping.applied
                   ? "bg-[rgb(246,246,246)] !text-[#ccc] cursor-not-allowed"
                   : "bg-black hover:opacity-80"
               }`}
-              onClick={handleApplyVoucherShipping}
-              disabled={!isVoucherShippingValid}
+              onClick={() => applyVoucher("shipping")}
+              disabled={!vouchers.shipping.isValid || vouchers.shipping.applied}
             >
               Áp dụng
             </button>
           </div>
-          
         </div>
+
+        {/* Danh sách mã giảm phí vận chuyển */}
+        {vouchers.shipping.showList && shippingVouchers.length > 0 && (
+          <div className="bg-white border rounded shadow-lg p-3 mb-4 max-h-48 overflow-y-auto">
+            <h3 className="text-sm font-semibold mb-2">
+              Chọn mã giảm phí vận chuyển
+            </h3>
+            <ul>
+              {shippingVouchers.map((voucher, index) => (
+                <li
+                  key={index}
+                  className="p-2 hover:bg-gray-100 cursor-pointer border-b"
+                  onClick={() => handleSelectVoucher("shipping", voucher)}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">{voucher.code}</p>
+                      <p className="text-xs">
+                        Miễn phí vận chuyển
+                      </p>
+                    </div>
+                    <p className="text-sm text-green-600">x{voucher.amount}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Tổng tiền */}
         <div className="flex justify-between text-sm">
           <span>Tạm tính</span>
           <span>{subtotal.toLocaleString()}₫</span>
         </div>
+        {vouchers.product.applied && vouchers.product.selectedVoucher && (
+          <div className="flex justify-between text-sm mt-4">
+            <span>Voucher sản phẩm</span>
+            <span>
+              -{" "}
+              {(
+                (subtotal * vouchers.product.selectedVoucher.discount_number) /
+                100
+              ).toLocaleString()}
+              đ
+            </span>
+          </div>
+        )}
         <div className="flex justify-between text-sm mt-4">
           <span>Tiền vận chuyển</span>
-          <span>Free</span>
+          <span>{shippingCost.toLocaleString()}đ</span>
         </div>
+        {vouchers.shipping.applied && vouchers.shipping.selectedVoucher && (
+          <div className="flex justify-between text-sm mt-4">
+            <span>Voucher vận chuyển</span>
+            <span>- {shippingCost.toLocaleString()}đ</span>
+          </div>
+        )}
         <hr className="my-4" />
         <div className="flex justify-between text-md font-bold">
           <span>Tổng tiền</span>
-          <span>{subtotal.toLocaleString()}₫</span>
+          <span>{finalTotal.toLocaleString()}₫</span>
         </div>
         <button
           onClick={onClick}

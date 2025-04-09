@@ -3,8 +3,11 @@ import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi"; // import API
+import { useAuth } from "../../context/AuthContext";
+
 const ProductComponent = ({ item, onClick }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const { token } = useAuth();
 
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
@@ -42,14 +45,14 @@ const ProductComponent = ({ item, onClick }) => {
         </h4>
         <div className="flex items-center justify-between mb-2">
           <span className="text-base font-bold text-[#ba2b20]">
-            {item.product_price.toLocaleString()} đ
+            {item.product_price.toLocaleString()}đ
           </span>
           {item.product_percent_discount > 0 && (
             <span className="text-sm line-through text-gray-400">
               {(
-                item.product_price *
+                item.product_price /
                 (1 - item.product_percent_discount / 100)
-              )?.toLocaleString()}{" "}
+              ).toLocaleString()}
               đ
             </span>
           )}
@@ -86,18 +89,20 @@ const ProductComponent = ({ item, onClick }) => {
           )}
         </div>
 
-        <div className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          <button
-            className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
-            onClick={toggleFavorite}
-          >
-            {isFavorite ? (
-              <FaHeart className="text-red-500 text-xl" />
-            ) : (
-              <FaRegHeart className="text-xl" />
-            )}
-          </button>
-        </div>
+        {token && (
+          <div className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <button
+              className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
+              onClick={toggleFavorite}
+            >
+              {isFavorite ? (
+                <FaHeart className="text-red-500 text-xl" />
+              ) : (
+                <FaRegHeart className="text-xl" />
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

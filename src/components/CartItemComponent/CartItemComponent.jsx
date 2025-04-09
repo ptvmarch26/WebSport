@@ -1,8 +1,10 @@
 import React from "react";
 import { IoTrashOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
+  const navigate = useNavigate();
   const decreaseQuantity = () => {
     if (item.quantity > 1) {
       onDecrease(item._id, item.quantity - 1);
@@ -30,7 +32,10 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
 
   return (
     <>
-      <div className="flex gap-4">
+      <div
+        onClick={() => navigate(`/product/${item.product_id._id}`)}
+        className="flex gap-4 cursor-pointer"
+      >
         <img
           src={imageToDisplay}
           alt={item?.product_id?.product_title}
@@ -42,16 +47,23 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
           </h2>
           <div className="flex items-center">
             {item.product_id?.product_percent_discount > 0 ? (
-              <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
-                {selectedVariant.variant_price?.toLocaleString()}₫
-              </p>
+              <div>
+                <p className="text-md font-bold text-[#ba2b20] mr-4">
+                  {selectedVariant.variant_price?.toLocaleString()}₫
+                </p>
+                <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
+                  {(
+                    selectedVariant.variant_price /
+                    (1 - item.product_id?.product_percent_discount / 100)
+                  ).toLocaleString()}đ
+                </p>
+              </div>
             ) : (
               <p className="text-md font-bold text-[#ba2b20] mr-4">
                 {(
-                  selectedVariant.variant_price *
+                  selectedVariant.variant_price /
                   (1 - item.product_id?.product_percent_discount / 100)
-                ).toLocaleString()}
-                ₫
+                ).toLocaleString()}đ
               </p>
             )}
           </div>
@@ -65,7 +77,10 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
               <FaRegHeart className="text-xl" />
             </button>
             <button
-              onClick={onRemove}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove();
+              }}
               className="p-2 hover:bg-gray-200 transition-all duration-300 hover:rounded-full"
             >
               <IoTrashOutline className="text-xl text-red-500" />
@@ -74,7 +89,10 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
           <div className="inline-flex items-center w-auto border border-[#a1a8af]">
             <button
               className="px-4 py-2 hover:bg-white hover:text-black"
-              onClick={decreaseQuantity}
+              onClick={(e) => {
+                e.stopPropagation();
+                decreaseQuantity();
+              }}
             >
               -
             </button>
@@ -86,7 +104,10 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
             />
             <button
               className="px-4 py-2 hover:bg-white hover:text-black"
-              onClick={increaseQuantity}
+              onClick={(e) => {
+                e.stopPropagation();
+                increaseQuantity();
+              }}
             >
               +
             </button>
