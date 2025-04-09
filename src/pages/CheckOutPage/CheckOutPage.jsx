@@ -12,19 +12,70 @@ import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
 import QRComponent from "../../components/QRComponent/QRComponent";
+import { createPaymentLink } from "../../services/api/PaymentApi";
+import { usePayOS } from "@payos/payos-checkout";
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
 
 const paymentMethods = [
   { id: "cod", label: "Thanh toán khi nhận hàng (COD)" },
-  { id: "bank-transfer", label: "Phương Thức Chuyển Khoản" },
+  { id: "paypal", label: "Phương Thức Chuyển Khoản" },
   { id: "Momo", label: "Phương Thức Momo" },
 ];
 
 function CheckoutPage() {
   const { cart, fetchCart, setCart } = useCart();
   const [products, setProducts] = useState([]);
+  // const [paymentUrl, setPaymentUrl] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isCreatingLink, setIsCreatingLink] = useState(false);
+  const [payOSConfig, setPayOSConfig] = useState({
+    RETURN_URL: window.location.href, // required
+    ELEMENT_ID: "embedded-payment-container", // required
+    CHECKOUT_URL: null, // required
+    embedded: true, // Nếu dùng giao diện nhúng
+    onSuccess: (event) => {
+      //TODO: Hành động sau khi người dùng thanh toán đơn hàng thành công
+      setIsOpen(false);
+      setMessage("Thanh toan thanh cong");
+    },
+  });
+
+  const { open, exit } = usePayOS(payOSConfig);
+  const handleGetPaymentLink = async () => {
+    if (selectedPayment === "paypal") {
+      setIsCreatingLink(true);
+      exit();
+      // const orderCode = res.result._id; // hoặc sinh random
+      const amount = subtotal;
+      const description = "Thanh toán đơn hàng";
+      const payosRes = await createPaymentLink(amount, description);
+      console.log("payosRes", payosRes);
+      if (payosRes && payosRes.result.checkoutUrl) {
+        console.log("Set up PayOS");
+        setPayOSConfig((oldConfig) => ({
+          ...oldConfig,
+          CHECKOUT_URL: payosRes.result.checkoutUrl,
+        }));
+        console.log("1", payOSConfig);
+        setIsOpen(true);
+        setIsCreatingLink(false);
+      } else {
+        alert("Không thể tạo link thanh toán.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (payOSConfig.CHECKOUT_URL != null) {
+      console.log(payOSConfig.CHECKOUT_URL);
+      console.log("open đii");
+      open();
+    }
+  }, [payOSConfig]);
+
   useEffect(() => {
     fetchCart();
   }, []);
@@ -36,7 +87,7 @@ function CheckoutPage() {
 
   const cartItems = cart?.products || [];
   const { fetchDiscountForOrder, discounts } = useDiscount();
- 
+
   useEffect(() => {
     const cartItems = cart?.products || [];
 
@@ -48,15 +99,17 @@ function CheckoutPage() {
         return acc;
       }, []);
 
-      setProducts(productIds);  
+      setProducts(productIds);
     }
-  }, [cart]);  
+  }, [cart]);
 
   useEffect(() => {
     fetchDiscountForOrder(products);
   }, [products]);
-  
+
   console.log(discounts);
+
+  // const generateQRCode()
 
   const subtotal =
     cartItems.reduce((acc, item) => {
@@ -251,8 +304,11 @@ function CheckoutPage() {
     const res = await handleCreateOrder(orderData);
     console.log(res);
     if (res.EC === 0) {
+      await handleGetPaymentLink();
       setCart([]);
-      navigate(`/orders/order-details/${res.result._id}`);
+      console.log("2", payOSConfig);
+
+      // navigate(`/orders/order-details/${res.result._id}`);
     } else {
       alert(res.EM);
     }
@@ -305,9 +361,21 @@ function CheckoutPage() {
               selected={selectedPayment}
               setSelected={setSelectedPayment}
             />
-            <div className="my-10 flex justify-center">
-              {/* <QRComponent amount={100000} orderId="123456aa8666" /> */}
-            </div>
+            {selectedPayment === "paypal" && isOpen && (
+              <div className="my-6 min-h-[400px] border rounded-lg p-4 shadow-lg">
+                <h3 className="text-lg font-semibold mb-4">
+                  Thanh toán qua PayOS
+                </h3>
+                <div
+                  id="embedded-payment-container"
+                  className="w-full h-80 rounded-md m-auto"
+                ></div>
+                <h3 className="text-lg mb-4">
+                Sau khi thực hiện thanh toán thành công, vui lòng đợi từ 5 - 10s để
+                hệ thống tự động cập nhật.
+                </h3>
+              </div>
+            )}
           </div>
           <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">
             <h2 className="lg:hidden text-xl font-bold uppercase mb-4">
