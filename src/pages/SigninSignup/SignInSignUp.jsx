@@ -8,12 +8,14 @@ import { Button, Checkbox } from "@material-tailwind/react";
 import facebook from "../../assets/images/logo_facebook.png";
 import google from "../../assets/images/logo_google.png";
 import { useAuth } from "../../context/AuthContext";
+// import PopupComponent from "../../components/PopupComponent/PopupComponent";
+import { usePopup } from "../../context/PopupContext";
 
 const SignInSignUp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSignUp, setIsSignUp] = useState(location.pathname === "/signup");
-
+  const { showPopup } = usePopup();
   const [userName, setUserName] = useState(""); // Đăng nhập
   const [password, setPassword] = useState(""); // Đăng nhập
 
@@ -41,7 +43,7 @@ const SignInSignUp = () => {
 
   const handleSubmitSignUp = async () => {
     if (signUpPassword !== confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!");
+      showPopup("Mật khẩu không khớp!", false);
       return;
     }
 
@@ -51,7 +53,7 @@ const SignInSignUp = () => {
       signUpPassword
     );
     if (result?.EC === 0) {
-      alert("Đăng ký thành công!");
+      showPopup("Đăng ký thành công");
       setIsSignUp(false); // Chuyển sang màn hình đăng nhập
       setSignUpUserName("");
       setSignUpEmail("");
