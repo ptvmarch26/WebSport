@@ -1,4 +1,4 @@
-import React, { isValidElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   apiGetProvinces,
   apiGetDistricts,
@@ -13,7 +13,7 @@ function AddressFormComponent({
 }) {
   const fieldNames = {
     name: "Họ và tên",
-    phone: "Tên",
+    phone: "Số điện thoại",
     home_address: "Địa chỉ",
     province: "Tỉnh/Thành phố",
     district: "Quận/Huyện",
@@ -102,11 +102,11 @@ function AddressFormComponent({
               onChange={(e) =>
                 setNewAddress({ ...newAddress, name: e.target.value })
               }
-              onBlur={() => handleBlur("firstName")}
+              onBlur={() => handleBlur("name")}
               className={`peer w-full p-2 border rounded focus:ring-black placeholder-transparent ${
-                formErrors.firstName ? "border-red-500" : "border-gray-300"
+                formErrors.name ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="Họ"
+              placeholder="Họ và tên"
               required
             />
             <label
@@ -116,9 +116,7 @@ function AddressFormComponent({
               Họ và tên
             </label>
             {formErrors.name && (
-              <p className="text-red-500 text-xs mt-1">
-                {formErrors.name}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>
             )}
           </div>
         </div>
@@ -243,14 +241,12 @@ function AddressFormComponent({
         />
         <label
           htmlFor="home_address"
-          className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-2.5 peer-focus:left-2.5 peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
+          className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all peer-focus:-top-2.5 peer-focus:text-xs peer-focus:scale-90"
         >
           Địa chỉ cụ thể
         </label>
         {formErrors.home_address && (
-          <p className="text-red-500 text-xs mt-1">
-            {formErrors.home_address}
-          </p>
+          <p className="text-red-500 text-xs mt-1">{formErrors.home_address}</p>
         )}
       </div>
     </div>

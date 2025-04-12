@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack, IoIosEye, IoIosEyeOff } from "react-icons/io";
 import OTPComponent from "../../components/OTPComponent/OTPComponent";
 import { useAuth } from "../../context/AuthContext";
+import { usePopup } from "../../context/PopupContext";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const ForgotPasswordPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState({});
+   const { showPopup } = usePopup();
 
   const handleSendOtp = async () => {
     if (!email.trim()) {
@@ -32,9 +34,9 @@ const ForgotPasswordPage = () => {
     if (res?.EM === "OTP sent successfully") {
       setStep(1);
     } else if (res?.EM === "User not found") {
-      setError("Người dùng không tồn tại.");
+      setError("Người dùng không tồn tại");
     } else {
-      setError("Gửi mã OTP thất bại, vui lòng thử lại.");
+      setError("Gửi mã OTP thất bại, vui lòng thử lại");
     }
   };
 
@@ -53,7 +55,7 @@ const ForgotPasswordPage = () => {
     if (res?.EM === "OTP verified successfully") {
       setStep(2);
     } else if (res?.EM === "Invalid OTP") {
-      setOtpError("Mã OTP không hợp lệ.");
+      setOtpError("Mã OTP không hợp lệ");
     }
   };
 
@@ -61,13 +63,13 @@ const ForgotPasswordPage = () => {
     let errors = {};
 
     if (!newPassword) {
-      errors.newPassword = "Vui lòng nhập mật khẩu mới.";
+      errors.newPassword = "Vui lòng nhập mật khẩu mới";
     }
     if (!confirmPassword) {
-      errors.confirmPassword = "Vui lòng nhập lại mật khẩu.";
+      errors.confirmPassword = "Vui lòng nhập lại mật khẩu";
     }
     if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-      errors.confirmPassword = "Mật khẩu xác nhận không khớp.";
+      errors.confirmPassword = "Mật khẩu xác nhận không khớp";
     }
 
     setErrors(errors);
@@ -78,10 +80,10 @@ const ForgotPasswordPage = () => {
 
     const res = await handleResetPassword(email, newPassword);
     if (res?.EM === "Password reset successfully") {
-      alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
+      showPopup("Đổi mật khẩu thành công. Vui lòng đăng nhập lại", true, 1000);
       navigate("/sign-in");
     } else {
-      setError("Đặt lại mật khẩu thất bại, vui lòng thử lại.");
+      showPopup("Đặt lại mật khẩu thất bại, vui lòng thử lại", false);
     }
   };
 

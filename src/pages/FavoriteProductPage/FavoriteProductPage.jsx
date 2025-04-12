@@ -5,10 +5,13 @@ import {
   clearFavourites,
 } from "../../services/api/FavouriteApi"; // import API
 import FavoriteItemComponent from "../../components/FavoriteItemComponent/FavoriteItemComponent";
+import ConfirmDialogComponent from "../../components/ConfirmDialogComponent/ConfirmDialogComponent";
 import { useProduct } from "../../context/ProductContext";
 import { Button } from "@material-tailwind/react";
 
 const FavoriteProductPage = () => {
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+
   const fetchFavourites = async () => {
     const favourites = await getFavourite();
     if (favourites?.EC === 0) {
@@ -25,6 +28,7 @@ const FavoriteProductPage = () => {
 
   useEffect(() => {
     const fetchAllProductDetails = async () => {
+      console.log("cart", cart);
       const productDetails = await Promise.all(
         cart.map(async (item) => {
           return await fetchProductDetails(item);
@@ -48,12 +52,15 @@ const FavoriteProductPage = () => {
     }
   };
 
+  const handleOpenDialog = () => setOpenConfirmDialog(!openConfirmDialog);
+
   const handleClearAll = async () => {
     const result = await clearFavourites();
     console.log("result", result);
     if (result) {
       setCart([]);
       setProducts([]);
+      setOpenConfirmDialog(false);
     }
   };
 
@@ -85,13 +92,21 @@ const FavoriteProductPage = () => {
 
       {products.length > 0 && (
         <Button
-          onClick={handleClearAll}
+          onClick={handleOpenDialog}
           className="mt-6 w-full rounded"
           color="red"
         >
           Xóa tất cả sản phẩm yêu thích
         </Button>
       )}
+
+      <ConfirmDialogComponent
+        open={openConfirmDialog}
+        onClose={handleOpenDialog}
+        onConfirm={handleClearAll}
+        title="Xác nhận xóa"
+        message="Bạn có chắc chắn muốn xóa tất cả sản phẩm yêu thích không?"
+      />
     </div>
   );
 };

@@ -16,7 +16,7 @@ export const signUp = async (user_name, email, password) => {
     return res.data;
   } catch (error) {
     console.error("Lỗi khi đăng ký:", error);
-    return null;
+    return error.response.data;
   }
 };
 
@@ -30,7 +30,7 @@ export const login = async (user_name, password) => {
     return res.data;
   } catch (error) {
     console.error("Lỗi khi đăng nhập:", error);
-    return null;
+    return error.response.data;
   }
 };
 
@@ -64,7 +64,7 @@ export const resetPassword = async (email, newPassword) => {
     return res.data;
   } catch (error) {
     console.error("Lỗi khi đặt lại mật khẩu:", error);
-    return null;
+    return error.response.data;
   }
 };
 
@@ -83,7 +83,7 @@ export const changePassword = async (oldPassword, newPassword) => {
       const { data } = error.response;
       console.error("Lỗi khi đổi mật khẩu:", data?.EM || "Lỗi không xác định");
     }
-    return null;
+    return error.response.data;
   }
 };
 

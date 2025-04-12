@@ -1,11 +1,20 @@
 import { Button } from "@material-tailwind/react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
+import ConfirmDialogComponent from "../ConfirmDialogComponent/ConfirmDialogComponent";
+import { useState } from "react";
 
 const FavoriteItemComponent = ({ productDetails, onRemove }) => {
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   console.log("productDetails", productDetails);
   const navigate = useNavigate();
+
+  const handleOpenDialog = () => setOpenConfirmDialog(!openConfirmDialog);
+
+  const handleConfirmRemove = () => {
+    onRemove(productDetails._id);
+    setOpenConfirmDialog(false);
+  };
 
   return (
     <div>
@@ -38,19 +47,26 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
             </div>
             <button
               className="p-2 hover:bg-gray-200 transition-all duration-300 hover:rounded-full"
-              onClick={() => onRemove(productDetails._id)} // Gọi hàm xóa khi nhấn
+              onClick={handleOpenDialog}
             >
               <IoTrashOutline className="text-2xl text-red-500" />
             </button>
           </div>
-          <Button onClick={() => navigate(`/product/${productDetails._id}`)} className="w-full mt-4 p-3 bg-black hover:opacity-80 text-white rounded uppercase block">
+          <Button
+            onClick={() => navigate(`/product/${productDetails._id}`)}
+            className="w-full mt-4 p-3 bg-black hover:opacity-80 text-white rounded uppercase block"
+          >
             Thêm vào giỏ
           </Button>
         </div>
+        <ConfirmDialogComponent
+          open={openConfirmDialog}
+          onClose={handleOpenDialog}
+          onConfirm={handleConfirmRemove}
+          title="Xác nhận xóa"
+          message={`Bạn có chắc chắn muốn xóa "${productDetails.product_title}" khỏi danh sách yêu thích không?`}
+        />
       </div>
-      {/* <Button className="flex-1 w-full mt-4 p-3 bg-black hover:opacity-80 text-white rounded uppercase sm:hidden">
-        Thêm vào giỏ
-      </Button> */}
     </div>
   );
 };
