@@ -15,7 +15,7 @@ export const createOrder = async (orderData) => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi tạo đơn hàng:", error);
-    return null;
+    return error.response?.data || null;
   }
 };
 

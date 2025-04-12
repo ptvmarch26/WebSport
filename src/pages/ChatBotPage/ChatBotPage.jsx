@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { ChatwithBot } from "../../services/api/UserApi";
+// import { ChatwithBot } from "../../services/api/UserApi";
 import axios from "axios";
 const ChatBotPage = () => {
 

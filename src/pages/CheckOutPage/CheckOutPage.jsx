@@ -13,6 +13,7 @@ import { useOrder } from "../../context/OrderContext";
 import { useProduct } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { useParams, useSearchParams } from "react-router-dom";
+import { usePopup } from "../../context/PopupContext";
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
@@ -25,17 +26,13 @@ const paymentMethods = [
 
 function CheckoutPage() {
   const [searchParams] = useSearchParams();
-
+  const { showPopup } = usePopup();
   const quantity = searchParams.get("quantity");
   const color = searchParams.get("color");
   const size = searchParams.get("size");
   const { id: productId } = useParams();
-  const [isBuyNow, setIsBuyNow] = useState([]);
   const { fetchProductDetails } = useProduct();
   const { cart, fetchCart, setCart } = useCart();
-  const [products, setProducts] = useState([]);
-  // const [paymentUrl, setPaymentUrl] = useState(null);
-  const [message, setMessage] = useState("");
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
@@ -72,16 +69,33 @@ function CheckoutPage() {
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
-  const {selectedUser, fetchUser} = useUser();
-  
-  useEffect(() => {
+  const { selectedUser, fetchUser } = useUser();
 
-  }, [])
+  useEffect(() => {}, []);
   console.log(selectedUser);
   useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const code = query.get("code");
+    const status = query.get("status");
+    const cancel = query.get("cancel") === "true";
+
+    if (code === "00" && status === "CANCELLED" && cancel) {
+      showPopup(
+        "Xin lỗi quý khách, đơn hàng của quý khách đã bị hủy do thanh toán không thành công",
+        false,
+        5000
+      );
+      // dùng PayOS api để hủy đơn hàng có mã orderCode
+      // nếu đơn hàng đã được tạo
+      // const orderCode = query.get("orderCode");
+      // if (orderCode) {
+      //   await handleUpdateOrderStatus(orderCode, "CANCELLED");
+      // }
+      return;
+    }
     const fetchAddressUser = async () => {
       await fetchUser();
-    }
+    };
     fetchAddressUser();
 
     const addressesUser = selectedUser?.addresses[0] || [];
@@ -114,7 +128,6 @@ function CheckoutPage() {
     }
   }, []);
 
- 
   console.log("cartttttt", cartItems);
 
   const shippingVouchers = discounts.filter(
@@ -278,6 +291,14 @@ function CheckoutPage() {
   const navigate = useNavigate();
 
   const CreateOrder = async () => {
+    if (selectedPayment === "Momo") {
+      showPopup(
+        "Chức năng thanh toán Momo đang được phát triển, vui lòng chọn phương thức khác",
+        false,
+        5000
+      );
+      return;
+    }
     const orderData = {
       shipping_address: selectedAddress,
       products: cartItems.map((item) => ({
@@ -292,13 +313,18 @@ function CheckoutPage() {
     };
 
     const res = await handleCreateOrder(orderData);
-    // console.log("res", res);
-    if (res.EC === 0) {
-      setCart([]);
-      navigate(`/orders/order-details/${res.result._id}`);
-    } else {
-      alert(res.EM);
+    if (res?.EC === 0 && selectedPayment === "paypal") {
+      window.location.href = res.result.resultPayOS.checkoutUrl;
+      return;
     }
+    if (res?.EC === 0) {
+      setCart([]);
+      navigate(
+        `/orders/order-details/${res.result._id}?code=00&status=SUCCESS&cancel=false`
+      );
+      return;
+    }
+    showPopup(res.EM, false, 5000);
   };
 
   return (

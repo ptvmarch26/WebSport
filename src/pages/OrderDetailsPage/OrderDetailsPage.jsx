@@ -1,12 +1,32 @@
 import { useParams } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import { useEffect } from "react";
+import { usePopup } from "../../context/PopupContext";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
   const { fetchOrderDetail, orderDetails } = useOrder();
+  const { showPopup } = usePopup();
 
   useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const code = query.get("code");
+    const status = query.get("status");
+    const cancel = query.get("cancel") === "true";
+    if (code === "00" && status === "PAID" && !cancel) {
+      showPopup(
+        "Thanh toán đơn hàng thành công, cảm ơn quý khách đã sử dụng dịch vụ tại WTM Sport",
+        true,
+        5000
+      );
+    } else if (code === "00" && status === "SUCCESS" && !cancel) {
+      showPopup(
+        "Đặt hàng thành công, cảm ơn quý khách đã sử dụng dịch vụ tại WTM Sport"
+      ),
+        true,
+        5000;
+    }
+
     fetchOrderDetail(id);
   }, [id]);
 
