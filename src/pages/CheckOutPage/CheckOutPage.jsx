@@ -10,6 +10,9 @@ import { useDiscount } from "../../context/DiscountContext";
 import { Button as MButton } from "@material-tailwind/react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
+import { useNavigate } from "react-router-dom";
+import QRComponent from "../../components/QRComponent/QRComponent";
+
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
@@ -26,23 +29,7 @@ function CheckoutPage() {
   // const [paymentUrl, setPaymentUrl] = useState(null);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    fetchCart();
-    const query = new URLSearchParams(window.location.search);
-    if (query.get("success") === "false" || query.get("status") === "PAID ") {
-      setMessage("Thanh toán thành công. Cảm ơn bạn đã sử dụng payOS!");
-      alert("Thanh toán thành công. Cảm ơn bạn đã sử dụng payOS!");
-    }
-
-    if (query.get("cancel") === "true" || query.get("status") === "CANCELLED") {
-      setMessage(
-        "Thanh toán thất bại. Nếu có bất kỳ câu hỏi nào hãy gửi email tới support@payos.vn."
-      );
-      alert(
-        "Thanh toán thất bại. Nếu có bất kỳ câu hỏi nào hãy gửi email tới support@payos.vn."
-      );
-    }
-  }, []);
+  
 
   useEffect(() => {
     const addressesUser = cart?.user_id?.addresses || [];
@@ -51,74 +38,8 @@ function CheckoutPage() {
 
   const cartItems = cart?.products || [];
   const { fetchDiscountForOrder, discounts } = useDiscount();
+  
 
-  useEffect(() => {
-    const cartItems = cart?.products || [];
-
-    if (cartItems.length > 0) {
-      const productIds = cartItems.reduce((acc, item) => {
-        if (!acc.includes(item.product_id._id)) {
-          acc.push(item.product_id._id);
-        }
-        return acc;
-      }, []);
-
-      setProducts(productIds);
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    fetchDiscountForOrder(products);
-  }, [products]);
-
-  const [shippingVouchers, setShippingVouchers] = useState([]);
-  const [productVouchers, setProductVouchers] = useState([]);
-
-  useEffect(() => {
-    const tempShippingVouchers = [];
-    const tempProductVouchers = [];
-
-    if (cart && cart.products) {
-      cart.products.forEach((product) => {
-        const productId = product.product_id._id;
-
-        if (discounts) {
-          discounts.forEach((discount) => {
-            const isApplicableProduct =
-              discount.applicable_products &&
-              discount.applicable_products.includes(productId);
-
-            if (isApplicableProduct) {
-              const voucherInfo = {
-                id: discount._id,
-                code: discount.discount_code,
-                amount: discount.discount_amount,
-                title: discount.discount_title,
-                description: discount.discount_description,
-                discount_start_day: discount.discount_start_day,
-                discount_end_day: discount.discount_end_day,
-                discount_number: discount.discount_number,
-              };
-
-              if (discount.discount_type === "shipping") {
-                tempShippingVouchers.push(voucherInfo);
-              } else if (discount.discount_type === "product") {
-                tempProductVouchers.push(voucherInfo);
-              }
-            }
-          });
-        }
-      });
-    }
-
-    setShippingVouchers(tempShippingVouchers);
-    setProductVouchers(tempProductVouchers);
-  }, [cart, discounts]);
-  console.log("shippingVouchers", shippingVouchers);
-  console.log("productVouchers", productVouchers);
-
-  console.log("cart", cart);
-  console.log("discounts", discounts);
 
   const [newAddress, setNewAddress] = useState({
     name: "",
@@ -142,24 +63,61 @@ function CheckoutPage() {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
-  const [voucherProduct, setVoucherProduct] = useState("");
-  const [voucherShipping, setVoucherShipping] = useState("");
   const [selectedShipping, setSelectedShipping] = useState(
     shippingMethods[0].id
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
   useEffect(() => {
-    if (!selectedAddress && addresses.length > 0) {
-      const defaultAddress = addresses.find((address) => address.is_default);
-      if (defaultAddress) {
-        setSelectedAddress(defaultAddress);
+    const fetchData = async () => {
+      await fetchCart(); 
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (cart) {
+      const addressesUser = cart?.user_id?.addresses || [];
+      setAddresses(addressesUser);
+  
+      const cartItems = cart?.products || [];
+      const productIds = cartItems.reduce((acc, item) => {
+        if (!acc.includes(item.product_id._id)) {
+          acc.push(item.product_id._id);
+        }
+        return acc;
+      }, []);
+  
+      if (productIds.length > 0) {
+        fetchDiscountForOrder(productIds);
       }
     }
-  }, [addresses]);
+  }, [cart]);
 
-  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress } =
-    useUser();
+ 
+  const shippingVouchers = discounts.filter(
+    (discount) => discount.discount_type === "shipping"
+  );
+  const productVouchers = discounts.filter(
+    (discount) => discount.discount_type === "product"
+  );  
+
+  console.log("1", shippingVouchers);
+  console.log("2", productVouchers);
+
+  
+  useEffect(() => {
+    const addressesUser = cart?.user_id?.addresses || [];
+    setAddresses(addressesUser);
+  
+    if (!selectedAddress && addressesUser.length > 0) {
+      const defaultAddress = addressesUser.find((address) => address.is_default);
+      if (defaultAddress) setSelectedAddress(defaultAddress);
+    }
+  }, [cart]);
+  
+
+  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress } = useUser();
 
   const handleAddAddresss = async () => {
     if (validateForm()) {
@@ -239,14 +197,24 @@ function CheckoutPage() {
     }
   };
 
-  // const handleApplyVoucher = () => {
-  //   discounts.map((discount) => {
-  //     if (discount.discount_code === voucher) {
-  //       alert("Mã giảm giá hợp lệ");
-  //       subtotal = subtotal - discount.discount_value;
-  //     }
-  //   });
-  // };
+  const [selectedVouchers, setSelectedVouchers] = useState([]);
+  const handleApplyVoucher = (vouchers) => {
+    console.log("vouchers", vouchers);
+    const newVouchers = [];
+
+    if (vouchers.product.applied)
+      newVouchers.push(vouchers.product.selectedVoucher._id);
+
+    if (vouchers.shipping.applied)
+      newVouchers.push(vouchers.shipping.selectedVoucher._id);
+
+    setSelectedVouchers([
+      vouchers.product.applied ? vouchers.product.selectedVoucher._id : null,
+      vouchers.shipping.applied ? vouchers.shipping.selectedVoucher._id : null,
+    ].filter(Boolean));
+  };
+  
+
 
   const closeOverlay = () => setIsOverlayOpen(false);
 
@@ -285,6 +253,8 @@ function CheckoutPage() {
 
   const { handleCreateOrder } = useOrder();
 
+  const navigate = useNavigate();
+
   const CreateOrder = async () => {
     const orderData = {
       shipping_address: selectedAddress,
@@ -295,14 +265,16 @@ function CheckoutPage() {
         variant_name: item.variant_name,
       })),
       order_payment_method: selectedPayment,
-      order_note: " ",
-      discount_ids: [],
+      order_note: "",
+      discount_ids: selectedVouchers,
     };
 
+    console.log("orderData", orderData);
     const res = await handleCreateOrder(orderData);
     console.log(res);
-    if (res.EC === 0 && res.result.order_payment_method === "paypal") {
-      window.location.href = res.result.resultPayOS.checkoutUrl;
+    if (res.EC === 0) {
+      setCart([]);
+      navigate(`/orders/order-details/${res.result._id}`);
     } else {
       alert(res.EM);
     }
@@ -355,6 +327,9 @@ function CheckoutPage() {
               selected={selectedPayment}
               setSelected={setSelectedPayment}
             />
+            <div className="my-10 flex justify-center">
+              {/* <QRComponent amount={100000} orderId="123456aa8666" /> */}
+            </div>
           </div>
           <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">
             <h2 className="lg:hidden text-xl font-bold uppercase mb-4">
@@ -362,13 +337,10 @@ function CheckoutPage() {
             </h2>
             <OrderSummaryComponent
               cart={cartItems}
-              voucherProduct={voucherProduct}
-              setVoucherProduct={setVoucherProduct}
-              voucherShipping={voucherShipping}
-              setVoucherShipping={setVoucherShipping}
               productVouchers={productVouchers}
               shippingVouchers={shippingVouchers}
               onClick={CreateOrder}
+              handleApplyVoucher={handleApplyVoucher}
             />
           </div>
         </div>

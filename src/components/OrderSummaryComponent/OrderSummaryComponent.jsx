@@ -2,14 +2,10 @@ import React, { useState, useEffect } from "react";
 
 const OrderSummaryComponent = ({
   cart,
-  //  4 dòng dưới bỏ cũng được không cần á thầy, tui để v nếu cần thì dùng
-  voucherProduct,
-  setVoucherProduct,
-  voucherShipping,
-  setVoucherShipping,
   productVouchers = [],
   shippingVouchers = [],
   onClick,
+  handleApplyVoucher,
 }) => {
   const [vouchers, setVouchers] = useState({
     product: {
@@ -27,6 +23,12 @@ const OrderSummaryComponent = ({
       selectedVoucher: null,
     },
   });
+
+  useEffect(() => {
+    if (handleApplyVoucher) {
+      handleApplyVoucher(vouchers);
+    }
+  }, [vouchers]);
 
   const cartDetails = cart.map((item) => {
     const selectedColor = item?.product_id?.colors.find(
@@ -85,7 +87,6 @@ const OrderSummaryComponent = ({
     setFinalTotal(total + shippingCost);
   }, [vouchers.shipping.applied, vouchers.product.applied, subtotal]);
 
-  // Nhập voucher
   const handleVoucherChange = (type, e) => {
     const value = e.target.value.trim().toUpperCase();
 
@@ -100,13 +101,12 @@ const OrderSummaryComponent = ({
     }));
   };
 
-  // Chọn voucher
   const handleSelectVoucher = (type, voucher) => {
     setVouchers((prev) => ({
       ...prev,
       [type]: {
         ...prev[type],
-        code: voucher.code,
+        code: voucher.discount_code,
         isValid: true,
         showList: false,
         applied: false,
@@ -120,7 +120,7 @@ const OrderSummaryComponent = ({
     if (type === "product") {
       const foundVoucher = productVouchers.find(
         (voucher) =>
-          voucher.code.toUpperCase() === vouchers.product.code.toUpperCase()
+          voucher.discount_code.toUpperCase() === vouchers.product.code.toUpperCase()
       );
 
       if (foundVoucher) {
@@ -139,7 +139,7 @@ const OrderSummaryComponent = ({
     } else if (type === "shipping") {
       const foundVoucher = shippingVouchers.find(
         (voucher) =>
-          voucher.code.toUpperCase() === vouchers.shipping.code.toUpperCase()
+          voucher.discount_code.toUpperCase() === vouchers.shipping.code.toUpperCase()
       );
 
       if (foundVoucher) {
@@ -169,7 +169,7 @@ const OrderSummaryComponent = ({
     }));
   };
 
-  console.log("voucer", vouchers);
+  // console.log("voucer", vouchers);
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
       {cartDetails.map((item, index) => (
@@ -253,12 +253,12 @@ const OrderSummaryComponent = ({
                 >
                   <div className="flex justify-between items-center">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">{voucher.code}</p>
+                      <p className="text-sm font-medium">NHẬP MÃ "{voucher.discount_code}"</p>
                       <p className="text-xs">
                         - {voucher.discount_number}% đơn hàng
                       </p>
                     </div>
-                    <p className="text-sm text-green-600">x{voucher.amount}</p>
+                    <p className="text-sm text-green-600">{voucher.description}</p>
                   </div>
                 </li>
               ))}
@@ -317,12 +317,12 @@ const OrderSummaryComponent = ({
                 >
                   <div className="flex justify-between items-center">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">{voucher.code}</p>
+                      <p className="text-sm font-medium">{voucher.discount_code}</p>
                       <p className="text-xs">
                         Miễn phí vận chuyển
                       </p>
                     </div>
-                    <p className="text-sm text-green-600">x{voucher.amount}</p>
+                    <p className="text-sm text-green-600">{voucher.discount_number}%</p>
                   </div>
                 </li>
               ))}
