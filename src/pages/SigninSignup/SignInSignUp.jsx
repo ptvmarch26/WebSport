@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaUser, FaLock, FaEdit } from "react-icons/fa";
+import { FaUser, FaLock } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
@@ -8,7 +9,6 @@ import { Button, Checkbox } from "@material-tailwind/react";
 import facebook from "../../assets/images/logo_facebook.png";
 import google from "../../assets/images/logo_google.png";
 import { useAuth } from "../../context/AuthContext";
-// import PopupComponent from "../../components/PopupComponent/PopupComponent";
 import { usePopup } from "../../context/PopupContext";
 
 const SignInSignUp = () => {
@@ -24,6 +24,87 @@ const SignInSignUp = () => {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Show password
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Lỗi khi nhập thiếu
+  // Lỗi đăng nhập
+  const [loginErrors, setLoginErrors] = useState({
+    userName: "",
+    password: "",
+  });
+
+  // Lỗi đăng ký
+  const [signUpErrors, setSignUpErrors] = useState({
+    signUpUserName: "",
+    signUpEmail: "",
+    signUpPassword: "",
+    confirmPassword: "",
+  });
+
+  const validateSignIn = () => {
+    let isValid = true;
+    const newErrors = { userName: "", password: "" };
+
+    if (!userName.trim()) {
+      newErrors.userName = "Vui lòng nhập tài khoản";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Vui lòng nhập mật khẩu";
+      isValid = false;
+    }
+
+    setLoginErrors(newErrors);
+    return isValid;
+  };
+
+  const validateSignUp = () => {
+    let isValid = true;
+    const newErrors = {
+      signUpUserName: "",
+      signUpEmail: "",
+      signUpPassword: "",
+      confirmPassword: "",
+    };
+
+    if (!signUpUserName.trim()) {
+      newErrors.signUpUserName = "Vui lòng nhập tên đăng nhập";
+      isValid = false;
+    }
+
+    if (!signUpEmail.trim()) {
+      newErrors.signUpEmail = "Vui lòng nhập email";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(signUpEmail)) {
+      newErrors.signUpEmail = "Email không đúng định dạng";
+      isValid = false;
+    }
+
+    if (!signUpPassword) {
+      newErrors.signUpPassword = "Vui lòng nhập mật khẩu";
+      isValid = false;
+    }
+    // else if (signUpPassword.length < 6) {
+    //   newErrors.signUpPassword = "Mật khẩu phải có ít nhất 6 ký tự";
+    //   isValid = false;
+    // }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
+      isValid = false;
+    } else if (confirmPassword !== signUpPassword) {
+      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
+      isValid = false;
+    }
+
+    setSignUpErrors(newErrors);
+    return isValid;
+  };
 
   const { handleSignUp, handleLogin, handlLoginWithGoogle, token } = useAuth();
 
@@ -41,9 +122,11 @@ const SignInSignUp = () => {
     return null;
   }
 
-  const handleSubmitSignUp = async () => {
-    if (signUpPassword !== confirmPassword) {
-      showPopup("Mật khẩu không khớp!", false);
+  const handleSubmitSignUp = async (e) => {
+    if (e) e.preventDefault(); // Vẫn giữ để ngăn submit mặc định
+
+    // Sử dụng hàm validate tùy chỉnh
+    if (!validateSignUp()) {
       return;
     }
 
@@ -53,37 +136,37 @@ const SignInSignUp = () => {
       signUpPassword
     );
     if (result?.EC === 0) {
-      showPopup("Đăng ký thành công");
+      showPopup(result.EM);
       setIsSignUp(false); // Chuyển sang màn hình đăng nhập
       setSignUpUserName("");
       setSignUpEmail("");
       setSignUpPassword("");
     } else {
-      alert("Tên đăng nhập hoặc email đã tồn tại!");
+      showPopup(result.EM, false);
     }
   };
 
-  const handleSubmitSignIn = async () => {
-    if (!userName || !password) {
-      alert("Vui lòng nhập đầy đủ tài khoản và mật khẩu!");
+  const handleSubmitSignIn = async (e) => {
+    if (e) e.preventDefault();
+
+    // Xuất lỗi dưới input
+    if (!validateSignIn()) {
       return;
     }
     const result = await handleLogin(userName, password);
     if (result?.result?.accessToken) {
-      alert("Đăng nhập thành công!");
       navigate("/");
     } else {
-      alert("Tài khoản hoặc mật khẩu không đúng!");
+      showPopup(result.EM, false);
     }
   };
 
   const handleSignInWithGoogle = async () => {
     const result = await handlLoginWithGoogle();
     if (result?.result?.accessToken) {
-      alert("Đăng nhập thành công!");
       navigate("/");
     } else {
-      alert("Tài khoản hoặc mật khẩu không đúng!");
+      showPopup("Lỗi khi đăng nhập với Google", false);
     }
   };
 
@@ -162,6 +245,11 @@ const SignInSignUp = () => {
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
                 </div>
+                {loginErrors.userName && (
+                  <p className="text-red-500 text-sm mb-2 -mt-2">
+                    {loginErrors.userName}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -175,13 +263,24 @@ const SignInSignUp = () => {
                   <FaLock className="absolute left-3 top-[37%] transform -translate-y-1/2 text-gray-700" />
                   <input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Mật khẩu"
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[37%] transform -translate-y-1/2 text-gray-700 cursor-pointer"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
                 </div>
+                {loginErrors.password && (
+                  <p className="text-red-500 text-sm mb-2 -mt-2">
+                    {loginErrors.password}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-between items-center mb-2">
@@ -264,6 +363,11 @@ const SignInSignUp = () => {
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
                 </div>
+                {signUpErrors.signUpUserName && (
+                  <p className="text-red-500 text-sm mb-2 -mt-2">
+                    {signUpErrors.signUpUserName}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -284,6 +388,11 @@ const SignInSignUp = () => {
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
                 </div>
+                {signUpErrors.signUpEmail && (
+                  <p className="text-red-500 text-sm mb-2 -mt-2">
+                    {signUpErrors.signUpEmail}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -296,13 +405,24 @@ const SignInSignUp = () => {
                   <FaLock className="absolute left-3 top-[38%] transform -translate-y-1/2 text-gray-700" />
                   <input
                     id="password-su"
-                    type="password"
+                    type={showSignUpPassword ? "text" : "password"}
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     placeholder="Mật khẩu"
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
+                  <span
+                    onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                    className="absolute right-3 top-[38%] transform -translate-y-1/2 text-gray-700 cursor-pointer"
+                  >
+                    {showSignUpPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
                 </div>
+                {signUpErrors.signUpPassword && (
+                  <p className="text-red-500 text-sm mb-2 -mt-2">
+                    {signUpErrors.signUpPassword}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -315,13 +435,24 @@ const SignInSignUp = () => {
                   <FaLock className="absolute left-3 top-[38%] transform -translate-y-1/2 text-gray-700" />
                   <input
                     id="confirmPassword"
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Xác nhận mật khẩu"
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
+                  <span
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-[38%] transform -translate-y-1/2 text-gray-700 cursor-pointer"
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
                 </div>
+                {signUpErrors.confirmPassword && (
+                  <p className="text-red-500 text-sm mb-2 -mt-2">
+                    {signUpErrors.confirmPassword}
+                  </p>
+                )}
               </div>
               <Checkbox
                 defaultChecked

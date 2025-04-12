@@ -9,6 +9,8 @@ import { Button } from "@material-tailwind/react";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
+import { usePopup } from "../../context/PopupContext";
+import { useNavigate } from "react-router-dom";
 
 const ProductInfoComponent = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -19,6 +21,8 @@ const ProductInfoComponent = ({ product }) => {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { token } = useAuth();
+  const { showPopup } = usePopup();
+  const navigate = useNavigate();
 
   // Tham chiếu tới main slider và thumb slider
   const mainSliderRef = useRef(null);
@@ -87,6 +91,7 @@ const ProductInfoComponent = ({ product }) => {
       selectedSize,
       quantity
     );
+    showPopup("Thêm sản phẩm vào giỏ thành công");
     console.log(res);
   };
 
@@ -116,6 +121,10 @@ const ProductInfoComponent = ({ product }) => {
   };
 
   const decreaseQuantity = () => quantity > 1 && setQuantity(quantity - 1);
+
+  const handleNavigateCheckout = () => {
+    navigate(`/checkout/${product._id}?quantity=${quantity}&color=${selectedColor}&size=${selectedSize}`);
+  };
 
   // Hàm lấy ảnh chính và biến thể đưa vào để hiển thị, nếu nhỏ hơn 5 thì gấp đôi lên tại setting đang để min là 5 á
   const getAllImages = (product) => {
@@ -347,7 +356,11 @@ const ProductInfoComponent = ({ product }) => {
           >
             Thêm vào giỏ hàng
           </Button>
-          <Button className="p-3 bg-black text-white w-full rounded uppercase">
+          <Button
+            className="p-3 bg-black text-white w-full rounded uppercase"
+            disabled={!selectedSize || !selectedColor}
+            onClick={handleNavigateCheckout}
+          >
             Mua ngay
           </Button>
         </div>
