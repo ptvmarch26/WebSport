@@ -69,6 +69,10 @@ const publicRoutes = [
         component: CheckOutPage,
     },
     {
+        path: '/checkout/:id',
+        component: CheckOutPage,
+    },
+    {
         path: '/favorite',
         component: FavoriteProductPage,
     },

@@ -120,7 +120,8 @@ const OrderSummaryComponent = ({
     if (type === "product") {
       const foundVoucher = productVouchers.find(
         (voucher) =>
-          voucher.discount_code.toUpperCase() === vouchers.product.code.toUpperCase()
+          voucher.discount_code.toUpperCase() ===
+          vouchers.product.code.toUpperCase()
       );
 
       if (foundVoucher) {
@@ -139,7 +140,8 @@ const OrderSummaryComponent = ({
     } else if (type === "shipping") {
       const foundVoucher = shippingVouchers.find(
         (voucher) =>
-          voucher.discount_code.toUpperCase() === vouchers.shipping.code.toUpperCase()
+          voucher.discount_code.toUpperCase() ===
+          vouchers.shipping.code.toUpperCase()
       );
 
       if (foundVoucher) {
@@ -253,12 +255,14 @@ const OrderSummaryComponent = ({
                 >
                   <div className="flex justify-between items-center">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">NHẬP MÃ "{voucher.discount_code}"</p>
+                      <p className="text-sm font-medium">
+                        {voucher.discount_code}
+                      </p>
                       <p className="text-xs">
                         - {voucher.discount_number}% đơn hàng
                       </p>
                     </div>
-                    <p className="text-sm text-green-600">{voucher.description}</p>
+                    {/* <p className="text-sm text-green-600">{voucher.description}</p> */}
                   </div>
                 </li>
               ))}
@@ -317,12 +321,12 @@ const OrderSummaryComponent = ({
                 >
                   <div className="flex justify-between items-center">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">{voucher.discount_code}</p>
-                      <p className="text-xs">
-                        Miễn phí vận chuyển
+                      <p className="text-sm font-medium">
+                        {voucher.discount_code}
                       </p>
+                      <p className="text-xs">Miễn phí vận chuyển</p>
                     </div>
-                    <p className="text-sm text-green-600">{voucher.discount_number}%</p>
+                    {/* <p className="text-sm text-green-600">{voucher.discount_number}%</p> */}
                   </div>
                 </li>
               ))}

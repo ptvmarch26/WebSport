@@ -10,9 +10,9 @@ import { useDiscount } from "../../context/DiscountContext";
 import { Button as MButton } from "@material-tailwind/react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
+import { useProduct } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
-import QRComponent from "../../components/QRComponent/QRComponent";
-
+import { useParams, useSearchParams } from "react-router-dom";
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
@@ -24,30 +24,34 @@ const paymentMethods = [
 ];
 
 function CheckoutPage() {
+  const [searchParams] = useSearchParams();
+
+  const quantity = searchParams.get("quantity");
+  const color = searchParams.get("color");
+  const size = searchParams.get("size");
+  const { id: productId } = useParams();
+  const [isBuyNow, setIsBuyNow] = useState([]);
+  const { fetchProductDetails } = useProduct();
   const { cart, fetchCart, setCart } = useCart();
   const [products, setProducts] = useState([]);
   // const [paymentUrl, setPaymentUrl] = useState(null);
   const [message, setMessage] = useState("");
-
-  
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     const addressesUser = cart?.user_id?.addresses || [];
     setAddresses(addressesUser);
   }, [cart]);
 
-  const cartItems = cart?.products || [];
   const { fetchDiscountForOrder, discounts } = useDiscount();
-  
-
 
   const [newAddress, setNewAddress] = useState({
     name: "",
     phone: "",
-    home_address: " ",
-    province: "Tỉnh/Thành phố",
-    district: "Quận/Huyện",
-    ward: "Phường/Xã",
+    home_address: "",
+    province: "",
+    district: "",
+    ward: "",
     is_default: "false",
   });
   const [formErrors, setFormErrors] = useState({
@@ -68,56 +72,72 @@ function CheckoutPage() {
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
+  const {selectedUser, fetchUser} = useUser();
+  
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchCart(); 
-    };
-    fetchData();
+
+  }, [])
+  console.log(selectedUser);
+  useEffect(() => {
+    const fetchAddressUser = async () => {
+      await fetchUser();
+    }
+    fetchAddressUser();
+
+    const addressesUser = selectedUser?.addresses[0] || [];
+    setAddresses(addressesUser);
+
+    const cartItems = cart?.products || [];
+    const productIds = cartItems.reduce((acc, item) => {
+      if (!acc.includes(item.product_id._id)) {
+        acc.push(item.product_id._id);
+      }
+      return acc;
+    }, []);
+
+    if (productIds.length > 0) {
+      fetchDiscountForOrder(productIds);
+    }
+
+    if (productId) {
+      const fetchProductData = async () => {
+        const product = await fetchProductDetails(productId);
+        setCartItems([product]);
+      };
+      fetchProductData();
+    } else {
+      const fetchData = async () => {
+        const data = await fetchCart();
+        setCartItems(data.result.products);
+      };
+      fetchData();
+    }
   }, []);
 
-  useEffect(() => {
-    if (cart) {
-      const addressesUser = cart?.user_id?.addresses || [];
-      setAddresses(addressesUser);
-  
-      const cartItems = cart?.products || [];
-      const productIds = cartItems.reduce((acc, item) => {
-        if (!acc.includes(item.product_id._id)) {
-          acc.push(item.product_id._id);
-        }
-        return acc;
-      }, []);
-  
-      if (productIds.length > 0) {
-        fetchDiscountForOrder(productIds);
-      }
-    }
-  }, [cart]);
-
  
+  console.log("cartttttt", cartItems);
+
   const shippingVouchers = discounts.filter(
     (discount) => discount.discount_type === "shipping"
   );
   const productVouchers = discounts.filter(
     (discount) => discount.discount_type === "product"
-  );  
+  );
 
-  console.log("1", shippingVouchers);
-  console.log("2", productVouchers);
-
-  
   useEffect(() => {
     const addressesUser = cart?.user_id?.addresses || [];
     setAddresses(addressesUser);
-  
+
     if (!selectedAddress && addressesUser.length > 0) {
-      const defaultAddress = addressesUser.find((address) => address.is_default);
+      const defaultAddress = addressesUser.find(
+        (address) => address.is_default
+      );
       if (defaultAddress) setSelectedAddress(defaultAddress);
     }
   }, [cart]);
-  
 
-  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress } = useUser();
+  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress } =
+    useUser();
 
   const handleAddAddresss = async () => {
     if (validateForm()) {
@@ -208,13 +228,15 @@ function CheckoutPage() {
     if (vouchers.shipping.applied)
       newVouchers.push(vouchers.shipping.selectedVoucher._id);
 
-    setSelectedVouchers([
-      vouchers.product.applied ? vouchers.product.selectedVoucher._id : null,
-      vouchers.shipping.applied ? vouchers.shipping.selectedVoucher._id : null,
-    ].filter(Boolean));
+    setSelectedVouchers(
+      [
+        vouchers.product.applied ? vouchers.product.selectedVoucher._id : null,
+        vouchers.shipping.applied
+          ? vouchers.shipping.selectedVoucher._id
+          : null,
+      ].filter(Boolean)
+    );
   };
-  
-
 
   const closeOverlay = () => setIsOverlayOpen(false);
 
@@ -259,19 +281,18 @@ function CheckoutPage() {
     const orderData = {
       shipping_address: selectedAddress,
       products: cartItems.map((item) => ({
-        product_id: item.product_id._id,
-        quantity: item.quantity,
-        color_name: item.color_name,
-        variant_name: item.variant_name,
+        product_id: item?.product_id?._id || item?._id,
+        quantity: item.quantity || quantity,
+        color_name: item.color_name || color,
+        variant_name: item.variant_name || size,
       })),
       order_payment_method: selectedPayment,
       order_note: "",
       discount_ids: selectedVouchers,
     };
 
-    console.log("orderData", orderData);
     const res = await handleCreateOrder(orderData);
-    console.log(res);
+    // console.log("res", res);
     if (res.EC === 0) {
       setCart([]);
       navigate(`/orders/order-details/${res.result._id}`);
@@ -334,7 +355,7 @@ function CheckoutPage() {
           <div className="col-span-1 pb-20 lg:pb-0 lg:min-h-[1000px]">
             <h2 className="lg:hidden text-xl font-bold uppercase mb-4">
               Tổng quan đơn hàng
-            </h2>
+            </h2>{" "}
             <OrderSummaryComponent
               cart={cartItems}
               productVouchers={productVouchers}

@@ -31,7 +31,7 @@ export const getFavourite = async () => {
     return res.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách yêu thích:", error);
-    return null;
+    return error.response.data;
   }
 };
 

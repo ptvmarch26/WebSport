@@ -86,7 +86,7 @@ const OTPComponent = ({ newEmail, otpError, onVerify, onResend, height }) => {
             Gửi lại mã
           </button>
         )}
-        {otpError && <p className="text-red-500 text-sm mb-2">{otpError}</p>}
+        {otpError && <p className="text-red-500 text-center text-sm mb-2">{otpError}</p>}
         <Button type="submit" className={`w-full ${height}`}>
           Xác nhận
         </Button>
