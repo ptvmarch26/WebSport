@@ -6,7 +6,7 @@ import PanigationComponent from "../../components/PanigationComponent/Panigation
 import { useProduct } from "../../context/ProductContext";
 import { VscSettings } from "react-icons/vsc";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 const ProductPage = () => {
   useEffect(() => {
     fetchProducts();
@@ -24,6 +24,8 @@ const ProductPage = () => {
     setSortText(sortOption);
     setSortOpen(false);
   };
+
+  const navigate = useNavigate();
 
   const totalPages = Math.ceil(products.length / 12);
 
@@ -111,14 +113,7 @@ const ProductPage = () => {
           .map((product) => (
             <ProductComponent
               key={product._id}
-              productId={product._id} // Dùng _id làm key cho mỗi sản phẩm
-              src={product.product_img.image_main} // Lấy ảnh chính
-              alt={product.product_title}
-              name={product.product_title}
-              oldPrice={product.product_price} // Nếu có giảm giá, thêm oldPrice
-              newPrice={product.product_price * (1 - product.product_percent_discount / 100)} // Giá sau giảm
-              star={product.product_rate} // Số sao đánh giá
-              percent={product.product_percent_discount} // % giảm giá
+              item={product}
               onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
             />
           ))}

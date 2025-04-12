@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
-
+import { ChatwithBot } from "../../services/api/UserApi";
+import axios from "axios";
 const ChatBotPage = () => {
+
+
   const [messages, setMessages] = useState([
     {
       text: "Chào bạn, tôi có thể giúp gì cho bạn hôm nay?",
@@ -9,36 +12,71 @@ const ChatBotPage = () => {
       timestamp: new Date().toLocaleString(),
     },
   ]);
-  const [input, setInput] = useState("");
-  const [chatStartTime] = useState(new Date().toLocaleString());
-  const endOfMessagesRef = useRef(null); // ref để tham chiếu phần cuối danh sách tin nhắn
 
-  const handleSendMessage = () => {
-    if (input.trim() !== "") {
-      const newMessage = {
-        text: input,
-        sender: "user",
+  useEffect(() => {
+    localStorage.setItem("chatMessages", JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    const savedMessages = localStorage.getItem("chatMessages");
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+    }
+  }, []);
+  
+  const handleResetChat = () => {
+    setMessages([]);
+    localStorage.removeItem("chatMessages");
+  };
+
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [chatStartTime] = useState(new Date().toLocaleString());
+  const endOfMessagesRef = useRef(null);
+
+  const handleSendMessage = async () => {
+    if (input.trim() === "") return;
+
+    const userMessage = {
+      text: input,
+      sender: "user",
+      timestamp: new Date().toLocaleString(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:5000/chat", {message: input},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        } 
+      );
+
+      const botMessage = {
+        text: res.data.reply || "Xin lỗi, có lỗi xảy ra!",
+        sender: "bot",
         timestamp: new Date().toLocaleString(),
       };
-      setMessages([...messages, newMessage]);
 
-      // Simulate bot response
-      setTimeout(() => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text: "Bot trả lời: " + input,
-            sender: "bot",
-            timestamp: new Date().toLocaleString(),
-          },
-        ]);
-      }, 1000);
-
-      setInput("");
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "Bot gặp lỗi kết nối!",
+          sender: "bot",
+          timestamp: new Date().toLocaleString(),
+        },
+      ]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Đảm bảo lướt xuống cuối danh sách tin nhắn mỗi khi messages thay đổi
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -57,7 +95,9 @@ const ChatBotPage = () => {
                 <div
                   key={index}
                   className={`flex ${
-                    message.sender === "user" ? "justify-end" : "justify-start"
+                    message.sender === "user"
+                      ? "justify-end"
+                      : "justify-start"
                   }`}
                 >
                   <div
@@ -74,23 +114,39 @@ const ChatBotPage = () => {
                   </div>
                 </div>
               ))}
+              {loading && (
+                <div className="text-sm text-gray-500 italic">Đang trả lời...</div>
+              )}
               <div ref={endOfMessagesRef} />
             </div>
 
             <div className="relative mt-4">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="w-full bg-[#f6f6f8] p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black resize-none overflow-y-auto"
-              placeholder="Nhập tin nhắn..."
-            />
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                className="w-full bg-[#f6f6f8] p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black resize-none overflow-y-auto"
+                placeholder="Nhập tin nhắn..."
+              />
               <button
                 onClick={handleSendMessage}
+                disabled={loading}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black hover:text-gray-600"
               >
                 <FaArrowRight />
               </button>
             </div>
+            <button
+              onClick={handleResetChat}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Bắt đầu lại
+            </button>
           </div>
         </div>
       </div>

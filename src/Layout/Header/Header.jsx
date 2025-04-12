@@ -18,14 +18,16 @@ import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
-
+import axios from "axios";
+import { useProduct } from "../../context/ProductContext";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
+  const [searchQuery, setSearchQuery] = useState("");
   const { selectedUser } = useUser();
-
+  const { fetchProducts, products } = useProduct();
   const { token } = useAuth();
 
   const toggleSearch = () => {
@@ -36,6 +38,27 @@ const Header = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const res = await axios.get("http://localhost:5000/chat", {
+        params: { message: searchQuery },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      console.log("Kết quả tìm kiếm:", res.data.result);
+      if (res.data.EC === 0) {
+        // await fetchProducts(res.data.result); 
+        // Sửa đoạn ni
+      }
+    } catch (err) {
+      console.error("Lỗi tìm kiếm:", err);
+    }
+  };
+  
+  console.log("products", products);
   const options = [
     { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
     { name: "Nam", subOptions: ["Giày nam", "Quần áo nam", "Phụ kiện nam"] },
@@ -307,6 +330,14 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Tìm kiếm"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
                 className="w-1/2 p-2 border border-gray-300 focus:outline-none"
               />
               <button onClick={toggleSearch} className="ml-4">
