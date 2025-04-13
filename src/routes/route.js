@@ -30,7 +30,6 @@ import OrderDetails from "../admin/pages/OrderDetails"
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage"
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress"
 import ProductDetails from "../admin/pages/ProductDetails"
-import ChatBotPage from "../pages/ChatBotPage/ChatBotPage"
 
 const publicRoutes = [
     {
@@ -99,10 +98,6 @@ const publicRoutes = [
     {
         path: '/vouchers',
         component: VoucherPage,
-    },
-    {
-        path: '/chatbot',
-        component: ChatBotPage,
     },
     {
         path: "*",
