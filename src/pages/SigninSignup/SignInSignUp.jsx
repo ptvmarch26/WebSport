@@ -9,6 +9,7 @@ import { Button, Checkbox } from "@material-tailwind/react";
 import facebook from "../../assets/images/logo_facebook.png";
 import google from "../../assets/images/logo_google.png";
 import { useAuth } from "../../context/AuthContext";
+// import { useUser } from "../../context/UserContext";
 import { usePopup } from "../../context/PopupContext";
 
 const SignInSignUp = () => {
@@ -107,7 +108,6 @@ const SignInSignUp = () => {
   };
 
   const { handleSignUp, handleLogin, handlLoginWithGoogle, token } = useAuth();
-
   useEffect(() => {
     if (token) {
       navigate("/", { replace: true });
@@ -148,13 +148,14 @@ const SignInSignUp = () => {
 
   const handleSubmitSignIn = async (e) => {
     if (e) e.preventDefault();
-
     // Xuất lỗi dưới input
     if (!validateSignIn()) {
       return;
     }
     const result = await handleLogin(userName, password);
-    if (result?.result?.accessToken) {
+    console.log("result", result);
+    if (result.EC === 0 && result?.result?.accessToken) {
+      showPopup(result.EM);
       navigate("/");
     } else {
       showPopup(result.EM, false);
@@ -164,6 +165,7 @@ const SignInSignUp = () => {
   const handleSignInWithGoogle = async () => {
     const result = await handlLoginWithGoogle();
     if (result?.result?.accessToken) {
+      showPopup(result.EM);
       navigate("/");
     } else {
       showPopup("Lỗi khi đăng nhập với Google", false);

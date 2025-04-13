@@ -1,17 +1,9 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/order";
-
-const getToken = () => localStorage.getItem("accessToken");
+import AxiosInstance from "./axiosInstance";
 
 export const createOrder = async (orderData) => {
   console.log("orderData", orderData);
   try {
-    const response = await axios.post(`${API_URL}/create`, orderData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await AxiosInstance.post("/order/create", orderData);
     return response.data;
   } catch (error) {
     console.error("Lỗi khi tạo đơn hàng:", error);
@@ -21,11 +13,8 @@ export const createOrder = async (orderData) => {
 
 export const getAllOrders = async (orderStatus = "all") => {
   try {
-    const response = await axios.get(`${API_URL}/get-all`, {
+    const response = await AxiosInstance.get("/order/get-all", {
       params: { orderStatus },
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
     });
     return response.data;
   } catch (error) {
@@ -36,11 +25,8 @@ export const getAllOrders = async (orderStatus = "all") => {
 
 export const getOrderByUser = async (userId, orderStatus = "all") => {
   try {
-    const response = await axios.get(`${API_URL}/get-by-user`, {
+    const response = await AxiosInstance.get("/order/get-by-user", {
       params: { userId, orderStatus },
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
     });
     return response.data;
   } catch (error) {
@@ -51,11 +37,7 @@ export const getOrderByUser = async (userId, orderStatus = "all") => {
 
 export const getOrderDetail = async (orderId) => {
   try {
-    const response = await axios.get(`${API_URL}/get-detail/${orderId}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await AxiosInstance.get(`/order/get-detail/${orderId}`);
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
@@ -66,11 +48,10 @@ export const getOrderDetail = async (orderId) => {
 export const updateOrderStatus = async (orderId, status) => {
   console.log(orderId, status);
   try {
-    const response = await axios.patch(`${API_URL}/update-status/${orderId}`, { status }, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await AxiosInstance.patch(
+      `/order/update-status/${orderId}`,
+      { status }
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);

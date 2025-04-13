@@ -1,14 +1,8 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/cart"; 
-
-const getToken = () => localStorage.getItem("accessToken");
+import AxiosInstance from "./axiosInstance";
 
 export const getCart = async () => {
   try {
-    const res = await axios.get(API_URL, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const res = await AxiosInstance.get("/cart");
     return res.data;
   } catch (error) {
     console.error("Lỗi khi lấy giỏ hàng:", error);
@@ -16,15 +10,19 @@ export const getCart = async () => {
   }
 };
 
-export const addToCart = async (product_id, color_name, variant_name, quantity) => {
+export const addToCart = async (
+  product_id,
+  color_name,
+  variant_name,
+  quantity
+) => {
   try {
-    const res = await axios.post(
-      API_URL,
-      { product_id , color_name, variant_name, quantity },
-      {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      }
-    );
+    const res = await AxiosInstance.post("/cart", {
+      product_id,
+      color_name,
+      variant_name,
+      quantity,
+    });
     return res.data;
   } catch (error) {
     console.error("Lỗi khi thêm vào giỏ hàng:", error);
@@ -35,9 +33,8 @@ export const addToCart = async (product_id, color_name, variant_name, quantity) 
 export const removeFromCart = async (productId, color_name, variant_name) => {
   console.log(productId, color_name, variant_name);
   try {
-    const res = await axios.delete(`${API_URL}/${productId}`, {
+    const res = await AxiosInstance.delete(`/cart/${productId}`, {
       data: { color_name, variant_name },
-      headers: { Authorization: `Bearer ${getToken()}` },
     });
     return res.data;
   } catch (error) {
@@ -48,9 +45,7 @@ export const removeFromCart = async (productId, color_name, variant_name) => {
 
 export const clearCart = async () => {
   try {
-    const res = await axios.delete(`${API_URL}/`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const res = await AxiosInstance.delete("/cart");
     return res.data;
   } catch (error) {
     console.error("Lỗi khi xóa giỏ hàng:", error);
@@ -60,13 +55,11 @@ export const clearCart = async () => {
 
 export const decreaseQuantity = async (productId, color_name, variant_name) => {
   try {
-    const res = await axios.patch(
-      `${API_URL}/decrease_quantity`,
-      { productId, color_name, variant_name },
-      {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      }
-    );
+    const res = await AxiosInstance.patch("/cart/decrease_quantity", {
+      productId,
+      color_name,
+      variant_name,
+    });
     return res.data;
   } catch (error) {
     console.error("Lỗi khi giảm số lượng sản phẩm:", error);

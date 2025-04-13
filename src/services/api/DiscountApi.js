@@ -1,17 +1,11 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/discount"; 
-
-const getToken = () => localStorage.getItem("accessToken");
+import AxiosInstance from "./axiosInstance";
 
 // Lấy thông tin chi tiết mã giảm giá theo ID
 export const getDetailDiscount = async (discountId) => {
   try {
-    const response = await axios.get(`${API_URL}/get-detail/${discountId}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Gửi token trong header nếu cần xác thực
-      },
-    });
+    const response = await AxiosInstance.get(
+      `/discount/get-detail/${discountId}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching discount details:", error);
@@ -22,11 +16,7 @@ export const getDetailDiscount = async (discountId) => {
 // Lấy danh sách tất cả các mã giảm giá
 export const getAllDiscounts = async () => {
   try {
-    const response = await axios.get(`${API_URL}/get-all`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Gửi token trong header nếu cần xác thực
-      },
-    });
+    const response = await AxiosInstance.get(`/discount/get-all`);
     return response.data;
   } catch (error) {
     console.error("Error fetching all discounts:", error);
@@ -37,15 +27,7 @@ export const getAllDiscounts = async () => {
 // Tạo mã giảm giá mới
 export const createDiscount = async (discountData) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/create`,
-      discountData,
-      {
-        headers: {
-          Authorization: `Bearer ${getToken()}`, // Gửi token trong header nếu cần xác thực
-        },
-      }
-    );
+    const response = await AxiosInstance.post(`/discount/create`, discountData);
     console.log(response);
     return response.data;
   } catch (error) {
@@ -57,14 +39,9 @@ export const createDiscount = async (discountData) => {
 // Cập nhật thông tin mã giảm giá
 export const updateDiscount = async (discountId, discountData) => {
   try {
-    const response = await axios.patch(
-      `${API_URL}/update/${discountId}`,
-      discountData,
-      {
-        headers: {
-          Authorization: `Bearer ${getToken()}`, // Gửi token trong header nếu cần xác thực
-        },
-      }
+    const response = await AxiosInstance.patch(
+      `/discount/update/${discountId}`,
+      discountData
     );
     return response.data;
   } catch (error) {
@@ -76,11 +53,9 @@ export const updateDiscount = async (discountId, discountData) => {
 // Xóa mã giảm giá
 export const deleteDiscount = async (discountId) => {
   try {
-    const response = await axios.delete(`${API_URL}/delete/${discountId}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Gửi token trong header nếu cần xác thực
-      },
-    });
+    const response = await AxiosInstance.delete(
+      `/discount/delete/${discountId}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error deleting discount:", error);
@@ -91,13 +66,9 @@ export const deleteDiscount = async (discountId) => {
 export const getDiscountForOrder = async (productIds) => {
   console.log(productIds);
   try {
-    const response = await axios.post(`${API_URL}/get-for-order`,{ productIds },
-      {
-        headers: {
-          Authorization: `Bearer ${getToken()}`, 
-        },
-      }
-    );
+    const response = await AxiosInstance.post("/discount/get-for-order", {
+      productIds,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching discount for order:", error);

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { usePopup } from "../../context/PopupContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const LoginPage = () => {
   const [error, setError] = useState({ username: "", password: "" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { showPopup } = usePopup();
 
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
 
@@ -29,11 +31,13 @@ const LoginPage = () => {
     setError(newError);
     // còn lỗi vặt ở hiển thị lỗi nào
     const response = await handleLogin(username, password);
-    if (response?.EM === "Logged in successfully") {
-      alert("Đăng nhập thành công");
+    console.log("response", response);
+    if (response?.EC === 0 && response?.result?.user.role === "admin") {
+      showPopup(`${response.EM}, Chào mừng bạn đến với trang quản trị`);
       navigate("/admin/dashboard");
     } else {
-      newError.password = "Sai tài khoản hoặc mật khẩu";
+      showPopup("Bạn không có quyền truy cập vào trang này", false);
+      return;
     }
   };
 
