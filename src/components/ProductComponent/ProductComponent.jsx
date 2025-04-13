@@ -3,29 +3,23 @@ import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi"; // import API
-import { useAuth } from "../../context/AuthContext";
 
-const ProductComponent = ({ item, onClick }) => {
+
+const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
   const [isFavorite, setIsFavorite] = useState(false);
-  const { token } = useAuth();
 
-  const toggleFavorite = async () => {
+  const toggleFavorite = async (e) => {
+    e.stopPropagation(); // Ngăn sự kiện onClick từ cha (nếu có)
     setIsFavorite(!isFavorite);
-    const res = await updateFavourite(item._id); // Gọi API để cập nhật danh sách yêu thích
-    console.log(res);
+    await updateFavourite(item._id); // Gửi API cập nhật
+    onFavouriteChange?.(); // 👈 Gọi hàm reload từ cha (nếu có)
   };
 
   useEffect(() => {
-    const fetchFavoriteStatus = async () => {
-      const favouritesData = await getFavourite();
-
-      if (favouritesData && favouritesData.result) {
-        setIsFavorite(favouritesData.result.includes(item._id));
-      }
-    };
-
-    fetchFavoriteStatus();
-  }, [item._id]);
+    if (favourites && item?._id) {
+      setIsFavorite(favourites.includes(item._id));
+    }
+  }, [favourites, item._id]);
 
   return (
     <div className="relative group text-black overflow-hidden shadow-sm hover:shadow-xl transition-transform duration-300 transform cursor-pointer">
@@ -89,7 +83,7 @@ const ProductComponent = ({ item, onClick }) => {
           )}
         </div>
 
-        {token && (
+        {(
           <div className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
             <button
               className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"

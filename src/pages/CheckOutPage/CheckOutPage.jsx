@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import AddressFormComponent from "../../components/AddressFormComponent/AddressFormComponent";
 import OrderSummaryComponent from "../../components/OrderSummaryComponent/OrderSummaryComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -14,6 +14,7 @@ import { useProduct } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { useParams, useSearchParams } from "react-router-dom";
 import { usePopup } from "../../context/PopupContext";
+
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
@@ -31,14 +32,10 @@ function CheckoutPage() {
   const color = searchParams.get("color");
   const size = searchParams.get("size");
   const { id: productId } = useParams();
-  const { fetchProductDetails } = useProduct();
-  const { cart, fetchCart, setCart } = useCart();
-  const [cartItems, setCartItems] = useState([]);
+  const { fetchProductDetails, productDetails } = useProduct();
+  const { fetchCart, cart, setCart} = useCart();
 
-  useEffect(() => {
-    const addressesUser = cart?.user_id?.addresses || [];
-    setAddresses(addressesUser);
-  }, [cart]);
+  
 
   const { fetchDiscountForOrder, discounts } = useDiscount();
 
@@ -69,11 +66,10 @@ function CheckoutPage() {
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
-  const { selectedUser, fetchUser } = useUser();
+  
 
-  useEffect(() => {}, []);
-  console.log(selectedUser);
   useEffect(() => {
+    fetchUser();
     const query = new URLSearchParams(window.location.search);
     const code = query.get("code");
     const status = query.get("status");
@@ -91,44 +87,53 @@ function CheckoutPage() {
       // if (orderCode) {
       //   await handleUpdateOrderStatus(orderCode, "CANCELLED");
       // }
-      return;
-    }
-    const fetchAddressUser = async () => {
-      await fetchUser();
-    };
-    fetchAddressUser();
-
-    const addressesUser = selectedUser?.addresses[0] || [];
-    setAddresses(addressesUser);
-
-    const cartItems = cart?.products || [];
-    const productIds = cartItems.reduce((acc, item) => {
-      if (!acc.includes(item.product_id._id)) {
-        acc.push(item.product_id._id);
-      }
-      return acc;
-    }, []);
-
-    if (productIds.length > 0) {
-      fetchDiscountForOrder(productIds);
-    }
-
-    if (productId) {
-      const fetchProductData = async () => {
-        const product = await fetchProductDetails(productId);
-        setCartItems([product]);
-      };
-      fetchProductData();
-    } else {
-      const fetchData = async () => {
-        const data = await fetchCart();
-        setCartItems(data.result.products);
-      };
-      fetchData();
+      // return;
     }
   }, []);
+  const [cartItems, setCartItems] = useState([]);
 
-  console.log("cartttttt", cartItems);
+  
+
+  console.log(cartItems);
+
+  useEffect(() => {
+    const initCart = async () => {
+      if (productId) {
+        await fetchProductDetails(productId);
+      } else {
+        await fetchCart();
+      }
+    };
+  
+    initCart();
+  }, [productId]);
+
+  useEffect(() => {
+    if (productId && productDetails?._id) {
+      setCartItems([
+        {
+          product_id: {
+           ...productDetails,
+          },
+          quantity: Number(quantity) || 1,
+          color_name: color,
+          variant_name: size,
+        },
+      ]);
+    }
+  }, [productDetails]);
+
+  useEffect(() => {
+    if (!productId && cart?.products) {
+      setCartItems(cart.products);
+    }
+  }, [cart, productId]);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      fetchDiscountForOrder(cartItems.map((item) => item.product_id._id));
+    }
+  }, [cartItems]);
 
   const shippingVouchers = discounts.filter(
     (discount) => discount.discount_type === "shipping"
@@ -137,20 +142,22 @@ function CheckoutPage() {
     (discount) => discount.discount_type === "product"
   );
 
-  useEffect(() => {
-    const addressesUser = cart?.user_id?.addresses || [];
-    setAddresses(addressesUser);
+  const { selectedUser, fetchUser, handleAddAddress, handleUpdateAddress, handleDeleteAddress } = useUser();
 
+  useEffect(() => {
+    if (!selectedUser) return;
+  
+    const addressesUser = selectedUser?.addresses || [];
+    setAddresses(addressesUser);
+  
     if (!selectedAddress && addressesUser.length > 0) {
       const defaultAddress = addressesUser.find(
         (address) => address.is_default
       );
       if (defaultAddress) setSelectedAddress(defaultAddress);
     }
-  }, [cart]);
+  }, [selectedUser]); 
 
-  const { handleAddAddress, handleUpdateAddress, handleDeleteAddress } =
-    useUser();
 
   const handleAddAddresss = async () => {
     if (validateForm()) {
@@ -232,7 +239,6 @@ function CheckoutPage() {
 
   const [selectedVouchers, setSelectedVouchers] = useState([]);
   const handleApplyVoucher = (vouchers) => {
-    console.log("vouchers", vouchers);
     const newVouchers = [];
 
     if (vouchers.product.applied)

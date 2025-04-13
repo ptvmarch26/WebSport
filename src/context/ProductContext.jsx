@@ -9,11 +9,13 @@ export const ProductProvider = ({ children }) => {
 
   const fetchProducts = async (filters = {}) => {
     const res = await getAllProducts(filters);
+    console.log("res", res);
     if (res?.EM === "Lấy danh sách sản phẩm thành công") {
         setProducts(res.result.products);
     } else {
         console.error(res);
     }
+    return res;
   };
 
   const fetchProductDetails = async (productId) => {

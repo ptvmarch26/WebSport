@@ -19,7 +19,6 @@ import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
-import { useProduct } from "../../context/ProductContext";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -27,7 +26,6 @@ const Header = () => {
   const [language, setLanguage] = useState("vi");
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedUser } = useUser();
-  const { fetchProducts, products } = useProduct();
   const { token } = useAuth();
 
   const toggleSearch = () => {
@@ -58,7 +56,6 @@ const Header = () => {
     }
   };
   
-  console.log("products", products);
   const options = [
     { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
     { name: "Nam", subOptions: ["Giày nam", "Quần áo nam", "Phụ kiện nam"] },
