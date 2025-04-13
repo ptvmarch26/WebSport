@@ -135,10 +135,10 @@ function CheckoutPage() {
     }
   }, [cartItems]);
 
-  const shippingVouchers = discounts.filter(
+  const shippingVouchers = discounts?.filter(
     (discount) => discount.discount_type === "shipping"
   );
-  const productVouchers = discounts.filter(
+  const productVouchers = discounts?.filter(
     (discount) => discount.discount_type === "product"
   );
 
