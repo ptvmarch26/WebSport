@@ -7,6 +7,7 @@ const OrderSummaryComponent = ({
   onClick,
   handleApplyVoucher,
 }) => {
+  // console.log("cart", cart);
   const [vouchers, setVouchers] = useState({
     product: {
       code: "",
@@ -31,11 +32,11 @@ const OrderSummaryComponent = ({
   }, [vouchers]);
 
   const cartDetails = cart.map((item) => {
-    const selectedColor = item?.product_id?.colors.find(
+    const selectedColor = item?.product_id?.colors?.find(
       (color) => color.color_name === item.color_name
     );
 
-    const selectedVariant = selectedColor?.variants.find(
+    const selectedVariant = selectedColor?.variants?.find(
       (variant) => variant.variant_size === item.variant_name
     );
 

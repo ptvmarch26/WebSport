@@ -190,12 +190,9 @@ export const deleteProduct = async (productId) => {
 };
 
 export const getAllProducts = async (filters) => {
-  console.log("filters111", typeof filters);
   if (typeof filters === "string") {
     filters = JSON.parse(filters);
   }
-  console.log("filters222", filters);
-  console.log("filters333", typeof filters);
   try {
     const response = await axios.get(`${API_URL}/get-all`,
       {
