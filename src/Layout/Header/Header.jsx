@@ -1,12 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import {
-  FaHeart,
-  FaShoppingCart,
-  FaSearch,
-  FaBars,
-} from "react-icons/fa";
+import { FaHeart, FaShoppingCart, FaSearch, FaBars } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 import { AiOutlineClose } from "react-icons/ai";
 import { useEffect } from "react";
@@ -27,6 +22,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedUser } = useUser();
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -45,17 +41,22 @@ const Header = () => {
           "Content-Type": "application/json",
         },
       });
-  
-      console.log("Kết quả tìm kiếm:", res.data.result);
+
+      // console.log("Kết quả tìm kiếm:", res.data.result);
       if (res.data.EC === 0) {
-        // await fetchProducts(res.data.result); 
-        // Sửa đoạn ni
+        const result = res.data.result;
+        const parsedResult =
+          typeof result === "string" ? JSON.parse(result) : result;
+        console.log("Kết quả tìm kiếm:", parsedResult);
+        
+        setSearchOpen(!searchOpen);
+        const queryString = new URLSearchParams(parsedResult).toString();
+        navigate(`/search?${queryString}`);
       }
     } catch (err) {
       console.error("Lỗi tìm kiếm:", err);
     }
   };
-  
   const options = [
     { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
     { name: "Nam", subOptions: ["Giày nam", "Quần áo nam", "Phụ kiện nam"] },

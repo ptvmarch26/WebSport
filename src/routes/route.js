@@ -30,7 +30,7 @@ import OrderDetails from "../admin/pages/OrderDetails";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress";
 import ProductDetails from "../admin/pages/ProductDetails";
-import ChatBotPage from "../pages/ChatBotPage/ChatBotPage";
+import SearchPage from "../pages/SearchPage/SearchPage";
 
 const publicRoutes = [
   {
@@ -54,6 +54,12 @@ const publicRoutes = [
     component: ProductPage,
   },
   {
+
+    path: "/search",
+    component: SearchPage,
+  },
+  {
+
     path: "/product/:id",
     component: ProductDetailsPage,
   },

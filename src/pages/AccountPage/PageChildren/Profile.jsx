@@ -54,8 +54,21 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    if (selectedUser) {
+      const updatedForm = {
+        user_name: selectedUser.user_name || "Chưa cập nhật",
+        full_name: selectedUser.full_name,
+        birth: selectedUser.birth || "",
+        gender: selectedUser.gender || "",
+        avt_img: selectedUser.avt_img || avt_false,
+      };
+      setOriginalData(updatedForm);
+    }
+  }, [selectedUser]);
+
   const handleCancel = () => {
-    // setFormData(originalData);
+    setFormData(originalData);
     setIsChanged(false);
     setIsEditing(false); // Tắt chế độ chỉnh sửa
   };
