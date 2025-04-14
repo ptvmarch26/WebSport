@@ -1,26 +1,18 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/user";
-
-const getToken = () => localStorage.getItem("accessToken");
+import AxiosInstance from "./axiosInstance";
 
 export const getUser = async () => {
-    try {
-      const response = await axios.get(API_URL,{
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      return { EC: 1, EM: "Lỗi khi lấy thông tin người dùng" };
-    }
+  try {
+    const response = await AxiosInstance.get("/user");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return { EC: 1, EM: "Lỗi khi lấy thông tin người dùng" };
+  }
 };
 
 export const getAllUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}/get_all_user`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const response = await AxiosInstance.get("/user/get_all_user");
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy thông tin users:", error);
@@ -30,11 +22,10 @@ export const getAllUsers = async () => {
 
 export const changePassword = async (oldPassword, newPassword) => {
   try {
-    const response = await axios.patch(
-      `${API_URL}/change_password`,
-      { oldPassword, newPassword },
-      { headers: { Authorization: `Bearer ${getToken()}` } }
-    );
+    const response = await AxiosInstance.patch("/user/change_password", {
+      oldPassword,
+      newPassword,
+    });
     return response.data;
   } catch (error) {
     console.error("Error changing password:", error);
@@ -44,11 +35,9 @@ export const changePassword = async (oldPassword, newPassword) => {
 
 export const updateUser = async (userData) => {
   console.log("userData", userData);
-  
+
   try {
-    const response = await axios.put(API_URL, userData, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const response = await AxiosInstance.put("/user", userData);
     return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
@@ -59,9 +48,10 @@ export const updateUser = async (userData) => {
 export const addAddress = async (addressData) => {
   console.log("addressData", addressData);
   try {
-    const response = await axios.post(`${API_URL}/address`, addressData, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const response = await AxiosInstance.post(
+      "/user/address",
+      addressData
+    );
     return response.data;
   } catch (error) {
     console.error("Error adding address:", error);
@@ -71,9 +61,10 @@ export const addAddress = async (addressData) => {
 
 export const updateAddress = async (index, updateData) => {
   try {
-    const response = await axios.patch(`${API_URL}/address/${index}`, updateData, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const response = await AxiosInstance.patch(
+      `/user/address/${index}`,
+      updateData
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating address:", error);
@@ -83,9 +74,7 @@ export const updateAddress = async (index, updateData) => {
 
 export const deleteAddress = async (index) => {
   try {
-    const response = await axios.delete(`${API_URL}/address/${index}`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const response = await AxiosInstance.delete(`/user/address/${index}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting address:", error);
@@ -95,12 +84,10 @@ export const deleteAddress = async (index) => {
 
 export const getDiscount = async () => {
   try {
-    const response = await axios.get(`${API_URL}/get-discount`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const response = await AxiosInstance.get("/user/get-discount");
     return response.data;
   } catch (error) {
     console.error("Error fetching discount:", error);
     throw error;
   }
-}
+};

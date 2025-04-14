@@ -16,34 +16,66 @@ import BackComponent from "../../components/BackComponent/BackComponent";
 import { useAuth } from "../../context/AuthContext";
 import { useProduct } from "../../context/ProductContext";
 import { useEffect } from "react";
+import { useState } from "react";
+import { getFavourite } from "../../services/api/FavouriteApi";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const arrSlides = [slider1, slider1, slider1];
 
   const { products, fetchProducts } = useProduct();
+  const [productFamous, setProductFamous] = useState([]);
+  const [productSelled, setProductSelled] = useState([]);
+  const [productNew, setProductNew] = useState([]);
+ 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   // console.log(products);
+  const [favourites, setFavourites] = useState([]);
+  const { token } = useAuth();
+ 
+  const fetchFavourites = async () => {
+    if (token) {
+      try {
+        const res = await getFavourite();
+        if (res?.result) {
+          setFavourites(res.result);
+        }
+      } catch (error) {
+        console.error("Lỗi khi fetch danh sách yêu thích:", error);
+      }
+    }
+  };
+  
+  // Gọi khi component mount hoặc khi token thay đổi
+  useEffect(() => {
+    fetchFavourites();
+  }, [token]);
 
-  const productFamous = products.filter(
-    (product) => product.product_famous === true
-  );
+  useEffect(() => {
+    const productFamous = products.filter(
+      (product) => product.product_famous === true
+    );
+  
+    const productSelled = products.filter(
+      (product) => product.product_selled >= 10
+    );
+  
+    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // 7 ngày tính bằng milliseconds
+    const now = Date.now();
+  
+    const productNew = products.filter((product) => {
+      const createdDate = new Date(product.createdAt).getTime();
+      return now - createdDate <= SEVEN_DAYS;
+    });
 
-  const productSelled = products.filter(
-    (product) => product.product_selled >= 10
-  );
+    setProductFamous(productFamous);
+    setProductSelled(productSelled);
+    setProductNew(productNew);
+  }, [products]);
 
-  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // 7 ngày tính bằng milliseconds
-  const now = Date.now();
-
-  const productNew = products.filter((product) => {
-    const createdDate = new Date(product.createdAt).getTime();
-    return now - createdDate <= SEVEN_DAYS;
-  });
-  console.log(productFamous);
   const productsStatus = [
     {
       name: "Sản phẩm nổi bật",
@@ -201,6 +233,8 @@ const HomePage = () => {
                     <ProductComponent
                       key={product._id}
                       item={product}
+                      favourites={favourites}
+                      onFavouriteChange={fetchFavourites}
                       onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
                     />
                   ))}

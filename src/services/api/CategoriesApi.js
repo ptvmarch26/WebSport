@@ -1,38 +1,27 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/category"; // Điều chỉnh URL backend nếu cần
-
-const getToken = () => localStorage.getItem("accessToken");
-
+import AxiosInstance from "./axiosInstance";
 
 const createCategory = async (categoryData) => {
-  return axios.post(`${API_URL}/create`, categoryData, {
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
+  return AxiosInstance.post("/discount/create", categoryData);
 };
 
 const getDetailCategory = async (id) => {
-  return axios.get(`${API_URL}/get-detail/${id}`);
+  return AxiosInstance.get(`/discount/get-detail/${id}`);
 };
 
-const getAllCategory = async (categoryLevel=1) => {
-  return axios.get(`${API_URL}/get-all?category_level=${categoryLevel}`);
+const getAllCategory = async (categoryLevel = 1) => {
+  return AxiosInstance.get(`/discount/get-all?category_level=${categoryLevel}`);
 };
 
 const getSubCategory = async (id) => {
-  return axios.get(`${API_URL}/get-sub/${id}`);
+  return AxiosInstance.get(`/discount/get-sub/${id}`);
 };
 
 const updateCategory = async (id, updateData) => {
-  return axios.patch(`${API_URL}/update/${id}`, updateData, {
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
+  return AxiosInstance.patch(`/discount/update/${id}`, updateData);
 };
 
 const deleteCategory = async (id) => {
-  return axios.delete(`${API_URL}/delete/${id}`, {
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
+  return AxiosInstance.delete(`/discount/delete/${id}`);
 };
 
 export {

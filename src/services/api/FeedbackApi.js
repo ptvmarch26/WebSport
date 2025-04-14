@@ -1,19 +1,9 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/feedback";
-
-// Lấy token từ localStorage
-const getToken = () => localStorage.getItem("accessToken");
+import AxiosInstance from "./axiosInstance";
 
 // Tạo feedback mới
 export const createFeedback = async (feedbackData) => {
   try {
-    const res = await axios.post(`${API_URL}/create`, feedbackData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const res = await AxiosInstance.post("/feedback/create", feedbackData);
     return res.data;
   } catch (error) {
     console.error("Lỗi khi tạo feedback:", error);
@@ -24,12 +14,10 @@ export const createFeedback = async (feedbackData) => {
 // Cập nhật feedback
 export const updateFeedback = async (feedbackId, updateData) => {
   try {
-    const res = await axios.patch(`${API_URL}/update/${feedbackId}`, updateData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const res = await AxiosInstance.patch(
+      `/feedback/update/${feedbackId}`,
+      updateData
+    );
     return res.data;
   } catch (error) {
     console.error("Lỗi khi cập nhật feedback:", error);
@@ -40,9 +28,7 @@ export const updateFeedback = async (feedbackId, updateData) => {
 // Xóa feedback
 export const deleteFeedback = async (feedbackId) => {
   try {
-    const res = await axios.delete(`${API_URL}/delete/${feedbackId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const res = await AxiosInstance.delete(`/feedback/delete/${feedbackId}`);
     return res.data;
   } catch (error) {
     console.error("Lỗi khi xóa feedback:", error);
@@ -53,9 +39,7 @@ export const deleteFeedback = async (feedbackId) => {
 // Lấy danh sách feedback theo productId
 export const getAllFeedback = async (productId) => {
   try {
-    const res = await axios.get(`${API_URL}/get-all/${productId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    const res = await AxiosInstance.get(`/feedback/get-all/${productId}`);
     return res.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách feedback:", error);

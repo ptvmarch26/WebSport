@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress, deleteAddress, getDiscount} from "../services/api/UserApi";
 import { message } from "antd";
-import { useAuth } from "./AuthContext";
+// import { useAuth } from "./AuthContext";
 
 const UserContext = createContext();
 
@@ -98,4 +98,5 @@ export const UserProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => useContext(UserContext);

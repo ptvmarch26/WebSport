@@ -7,10 +7,34 @@ import { useProduct } from "../../context/ProductContext";
 import { VscSettings } from "react-icons/vsc";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { getFavourite } from "../../services/api/FavouriteApi"; // import API
 const ProductPage = () => {
+  const [selectedFilters, setSelectedFilters] = useState({});
+  
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(selectedFilters);
+  }, [selectedFilters]);
+
+  const { token } = useAuth();
+  const [favourites, setFavourites] = useState([]);
+  const fetchFavourites = async () => {
+      if (token) {
+        try {
+          const res = await getFavourite();
+          if (res?.result) {
+            setFavourites(res.result);
+          }
+        } catch (error) {
+          console.error("Lỗi khi fetch danh sách yêu thích:", error);
+        }
+      }
+    };
+    
+    // Gọi khi component mount hoặc khi token thay đổi
+    useEffect(() => {
+      fetchFavourites();
+    }, [token]);
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSortOpen, setSortOpen] = useState(false);
@@ -114,6 +138,8 @@ const ProductPage = () => {
             <ProductComponent
               key={product._id}
               item={product}
+              favourites={favourites}
+              onFavouriteChange={fetchFavourites}
               onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
             />
           ))}
@@ -122,6 +148,7 @@ const ProductPage = () => {
       <SidebarSortComponent
         isOpen={isSidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        onFilterChange={setSelectedFilters}
       />
       <div className="flex justify-center mt-10">
       <PanigationComponent

@@ -36,17 +36,14 @@ const publicRoutes = [
   {
     path: "/sign-in",
     component: SignInSignUp,
-    // Layout: null,
   },
   {
     path: "/sign-up",
     component: SignInSignUp,
-    // Layout: null,
   },
   {
     path: "/forgot-password",
     component: ForgotPasswordPage,
-    // Layout: null,
   },
   {
     path: "/",
@@ -57,16 +54,14 @@ const publicRoutes = [
     component: ProductPage,
   },
   {
+
     path: "/search",
     component: SearchPage,
   },
   {
+
     path: "/product/:id",
     component: ProductDetailsPage,
-  },
-  {
-    path: "/cart",
-    component: CartPage,
   },
   {
     path: "/checkout",
@@ -77,32 +72,12 @@ const publicRoutes = [
     component: CheckOutPage,
   },
   {
-    path: "/favorite",
-    component: FavoriteProductPage,
-  },
-  {
-    path: "/orders",
-    component: OrderStatusPage,
-  },
-  {
     path: "/orders/order-details/:id",
     component: OrderDetailsPage,
   },
   {
     path: "/orders/order-feedback",
     component: OrderFeedbackPage,
-  },
-  {
-    path: "/account/*",
-    component: AccountPage,
-  },
-  {
-    path: "/notifications",
-    component: NotificationPage,
-  },
-  {
-    path: "/vouchers",
-    component: VoucherPage,
   },
   {
     path: "*",
@@ -134,7 +109,36 @@ const accountRoutes = [
   },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [
+  {
+    path: "/cart",
+    component: CartPage,
+  },
+  {
+    path: "/favorite",
+    component: FavoriteProductPage,
+  },
+  {
+    path: "/account/*",
+    component: AccountPage,
+  },
+  {
+    path: "/orders",
+    component: OrderStatusPage,
+  },
+  {
+    path: "/notifications",
+    component: NotificationPage,
+  },
+  {
+    path: "/vouchers",
+    component: VoucherPage,
+  },
+  {
+    path: "/chatbot",
+    component: ChatBotPage,
+  },
+];
 
 const adminRoutes = [
   {

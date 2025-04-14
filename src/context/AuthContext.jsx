@@ -23,11 +23,11 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogin = async (user_name, password) => {
     const data = await login(user_name, password);
-    if (data?.result?.accessToken) {
+    if (data?.result?.accessToken && data?.result?.refreshToken) {
       setToken(data?.result?.accessToken);
       localStorage.setItem("accessToken", data.result.accessToken);
+      localStorage.setItem("refreshToken", data.result.refreshToken);
     }
-    
     return data;
   };
 
@@ -76,4 +76,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
