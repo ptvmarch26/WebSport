@@ -32,7 +32,7 @@ const ProductDetailsPage = () => {
             <ProductComponent
               key={product._id}
               item={product}
-              onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
+              onClick={() => navigate(`/product/${product._id}`)} 
             />
           ))}
         </div>

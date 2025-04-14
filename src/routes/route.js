@@ -134,10 +134,6 @@ const privateRoutes = [
     path: "/vouchers",
     component: VoucherPage,
   },
-  {
-    path: "/chatbot",
-    component: ChatBotPage,
-  },
 ];
 
 const adminRoutes = [

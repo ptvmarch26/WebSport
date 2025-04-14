@@ -116,7 +116,7 @@ export const updateProduct = async (productId, productData) => {
   if (productData.colors && productData.colors.length > 0) {
     // Tạo một bản sao của dữ liệu màu để gửi dưới dạng JSON
     const colorsPayload = productData.colors.map((color, colorIndex) => {
-      // Chuẩn bị dữ liệu màu sắc (không bao gồm file ảnh)
+      // Chuẩn bị dữ liệu màu sắc
       return {
         color_name: color.color_name,
         variants: color.variants || [],

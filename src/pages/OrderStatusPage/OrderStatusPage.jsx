@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
 
 const OrderStatusPage = () => {
-  const [activeTab, setActiveTab] = useState("all"); // Sử dụng 'all' để hiển thị tất cả
+  const [activeTab, setActiveTab] = useState("all");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,7 +25,6 @@ const OrderStatusPage = () => {
     { id: "Hoàn hàng", label: "Hoàn hàng" },
   ];
 
-  // Lọc đơn hàng theo trạng thái, nếu chọn "Tất cả" thì không lọc
   const filteredOrders =
     activeTab === "all"
       ? orders
