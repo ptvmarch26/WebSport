@@ -5,8 +5,8 @@ export const getUser = async () => {
     const response = await AxiosInstance.get("/user");
     return response.data;
   } catch (error) {
-    console.error("Error fetching user:", error);
-    return { EC: 1, EM: "Lỗi khi lấy thông tin người dùng" };
+    console.error("Lỗi khi lấy thông tin người dùng:", error);
+    throw error;
   }
 };
 
