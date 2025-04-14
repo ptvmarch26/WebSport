@@ -106,7 +106,7 @@ const CompactChatBot = ({ onClose }) => {
   }, [messages]);
 
   return (
-    <div className="fixed bottom-60 lg:bottom-40 right-5 z-50 bg-white rounded-lg shadow-xl w-80 overflow-hidden border border-gray-200">
+    <div className="fixed bottom-[56px] lg:bottom-0 right-2 z-[70] bg-white shadow-xl w-80 overflow-hidden border border-gray-200">
       <div className="bg-primary text-white p-3 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <FaRobot />
