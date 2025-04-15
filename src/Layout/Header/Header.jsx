@@ -51,7 +51,11 @@ const Header = () => {
         
         setSearchOpen(!searchOpen);
         const queryString = new URLSearchParams(parsedResult).toString();
-        navigate(`/search?${queryString}`);
+        navigate(`/search?${queryString}`, {
+          state: {
+            result: searchQuery
+          }
+        });
       }
     } catch (err) {
       console.error("Lỗi tìm kiếm:", err);

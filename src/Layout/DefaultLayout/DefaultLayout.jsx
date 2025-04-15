@@ -25,7 +25,7 @@ const DefaultLayout = ({ children }) => {
       )}
       <div className="mt-[100px]">{children}</div>
       {token && <BottomMenuComponent />}
-      {authPages[location.pathname] || <AIChatButton />}
+      {!authPages[location.pathname] ? <AIChatButton /> : null}
       <ScrollToTopComponent />
       <Footer />
     </div>

@@ -133,7 +133,7 @@ const privateRoutes = [
   {
     path: "/vouchers",
     component: VoucherPage,
-  },
+  }
 ];
 
 const adminRoutes = [
