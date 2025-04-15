@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchPage = () => {
   const location = useLocation();
+  const { result } = location.state || {};
   const queryParams = new URLSearchParams(location.search);
 
   const category = queryParams.get("category") || "";
@@ -74,7 +75,7 @@ const SearchPage = () => {
       <div className="relative">
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5"></div>
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold uppercase">Kết quả tìm kiếm</h2>
+          <h2 className="text-xl font-bold uppercase">Kết quả tìm kiếm: {result}</h2>
           {/* Nút Lọc Theo + Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <ButtonComponent

@@ -27,7 +27,7 @@ const HomePage = () => {
   const [productFamous, setProductFamous] = useState([]);
   const [productSelled, setProductSelled] = useState([]);
   const [productNew, setProductNew] = useState([]);
- 
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -35,7 +35,7 @@ const HomePage = () => {
   // console.log(products);
   const [favourites, setFavourites] = useState([]);
   const { token } = useAuth();
- 
+
   const fetchFavourites = async () => {
     if (token) {
       try {
@@ -48,7 +48,7 @@ const HomePage = () => {
       }
     }
   };
-  
+
   // Gọi khi component mount hoặc khi token thay đổi
   useEffect(() => {
     fetchFavourites();
@@ -58,14 +58,14 @@ const HomePage = () => {
     const productFamous = products.filter(
       (product) => product.product_famous === true
     );
-  
+
     const productSelled = products.filter(
       (product) => product.product_selled >= 10
     );
-  
+
     const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // 7 ngày tính bằng milliseconds
     const now = Date.now();
-  
+
     const productNew = products.filter((product) => {
       const createdDate = new Date(product.createdAt).getTime();
       return now - createdDate <= SEVEN_DAYS;
