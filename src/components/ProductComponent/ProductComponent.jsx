@@ -9,10 +9,10 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const toggleFavorite = async (e) => {
-    e.stopPropagation(); // Ngăn sự kiện onClick từ cha (nếu có)
+    e.stopPropagation(); 
     setIsFavorite(!isFavorite);
-    await updateFavourite(item._id); // Gửi API cập nhật
-    onFavouriteChange?.(); // 👈 Gọi hàm reload từ cha (nếu có)
+    await updateFavourite(item._id); 
+    onFavouriteChange?.(); 
   };
 
   useEffect(() => {

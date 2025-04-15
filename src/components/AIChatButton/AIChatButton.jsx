@@ -80,8 +80,9 @@ const CompactChatBot = ({ onClose }) => {
         }
       );
 
+      console.log(res);
       const botMessage = {
-        text: res.data.reply || "Xin lỗi, có lỗi xảy ra!",
+        text: res.data.result || "Xin lỗi, có lỗi xảy ra!",
         sender: "bot",
         timestamp: new Date().toLocaleString(),
       };

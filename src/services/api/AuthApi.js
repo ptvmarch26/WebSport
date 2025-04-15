@@ -98,12 +98,16 @@ export const loginWithGoogle = async () => {
     });
     return res.data;
   } catch (error) {
-    console.error("L��i khi đăng nhập với Google:", error);
+    console.error("Lỗi khi đăng nhập với Google:", error);
   }
 };
 
 export const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) {
+    throw new Error("Không có refresh token, user chưa đăng nhập.");
+  }
+
   try {
     const res = await AxiosInstance.post("/auth/refresh_token", {
       refreshToken,

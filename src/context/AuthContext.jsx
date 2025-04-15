@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
   const handleLogout = () => {
     setToken(null);
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   };
 
   const handleSendOTP = async (email) => {
@@ -76,5 +77,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

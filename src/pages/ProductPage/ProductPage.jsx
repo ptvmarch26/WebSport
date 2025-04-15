@@ -140,7 +140,7 @@ const ProductPage = () => {
               item={product}
               favourites={favourites}
               onFavouriteChange={fetchFavourites}
-              onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
+              onClick={() => navigate(`/product/${product._id}`)} 
             />
           ))}
       </div>
