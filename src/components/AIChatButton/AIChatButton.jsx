@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { FaRobot, FaTimes, FaArrowRight } from "react-icons/fa";
 // import { ChatwithBot } from "../../services/api/UserApi";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const AIChatButton = () => {
   const [showChat, setShowChat] = useState(false);
@@ -36,9 +37,9 @@ const CompactChatBot = ({ onClose }) => {
     },
   ]);
 
-  useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
-  }, [messages]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const endOfMessagesRef = useRef(null);
 
   useEffect(() => {
     const savedMessages = localStorage.getItem("chatMessages");
@@ -47,14 +48,19 @@ const CompactChatBot = ({ onClose }) => {
     }
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("chatMessages", JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const handleResetChat = () => {
     setMessages([]);
     localStorage.removeItem("chatMessages");
   };
-
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const endOfMessagesRef = useRef(null);
+  const { token } = useAuth();
 
   const handleSendMessage = async () => {
     if (input.trim() === "") return;
@@ -64,23 +70,32 @@ const CompactChatBot = ({ onClose }) => {
       sender: "user",
       timestamp: new Date().toLocaleString(),
     };
-    const token = localStorage.getItem("accessToken");
-    setMessages((prev) => [...prev, userMessage]);
+
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInput("");
     setLoading(true);
+
     try {
       const res = await axios.post(
         "http://localhost:5000/chat",
-        { message: input },
+        {
+          message: input,
+          history: !token
+            ? newMessages.map((msg) => ({
+                role: msg.sender === "bot" ? "assistant" : "user",
+                content: msg.text,
+              }))
+            : undefined, // không gửi nếu có token, backend dùng DB
+        },
         {
           headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` })
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
 
-      console.log(res);
       const botMessage = {
         text: res.data.result || "Xin lỗi, có lỗi xảy ra!",
         sender: "bot",
@@ -89,6 +104,7 @@ const CompactChatBot = ({ onClose }) => {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
+      console.error(error);
       setMessages((prev) => [
         ...prev,
         {
@@ -101,10 +117,6 @@ const CompactChatBot = ({ onClose }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   return (
     <div className="fixed bottom-[56px] lg:bottom-0 right-2 z-[70] bg-white shadow-xl w-80 overflow-hidden border border-gray-200">
