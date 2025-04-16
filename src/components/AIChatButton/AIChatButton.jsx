@@ -64,7 +64,7 @@ const CompactChatBot = ({ onClose }) => {
       sender: "user",
       timestamp: new Date().toLocaleString(),
     };
-
+    const token = localStorage.getItem("accessToken");
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
@@ -75,7 +75,7 @@ const CompactChatBot = ({ onClose }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            ...(token && { Authorization: `Bearer ${token}` })
           },
         }
       );

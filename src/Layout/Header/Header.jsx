@@ -33,12 +33,16 @@ const Header = () => {
   };
 
   const handleSearch = async () => {
+
     if (!searchQuery.trim()) return;
     try {
+      const token = localStorage.getItem("accessToken");
+
       const res = await axios.get("http://localhost:5000/chat", {
         params: { message: searchQuery },
         headers: {
           "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` })
         },
       });
 
