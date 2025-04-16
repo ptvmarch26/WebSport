@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress, deleteAddress, getDiscount} from "../services/api/UserApi";
+import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress, deleteAddress, getDiscount, deleteSearch, getChatHistory, deleteChatHistory} from "../services/api/UserApi";
 import { message } from "antd";
 // import { useAuth } from "./AuthContext";
 
@@ -77,6 +77,18 @@ export const UserProvider = ({ children }) => {
     return data;
   }
 
+  const handleDeteleSearch = async(index) => {
+    return await deleteSearch(index);
+  }
+
+  const handleGetChatHistory = async () => {
+    return await getChatHistory();
+  }
+
+  const handleDeleteChatHistory = async () => {
+    return await deleteChatHistory();
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -91,6 +103,9 @@ export const UserProvider = ({ children }) => {
         handleUpdateAddress,
         handleDeleteAddress,
         handleGetDiscount,
+        handleDeteleSearch,
+        handleGetChatHistory,
+        handleDeleteChatHistory,
       }}
     >
       {children}
@@ -98,5 +113,4 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => useContext(UserContext);

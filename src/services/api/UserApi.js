@@ -91,3 +91,33 @@ export const getDiscount = async () => {
     throw error;
   }
 };
+
+export const deleteSearch = async (index) => {
+  try {
+    const response = await AxiosInstance.delete(`/user/delete-search-history/${index}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting search history:", error);
+    throw error;
+  }
+}
+
+export const getChatHistory = async () => {
+  try {
+    const response = await AxiosInstance.get("/user/get-chat-history");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching chat history:", error);
+    throw error;
+  }
+}
+
+export const deleteChatHistory = async () => {
+  try {
+    const response = await AxiosInstance.delete("/user/delete-chat-history");
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting chat history:", error);
+    throw error;
+  }
+}

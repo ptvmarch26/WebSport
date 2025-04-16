@@ -33,23 +33,17 @@ const Header = () => {
     setMenuOpen(!menuOpen);
   };
 
-  useEffect(() => {
-    if (searchOpen && !token) {
-      const storedHistory =
-        JSON.parse(localStorage.getItem("searchHistory")) || [];
-      setSearchHistory(storedHistory);
-    }
-  }, [searchOpen, token]);
+  const handleSearch = async () => {
 
-  const handleSearch = async (customQuery) => {
-    const query = customQuery !== undefined ? customQuery : searchQuery;
-
-    if (!query.trim()) return;
+    if (!searchQuery.trim()) return;
     try {
+      const token = localStorage.getItem("accessToken");
+
       const res = await axios.get("http://localhost:5000/chat", {
         params: { message: query },
         headers: {
           "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` })
         },
       });
 

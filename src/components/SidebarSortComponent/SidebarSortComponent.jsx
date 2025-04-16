@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Checkbox } from "@material-tailwind/react";
-import { useProduct } from "../../context/ProductContext";
 import { useCategories } from "../../context/CategoriesContext";
 
 const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
@@ -66,11 +65,10 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
   const [categorySubOptions, setCategorySubOptions] = useState([]);
 
   const { fetchCategories, categories } = useCategories();
-  const { fetchProducts, products } = useProduct();
-  
   useEffect(() => {
     fetchCategories();
   }, []);
+  console.log(categories);
 
   // Xử lý dữ liệu danh mục từ API
   useEffect(() => {
@@ -78,7 +76,6 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
       const seenCategoryNames = new Set();
       const seenSubCategoryNames = new Set();
   
-      // Danh mục cấp 1 (không trùng tên và mỗi category_type có mảng id)
       const groupedCategories = {};
   
       categories.forEach(cat => {
@@ -86,7 +83,7 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
           seenCategoryNames.add(cat.category_type);
           groupedCategories[cat.category_type] = {
             name: cat.category_type,
-            ids: [cat._id], // Mảng chứa tất cả các _id của category_type này
+            ids: [cat._id], 
           };
         } else if (cat.category_level === 1) {
           groupedCategories[cat.category_type].ids.push(cat._id);
@@ -99,7 +96,6 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
         name: group.name,
       }));
   
-      // Danh mục cấp 2: Group theo category_type, mỗi category_type có mảng ids
       const groupedSubCategories = {};
   
       categories.forEach(cat => {
@@ -107,15 +103,14 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
           seenSubCategoryNames.add(cat.category_type);
           groupedSubCategories[cat.category_type] = {
             name: cat.category_type,
-            ids: [cat._id], // Mảng chứa tất cả các _id của category_type cấp 2
-            parentId: cat.category_parent_id, // Lưu parentId để liên kết với danh mục cấp 1
+            ids: [cat._id],
+            parentId: cat.category_parent_id, 
           };
         } else if (cat.category_level === 2) {
           groupedSubCategories[cat.category_type].ids.push(cat._id);
         }
       });
   
-      // Sắp xếp các danh mục cấp 2 theo tên (category_type)
       const allCategorySubOptions = Object.values(groupedSubCategories).map(group => ({
         id: group.ids,
         name: group.name,
@@ -123,7 +118,7 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
       }));
   
       allCategorySubOptions.sort((a, b) => a.name.localeCompare(b.name));
-      // Cập nhật state
+
       setCategorySubOptions(allCategorySubOptions);
       setFilterOptions(prev => ({
         ...prev,
@@ -135,17 +130,13 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
     }
   }, [categories]);
   
-  console.log(selectedFilters);
-  // Cập nhật danh sách loại sản phẩm dựa trên danh mục được chọn
   useEffect(() => {
     if (selectedFilters.category?.length > 0 && categorySubOptions?.length > 0) {
-      // Lấy id của các danh mục được chọn
       const selectedCategoryIds = categories
         ?.filter(cat => selectedFilters?.category?.includes(cat.category_type) && cat.category_level === 1)
         ?.map(cat => cat._id);
       
       
-      // Lọc ra các danh mục con dựa trên parentId
       const filteredSubOptions = categorySubOptions
         ?.filter(subCat => selectedCategoryIds?.includes(subCat.parentId))
         ?.map(subCat => subCat.name);
@@ -159,7 +150,6 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
         },
       }));
       
-      // Xóa các lựa chọn category_sub không còn hợp lệ
       setSelectedFilters(prev => ({
         ...prev,
         category_sub: Array.isArray(prev?.category_sub)
@@ -192,16 +182,14 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
       const isSelected = currentList.includes(value);
   
       if (["category", "category_sub", "product_color", "product_brand"].includes(type)) {
-        // Nếu là category và đang được bỏ chọn
         if (type === "category" && isSelected) {
           return {
             ...prev,
             category: currentList.filter((item) => item !== value),
-            category_sub: [], // Bỏ toàn bộ category_sub
+            category_sub: [], 
           };
         }
   
-        // Xử lý thêm hoặc bớt item cho các loại filter có nhiều lựa chọn
         return {
           ...prev,
           [type]: isSelected
@@ -210,7 +198,6 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange  }) => {
         };
       }
   
-      // Xử lý cho filter chỉ chọn 1 giá trị tại 1 thời điểm (vd: brand, price range...)
       return {
         ...prev,
         [type]: prev[type] === value ? [] : value,
