@@ -21,8 +21,8 @@ const ProductDetailsPage = () => {
   return (
     <div className="container mx-auto px-2">
       <ProductInfoComponent product={productDetails} />
-      {/* <ProductFeedBackComponent product={productDetails} /> */}
-      <div className="mt-10 mb-20">
+      <ProductFeedBackComponent product={productDetails} />
+      <div className="mb-20">
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full mb-4"></div>
         <p className="text-xl font-semibold uppercase my-8">
           Sản phẩm liên quan

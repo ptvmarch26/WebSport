@@ -20,15 +20,18 @@ const OrderStatusPage = () => {
     { id: "all", label: "Tất cả" },
     { id: "Chờ xác nhận", label: "Chờ xác nhận" },
     { id: "Đang giao", label: "Đang giao" },
-    { id: "Hoàn thành", label: "Hoàn thành" },
+    { id: "Giao hàng thành công", label: "Giao hàng thành công" },
     { id: "Hủy hàng", label: "Hủy hàng" },
     { id: "Hoàn hàng", label: "Hoàn hàng" },
   ];
+  const sortedOrders = [...orders].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   const filteredOrders =
     activeTab === "all"
-      ? orders
-      : orders.filter((order) => order.order_status === activeTab);
+      ? sortedOrders
+      : sortedOrders.filter((order) => order.order_status === activeTab);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -73,11 +76,7 @@ const OrderStatusPage = () => {
   };
 
   const handleFeedback = (order) => {
-    navigate("order-feedback", {
-      state: {
-        products: order.products,
-      },
-    });
+    navigate(`order-feedback/${order._id}`);
   };
 
   return (
@@ -151,11 +150,12 @@ const OrderStatusPage = () => {
                       <p className="text-sm">x{product.quantity}</p>
                     </div>
                     <div className="flex space-x-2">
-                      {discountedPrice && (
-                        <p className="text-[#9ca3af] line-through">
-                          {discountedPrice.toLocaleString()}đ
-                        </p>
-                      )}
+                      {discountedPrice &&
+                        product.product_id.product_percent_discount > 0 && (
+                          <p className="text-[#9ca3af] line-through">
+                            {discountedPrice.toLocaleString()}đ
+                          </p>
+                        )}
                       <p className="font-medium text-[#ba2b20]">
                         {variantPrice.toLocaleString()}đ
                       </p>
@@ -171,16 +171,18 @@ const OrderStatusPage = () => {
               </div>
 
               <div className="mt-4 text-right space-x-2">
-                {order.order_status === "Hoàn thành" && (
+                {order.order_status === "Giao hàng thành công" && (
                   <>
-                    <Button
-                      variant="filled"
-                      color="black"
-                      className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
-                      onClick={() => handleFeedback(order)}
-                    >
-                      Đánh giá
-                    </Button>
+                    {!order.is_feedback && (
+                      <Button
+                        variant="filled"
+                        color="black"
+                        className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
+                        onClick={() => handleFeedback(order)}
+                      >
+                        Đánh giá
+                      </Button>
+                    )}
                     <Button
                       variant="filled"
                       color="white"

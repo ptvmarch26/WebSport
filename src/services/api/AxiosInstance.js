@@ -24,8 +24,6 @@ AxiosInstance.interceptors.response.use(
       try {
         // Gọi refreshToken để lấy lại accessToken mới
         const res = await refreshToken();
-        console.log("đi refresh token đi");
-        console.log("res", res);
         if (res.EC === 0) {
             // Cập nhật lại accessToken trong localStorage
             localStorage.setItem("accessToken", res.result.accessToken);

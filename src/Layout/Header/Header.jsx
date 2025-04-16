@@ -14,16 +14,17 @@ import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
+import { IoTrashOutline } from "react-icons/io5";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchHistory, setSearchHistory] = useState([]);
   const { selectedUser } = useUser();
   const { token } = useAuth();
   const navigate = useNavigate();
-
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
@@ -39,7 +40,7 @@ const Header = () => {
       const token = localStorage.getItem("accessToken");
 
       const res = await axios.get("http://localhost:5000/chat", {
-        params: { message: searchQuery },
+        params: { message: query },
         headers: {
           "Content-Type": "application/json",
           ...(token && { Authorization: `Bearer ${token}` })
@@ -51,20 +52,41 @@ const Header = () => {
         const result = res.data.result;
         const parsedResult =
           typeof result === "string" ? JSON.parse(result) : result;
-        console.log("Kết quả tìm kiếm:", parsedResult);
-        
+        // console.log("Kết quả tìm kiếm:", parsedResult);
+        console.log("query:", parsedResult);
+
+        // Lưu vào local storage
+        if (!token) {
+          let updatedHistory = [
+            query,
+            ...searchHistory.filter((q) => q !== query),
+          ];
+          if (updatedHistory.length > 5)
+            updatedHistory = updatedHistory.slice(0, 5);
+          setSearchHistory(updatedHistory);
+          localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+        }
+
         setSearchOpen(!searchOpen);
         const queryString = new URLSearchParams(parsedResult).toString();
         navigate(`/search?${queryString}`, {
           state: {
-            result: searchQuery
-          }
+            result: query,
+          },
         });
       }
     } catch (err) {
       console.error("Lỗi tìm kiếm:", err);
     }
   };
+
+  const removeHistoryItem = (index) => {
+    const updatedHistory = [...searchHistory];
+    updatedHistory.splice(index, 1);
+    setSearchHistory(updatedHistory);
+    localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+  };
+
   const options = [
     { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
     { name: "Nam", subOptions: ["Giày nam", "Quần áo nam", "Phụ kiện nam"] },
@@ -331,8 +353,8 @@ const Header = () => {
 
       {searchOpen && (
         <div>
-          <div>
-            <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-10">
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-white flex items-center justify-center shadow-md z-10">
+            <div className="w-1/2 max-w-[800px] flex items-center">
               <input
                 type="text"
                 placeholder="Tìm kiếm"
@@ -344,7 +366,7 @@ const Header = () => {
                     handleSearch();
                   }
                 }}
-                className="w-1/2 p-2 border border-gray-300 focus:outline-none"
+                className="w-full p-2 border border-gray-300 focus:outline-none"
               />
               <button onClick={toggleSearch} className="ml-4">
                 <AiOutlineClose className="text-2xl text-black hover:opacity-90" />
@@ -355,6 +377,36 @@ const Header = () => {
             className="fixed top-[100px] left-0 right-0 h-screen w-screen bg-black/40 z-20"
             onClick={toggleSearch}
           ></div>
+        </div>
+      )}
+
+      {searchHistory.length > 0 && searchOpen && (
+        <div className="absolute left-0 right-0 w-full bg-white overflow-y-auto z-30">
+          <div className="w-1/2 max-w-[800px] mx-auto py-[10px]">
+            <ul className="">
+              {searchHistory.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center hover:bg-[#eaeaea] rounded px-2 py-[10px] cursor-pointer"
+                >
+                  <span
+                    onClick={() => {
+                      setSearchQuery(item);
+                      handleSearch(item); // Truyền trực tiếp giá trị item vào hàm handleSearch
+                    }}
+                  >
+                    {item}
+                  </span>
+                  <button
+                    onClick={() => removeHistoryItem(index)}
+                    className="text-md text-red-600 hover:scale-105 ml-2"
+                  >
+                    <IoTrashOutline className="text-2xl text-red-500" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>

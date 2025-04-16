@@ -3,6 +3,7 @@ import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import FeedbackComponent from "../FeedBackComponent/FeedBackComponent";
 import PanigationComponent from "../PanigationComponent/PanigationComponent";
+import { getAllFeedback } from "../../services/api/FeedbackApi";
 
 const ProductFeedBackComponent = ({ product }) => {
   const [selectedStars, setSelectedStars] = useState([]);
@@ -10,10 +11,36 @@ const ProductFeedBackComponent = ({ product }) => {
   const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
   const feedbacksPerPage = 5;
   const dropdownRef = useRef(null);
+  const [feedbacks, setFeedbacks] = useState([]);
 
+  const averageRating =
+    feedbacks.length > 0
+      ? feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / feedbacks.length
+      : 0;
+
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      const data = await getAllFeedback(product._id);
+      if (data?.EC === 0) {
+        setFeedbacks(data.result);
+      }
+    };
+
+    if (product?._id) {
+      fetchFeedbacks();
+    }
+  }, [product?._id]);
+
+  console.log("fb", feedbacks);
   const indexOfLastFeedback = currentPage * feedbacksPerPage;
   const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
-  const paginatedFeedbacks = (product?.product_feedback || []).slice(
+
+  const filteredFeedbacks =
+    selectedStars.length > 0
+      ? feedbacks.filter((feedback) => selectedStars.includes(feedback.rating))
+      : feedbacks;
+
+  const paginatedFeedbacks = filteredFeedbacks.slice(
     indexOfFirstFeedback,
     indexOfLastFeedback
   );
@@ -48,6 +75,8 @@ const ProductFeedBackComponent = ({ product }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  console.log("product", product);
+
   return (
     <div className="">
       {/* Đặt ref vào phần tử đường gạch ngang */}
@@ -57,12 +86,10 @@ const ProductFeedBackComponent = ({ product }) => {
       ></div>
 
       <p className="text-xl font-semibold uppercase my-5">Đánh giá</p>
-
       <div className="flex justify-between flex-wrap">
-        {/* Hiển thị đánh giá sao */}
         <div className="flex items-center mb-2">
           {[...Array(5)].map((_, index) => {
-            if (index < Math.floor(product?.product_rate)) {
+            if (index < Math.floor(averageRating)) {
               return (
                 <IoIosStar
                   key={index}
@@ -70,8 +97,8 @@ const ProductFeedBackComponent = ({ product }) => {
                 />
               );
             } else if (
-              index === Math.floor(product?.product_rate) &&
-              product?.product_rate % 1 !== 0
+              index === Math.floor(averageRating) &&
+              averageRating % 1 !== 0
             ) {
               return (
                 <IoIosStarHalf
@@ -89,11 +116,10 @@ const ProductFeedBackComponent = ({ product }) => {
             }
           })}
           <span className="ml-2 text-xl font-medium">
-            {product?.product_rate.toFixed(1)}
+            {averageRating.toFixed(1)}
           </span>
         </div>
 
-        {/* Dropdown để lọc theo số sao */}
         <div className="relative" ref={dropdownRef}>
           <ButtonComponent
             text="Lọc theo sao"
@@ -129,28 +155,24 @@ const ProductFeedBackComponent = ({ product }) => {
         </div>
       </div>
 
-      {/* Hiển thị feedbacks theo trang */}
       <div className="p-4">
         {paginatedFeedbacks.map((feedback, index) => (
-          <div key={index}>
-            <FeedbackComponent {...feedback} />
+          <div key={feedback._id || index}>
+            <FeedbackComponent feedback={feedback} />
           </div>
         ))}
       </div>
 
-      {/* Phân trang */}
-      {product?.product_feedback.length > 5 && (
-        <div className="flex justify-center">
+      {filteredFeedbacks.length > feedbacksPerPage && (
+        <div className="flex justify-center mb-10">
           <PanigationComponent
             currentPage={currentPage}
-            totalPages={Math.ceil(
-              product?.product_feedback.length / feedbacksPerPage
-            )}
+            totalPages={Math.ceil(filteredFeedbacks.length / feedbacksPerPage)}
             onPageChange={(page) => setCurrentPage(page)}
           />
         </div>
       )}
-      {product?.product_feedback.length === 0 && (
+      {feedbacks.length === 0 && (
         <div className="flex flex-col items-center">
           <img
             src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/shoprating/7d900d4dc402db5304b2.png"

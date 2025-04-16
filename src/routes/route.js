@@ -76,7 +76,7 @@ const publicRoutes = [
     component: OrderDetailsPage,
   },
   {
-    path: "/orders/order-feedback",
+    path: "/orders/order-feedback/:id",
     component: OrderFeedbackPage,
   },
   {
