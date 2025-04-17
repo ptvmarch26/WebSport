@@ -2,13 +2,31 @@ import { LiaUsersSolid } from "react-icons/lia";
 import { IoCartSharp } from "react-icons/io5";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import Chart from "react-apexcharts";
+import { useEffect } from "react";
+import { useUser } from "../../context/UserContext";
+
 
 function Dashboard() {
+  const { fetchUser } = useUser();
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = await fetchUser();
+      if (user?.result?.role !== "admin") {
+        window.location.href = "/sign-in";
+      } else {
+        alert("Fetch data đi");
+      }
+    };
+    fetchData();
+  }, []);
+
   const dashboardData = {
     totalRevenue: 50000000,
     totalOrders: 1200,
     totalUsers: 500,
   };
+  
+
 
   // Dữ liệu cho biểu đồ đường
   const lineOptions = {

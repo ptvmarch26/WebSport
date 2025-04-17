@@ -18,8 +18,10 @@ export const getAllOrders = async (orderStatus = "all") => {
     });
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy các đơn hàng:", error);
-    return null;
+    // nếu lỗi 401 thì redrect về trang login
+    if (error.response.status === 403) {
+      window.location.href = "/sign-in";
+    } else return error.response?.data || null;
   }
 };
 
@@ -55,6 +57,19 @@ export const updateOrderStatus = async (orderId, status) => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
+    return null;
+  }
+};
+
+export const handleCancelPayment = async (orderCode) => {
+  try {
+    const response = await AxiosInstance.patch(
+      `/order/handle-cancel-payment/${orderCode}`
+    );
+    console.log("response", response);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi hủy thanh toán:", error);
     return null;
   }
 };

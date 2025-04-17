@@ -14,14 +14,15 @@ import { useProduct } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { useParams, useSearchParams } from "react-router-dom";
 import { usePopup } from "../../context/PopupContext";
+import { handleCancelPayment } from "../../services/api/OrderApi"; 
 
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
 ];
 
 const paymentMethods = [
-  { id: "cod", label: "Thanh toán khi nhận hàng (COD)" },
-  { id: "paypal", label: "Phương Thức Chuyển Khoản" },
+  { id: "Cod", label: "Thanh toán khi nhận hàng (COD)" },
+  { id: "Paypal", label: "Phương Thức Chuyển Khoản" },
   { id: "Momo", label: "Phương Thức Momo" },
 ];
 
@@ -81,13 +82,11 @@ function CheckoutPage() {
         false,
         5000
       );
-      // dùng PayOS api để hủy đơn hàng có mã orderCode
-      // nếu đơn hàng đã được tạo
-      // const orderCode = query.get("orderCode");
-      // if (orderCode) {
-      //   await handleUpdateOrderStatus(orderCode, "CANCELLED");
-      // }
-      // return;
+      const orderCode = query.get("orderCode");
+      if (orderCode) {
+        handleCancelPayment(orderCode);
+      }
+      return;
     }
   }, []);
   const [cartItems, setCartItems] = useState([]);
@@ -319,7 +318,8 @@ function CheckoutPage() {
     };
 
     const res = await handleCreateOrder(orderData);
-    if (res?.EC === 0 && selectedPayment === "paypal") {
+    console.log("res", res);
+    if (res?.EC === 0 && selectedPayment === "Paypal") {
       window.location.href = res.result.resultPayOS.checkoutUrl;
       return;
     }

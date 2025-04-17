@@ -1,5 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import {getAllOrders, getOrderByUser, getOrderDetail, createOrder,  updateOrderStatus} from "../services/api/OrderApi";
+import { createContext, useContext, useState } from "react";
+import {
+  getAllOrders,
+  getOrderByUser,
+  getOrderDetail,
+  createOrder,
+  updateOrderStatus,
+} from "../services/api/OrderApi";
 
 const OrderContext = createContext();
 
@@ -9,9 +15,9 @@ export const OrderProvider = ({ children }) => {
 
   const fetchOrders = async (orderStatus = "all") => {
     const res = await getAllOrders(orderStatus);
-    
     if (res?.EC === 0) {
-        setOrders(res.result);
+      setOrders(res.result);
+      return res;
     }
   };
 
@@ -25,18 +31,16 @@ export const OrderProvider = ({ children }) => {
     const res = await getOrderDetail(orderId);
     if (res) setOrderDetails(res?.result);
     return res;
-
   };
 
   const handleCreateOrder = async (orderData) => {
     const res = await createOrder(orderData);
     return res;
-
   };
 
   const handleUpdateOrderStatus = async (orderId, status) => {
     const res = await updateOrderStatus(orderId, status);
-    if (res) fetchOrders(); 
+    if (res) fetchOrders();
   };
 
   return (

@@ -51,7 +51,11 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
   }, [item._id]);
 
   const toggleFavorite = async (e) => {
-    e.stopPropagation();
+    if (!token) {
+      showPopup("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích", false);
+      return;
+    }
+    e.stopPropagation(); 
     setIsFavorite(!isFavorite);
     await updateFavourite(item._id);
     onFavouriteChange?.();

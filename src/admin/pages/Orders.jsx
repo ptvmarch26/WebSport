@@ -11,7 +11,7 @@ const statusColors = [
   "Chờ xác nhận",
   "Đang chuẩn bị hàng",
   "Đang giao",
-  "Giao hàng thành công",
+  "Hoàn thành",
   // "Hoàn hàng",
   // "Hủy hàng",
 ];
@@ -22,7 +22,6 @@ const Orders = () => {
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const navigate = useNavigate();
-
   const [ordersState, setOrdersState] = useState(orders);
 
   useEffect(() => {
@@ -41,11 +40,9 @@ const Orders = () => {
       return order;
     });
     setOrdersState(updatedOrders);
-
     handleUpdateOrderStatus(orderId, newStatus);
   };
 
-  console.log("orders", orders);
   const filteredOrders = ordersState.filter((order) => {
     const matchesStatus = filterStatus
       ? order.order_status === filterStatus
