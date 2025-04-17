@@ -5,6 +5,7 @@ import avt_false from "../../../assets/images/avatar-false.jpg";
 
 const Profile = () => {
   const { selectedUser, fetchUser, handleUpdateUser } = useUser();
+  const [avatarFile, setAvatarFile] = useState(null);
 
   // useEffect(() => {
   //   fetchUser();
@@ -37,21 +38,32 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const updatedData = { ...formData, [e.target.name]: e.target.value };
+    console.log("updatedData", updatedData);
+    console.log("e", e);
     setFormData(updatedData);
     setIsChanged(JSON.stringify(updatedData) !== JSON.stringify(originalData));
   };
 
   const handleSave = async () => {
-    console.log("Dữ liệu đã lưu:", formData);
-    const res = await handleUpdateUser(formData); // Gọi hàm cập nhật dữ liệu ở đây
-    if (res?.EC === 0) {
-      fetchUser(); // Cập nhật lại thông tin người dùng sau khi lưu
-      setOriginalData(formData);
-      setIsChanged(false);
-      setIsEditing(false);
-    } else {
-      console.error("Lỗi khi cập nhật thông tin:", res);
-    }
+    const form = new FormData();
+  form.append("user_name", formData.user_name);
+  form.append("full_name", formData.full_name);
+  form.append("birth", formData.birth);
+  form.append("gender", formData.gender);
+
+  if (avatarFile) {
+    form.append("avatar", avatarFile); // <- tên phải trùng với `multer` backend
+  }
+
+  const res = await handleUpdateUser(form);
+  if (res?.EC === 0) {
+    fetchUser();
+    setOriginalData(formData);
+    setIsChanged(false);
+    setIsEditing(false);
+  } else {
+    console.error("Lỗi khi cập nhật thông tin:", res);
+  }
   };
 
   useEffect(() => {
@@ -80,16 +92,15 @@ const Profile = () => {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setAvatarFile(file); // <- lưu file thật để upload
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, avt_img: reader.result });
+        setFormData({ ...formData, avt_img: reader.result }); // preview thôi
         setIsChanged(true);
       };
       reader.readAsDataURL(file);
     }
   };
-
-  console.log("user", selectedUser);
 
   return (
     <div className="lg:px-6 bg-white">

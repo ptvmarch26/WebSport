@@ -1,11 +1,20 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signUp, login, sendOTP, verifyOTP, resetPassword, loginWithGoogle } from "../services/api/AuthApi";
-
+import {
+  signUp,
+  login,
+  sendOTP,
+  verifyOTP,
+  resetPassword,
+  loginWithGoogle,
+} from "../services/api/AuthApi";
+import { useUser } from "./UserContext";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("accessToken") || null);
+  const [token, setToken] = useState(
+    localStorage.getItem("accessToken") || null
+  );
 
   useEffect(() => {
     if (token) {
@@ -49,13 +58,13 @@ export const AuthProvider = ({ children }) => {
     return await resetPassword(email, newPassword);
   };
 
-  const handlLoginWithGoogle = async () => { 
+  const handlLoginWithGoogle = async () => {
     const data = await loginWithGoogle();
     if (data?.result?.accessToken) {
       setToken(data?.result?.accessToken);
       localStorage.setItem("accessToken", data.result.accessToken);
     }
-    
+
     return data;
   };
 

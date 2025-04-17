@@ -16,29 +16,49 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useCategories } from "../../context/CategoriesContext";
+import { useUser } from "../../context/UserContext";
 
 const { Option } = Select;
 
 const Categories = () => {
-  
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAddDadCategoryModalVisible, setIsAddDadCategoryModalVisible] = useState(false);
-  const [isAddChildCategoryModalVisible, setIsAddChildCategoryModalVisible] = useState(false);
+  const [isAddDadCategoryModalVisible, setIsAddDadCategoryModalVisible] =
+    useState(false);
+  const [isAddChildCategoryModalVisible, setIsAddChildCategoryModalVisible] =
+    useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [isEditCategoryModalVisible, setIsEditCategoryModalVisible] = useState(false);
+  const [isEditCategoryModalVisible, setIsEditCategoryModalVisible] =
+    useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const { fetchUser } = useUser();
 
-  const { categories, fetchCategories, removeCategory, addCategory, handleUpdateCategory } = useCategories();
+  const {
+    categories,
+    fetchCategories,
+    removeCategory,
+    addCategory,
+    handleUpdateCategory,
+  } = useCategories();
 
   const filteredCategory = categories.filter((category) => {
-    const matchesSearch = searchText ? category.category_type.toLowerCase().includes(searchText.toLowerCase()) : true;
+    const matchesSearch = searchText
+      ? category.category_type.toLowerCase().includes(searchText.toLowerCase())
+      : true;
     return matchesSearch;
   });
-  
+
   useEffect(() => {
-    fetchCategories();
+    const fetchCategoriesData = async () => {
+      const user = await fetchUser();
+      if (user?.result?.role !== "admin") {
+        window.location.href = "/sign-in";
+      } else {
+        fetchCategories();
+      }
+    };
+    fetchCategoriesData();
   }, []);
 
   const handleDelete = async () => {
@@ -56,12 +76,12 @@ const Categories = () => {
     try {
       await form.validateFields();
       const newCategory = form.getFieldsValue();
-      
+
       const res = await addCategory(newCategory);
       if (res?.data?.EC === 0) {
         fetchCategories();
         form.resetFields();
-        setIsAddDadCategoryModalVisible(false); 
+        setIsAddDadCategoryModalVisible(false);
         console.log("Thêm danh mục cha thành công:", res);
       }
     } catch (error) {
@@ -84,11 +104,10 @@ const Categories = () => {
       if (res?.data?.EC === 0) {
         fetchCategories();
         form.resetFields();
-        setIsAddChildCategoryModalVisible(false); 
+        setIsAddChildCategoryModalVisible(false);
         console.log("Thêm danh mục con thành công:", res);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Lỗi khi thêm danh mục:", error);
     }
   };
@@ -97,25 +116,31 @@ const Categories = () => {
 
   const handleEditCategory = (record) => {
     if (record) {
-      setSelectedCategory(record);  // Cập nhật giá trị discount được chọn
-      form.setFieldsValue(record);  // Điền thông tin discount vào form
-      setIsEditCategoryModalVisible(true);  // Mở modal chỉnh sửa
+      setSelectedCategory(record); // Cập nhật giá trị discount được chọn
+      form.setFieldsValue(record); // Điền thông tin discount vào form
+      setIsEditCategoryModalVisible(true); // Mở modal chỉnh sửa
     } else {
       console.error("Không có danh mục được chọn");
     }
   };
 
   const handleUpdate = async () => {
-    try{
+    try {
       await form.validateFields();
       const updateData = form.getFieldsValue();
       console.log("updateData", updateData);
-      if (updateData.category_level === 1 && updateData.category_parent_id !== null) {
+      if (
+        updateData.category_level === 1 &&
+        updateData.category_parent_id !== null
+      ) {
         console.error("Danh mục cấp 1 không thể có danh mục cha");
         return;
       }
 
-      if (updateData.category_level >= 2 && updateData.category_parent_id === null) {
+      if (
+        updateData.category_level >= 2 &&
+        updateData.category_parent_id === null
+      ) {
         console.error("Danh mục cấp 2 phải có danh mục cha");
         return;
       }
@@ -124,11 +149,10 @@ const Categories = () => {
       if (res?.data?.EC === 0) {
         fetchCategories();
         form.resetFields();
-        setIsEditCategoryModalVisible(false); 
+        setIsEditCategoryModalVisible(false);
         console.log("Sửa danh mục thành công:", res);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Lỗi khi cập nhật danh mục:", error);
     }
   };
@@ -152,7 +176,7 @@ const Categories = () => {
         const genderMap = {
           Nam: "Nam",
           Nữ: "Nữ",
-          Unisex: "Unisex"
+          Unisex: "Unisex",
         };
         return genderMap[gender];
       },
@@ -161,10 +185,7 @@ const Categories = () => {
       title: "Chỉnh sửa",
       key: "edit",
       render: (_, record) => (
-        <Button
-          type="link"
-          onClick={() => handleEditCategory(record)} 
-        >
+        <Button type="link" onClick={() => handleEditCategory(record)}>
           Chỉnh sửa
         </Button>
       ),
@@ -175,7 +196,7 @@ const Categories = () => {
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
         <div className="flex flex-wrap sm:flex-nowrap gap-4">
-         <Input
+          <Input
             placeholder="Tìm kiếm theo..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -188,28 +209,28 @@ const Categories = () => {
             icon={<PlusOutlined />}
             onClick={() => setIsAddDadCategoryModalVisible(true)}
           >
-            Thêm danh mục cha 
+            Thêm danh mục cha
           </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsAddChildCategoryModalVisible(true)}
           >
-            Thêm danh mục con 
+            Thêm danh mục con
           </Button>
         </div>
       </div>
-        <div className="my-4">
-         <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined />}
-            disabled={selectedRowKeys.length === 0}
-            onClick={() => setIsModalVisible(true)}
-          >
-            Xóa ({selectedRowKeys.length})
-          </Button>
-        </div>
+      <div className="my-4">
+        <Button
+          type="primary"
+          danger
+          icon={<DeleteOutlined />}
+          disabled={selectedRowKeys.length === 0}
+          onClick={() => setIsModalVisible(true)}
+        >
+          Xóa ({selectedRowKeys.length})
+        </Button>
+      </div>
       <div className="bg-white p-4 shadow-lg">
         <Table
           rowSelection={{
@@ -218,9 +239,9 @@ const Categories = () => {
           }}
           dataSource={filteredCategory}
           columns={columns}
-          pagination={{ pageSize: 8}}
+          pagination={{ pageSize: 8 }}
           rowKey="_id"
-          scroll={{x: 'max-content'}}
+          scroll={{ x: "max-content" }}
         />
       </div>
       <Modal
@@ -303,10 +324,7 @@ const Categories = () => {
           >
             <InputNumber min={2} />
           </Form.Item>
-          <Form.Item
-            label="Thuộc danh mục"
-            name="category_parent_id"
-          >
+          <Form.Item label="Thuộc danh mục" name="category_parent_id">
             <Select placeholder="Chọn danh mục" allowClear>
               {categories
                 ?.filter((category) => category.category_level === 1)
@@ -358,10 +376,7 @@ const Categories = () => {
           >
             <InputNumber min={1} />
           </Form.Item>
-          <Form.Item
-            label="Thuộc danh mục"
-            name="category_parent_id"
-          >
+          <Form.Item label="Thuộc danh mục" name="category_parent_id">
             <Select placeholder="Chọn danh mục" allowClear>
               {categories?.map((category) => (
                 <Option key={category._id} value={category._id}>

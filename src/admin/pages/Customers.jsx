@@ -10,27 +10,35 @@ const statusColors = {
 };
 // be thiếu trường tên khách hàng, cả phần đăng ký các kiểu...
 const Customers = () => {
-  const { fetchUsers, users  } = useUser();
+  const { fetchUsers, users, fetchUser } = useUser();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    fetchUsers(); 
+    const fetchDataUsers = async () => {
+      const user = await fetchUser();
+      if (user.result.role !== "admin") {
+        window.location.href = "/sign-in";
+      } else {
+        fetchUsers();
+      }
+    };
+    fetchDataUsers();
   }, []);
 
   const filteredUsers = Array.isArray(users)
-  ? users.filter((user) => {
-      const searchLower = searchText.toLowerCase();
-      return (
-        (user.user_name?.toLowerCase().includes(searchLower) ||
-         user.phone?.includes(searchText) || 
-         user.email?.toLowerCase().includes(searchLower)) &&
-        (filterStatus ? user.status === filterStatus : true)
-      );
-    })
-  : [];
+    ? users.filter((user) => {
+        const searchLower = searchText.toLowerCase();
+        return (
+          (user.user_name?.toLowerCase().includes(searchLower) ||
+            user.phone?.includes(searchText) ||
+            user.email?.toLowerCase().includes(searchLower)) &&
+          (filterStatus ? user.status === filterStatus : true)
+        );
+      })
+    : [];
 
   const columns = [
     {
@@ -39,7 +47,11 @@ const Customers = () => {
       key: "avt_img",
       render: (image) =>
         image ? (
-          <img src={image} alt="Ảnh sản phẩm" className="w-16 h-16 object-cover rounded" />
+          <img
+            src={image}
+            alt="Ảnh sản phẩm"
+            className="w-16 h-16 object-cover rounded"
+          />
         ) : (
           "Không có ảnh"
         ),
@@ -70,7 +82,11 @@ const Customers = () => {
             onChange={(e) => setSearchText(e.target.value)}
             className="rounded-none"
           />
-          <Button type="primary" icon={<ExportOutlined />} className="rounded-none">
+          <Button
+            type="primary"
+            icon={<ExportOutlined />}
+            className="rounded-none"
+          >
             Xuất file
           </Button>
         </div>
@@ -100,11 +116,9 @@ const Customers = () => {
           pagination={{ pageSize: 8 }}
           rowKey="_id"
           className="rounded-none"
-          scroll={{x: 'max-content'}}
+          scroll={{ x: "max-content" }}
         />
       </div>
-
-      
     </div>
   );
 };
