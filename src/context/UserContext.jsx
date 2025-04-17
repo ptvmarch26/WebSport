@@ -77,7 +77,7 @@ export const UserProvider = ({ children }) => {
     return data;
   }
 
-  const handleDeteleSearch = async(index) => {
+  const handleDeleteSearch = async(index) => {
     return await deleteSearch(index);
   }
 
@@ -103,7 +103,7 @@ export const UserProvider = ({ children }) => {
         handleUpdateAddress,
         handleDeleteAddress,
         handleGetDiscount,
-        handleDeteleSearch,
+        handleDeleteSearch,
         handleGetChatHistory,
         handleDeleteChatHistory,
       }}

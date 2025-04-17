@@ -3,7 +3,6 @@ import { IoIosStar } from "react-icons/io";
 
 const FeedbackComponent = ({ feedback }) => {
   const {
-    user_id,
     rating,
     content,
     color,

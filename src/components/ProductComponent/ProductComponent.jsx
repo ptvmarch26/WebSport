@@ -2,17 +2,59 @@
 import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi"; // import API
-
+import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
+import { updateFavourite } from "../../services/api/FavouriteApi"; // import API
+import { usePopup } from "../../context/PopupContext";
+import { useAuth } from "../../context/AuthContext";
 
 const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
+  const { showPopup } = usePopup();
+  const { token } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isCompared, setIsCompared] = useState(false);
+
+  useEffect(() => {
+    const savedCompare = JSON.parse(localStorage.getItem("compareList")) || [];
+    setIsCompared(savedCompare.includes(item._id));
+  }, [item._id]);
+
+  const toggleCompare = (e) => {
+    e.stopPropagation();
+    let savedCompare = JSON.parse(localStorage.getItem("compareList")) || [];
+
+    if (savedCompare.includes(item._id)) {
+      savedCompare = savedCompare.filter((id) => id !== item._id);
+      setIsCompared(false);
+    } else {
+      if (savedCompare.length >= 2) {
+        showPopup("Chỉ được so sánh tối đa 2 sản phẩm", false);
+        return;
+      }
+      savedCompare.push(item._id);
+      setIsCompared(true);
+    }
+
+    localStorage.setItem("compareList", JSON.stringify(savedCompare));
+    window.dispatchEvent(new CustomEvent("compareListUpdated"));
+  };
+
+  useEffect(() => {
+    const handleCompareListUpdate = () => {
+      const savedCompare =
+        JSON.parse(localStorage.getItem("compareList")) || [];
+      setIsCompared(savedCompare.includes(item._id));
+    };
+
+    window.addEventListener("compareListUpdated", handleCompareListUpdate);
+    return () =>
+      window.removeEventListener("compareListUpdated", handleCompareListUpdate);
+  }, [item._id]);
 
   const toggleFavorite = async (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setIsFavorite(!isFavorite);
-    await updateFavourite(item._id); 
-    onFavouriteChange?.(); 
+    await updateFavourite(item._id);
+    onFavouriteChange?.();
   };
 
   useEffect(() => {
@@ -83,7 +125,7 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
           )}
         </div>
 
-        {(
+        {
           <div className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
             <button
               className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
@@ -95,8 +137,20 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
                 <FaRegHeart className="text-xl" />
               )}
             </button>
+            {token && (
+              <button
+                className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
+                onClick={toggleCompare}
+              >
+                {isCompared ? (
+                  <FaCheckCircle className="text-green-500 text-xl" />
+                ) : (
+                  <FaPlusCircle className="text-gray-600 text-xl" />
+                )}
+              </button>
+            )}
           </div>
-        )}
+        }
       </div>
     </div>
   );
