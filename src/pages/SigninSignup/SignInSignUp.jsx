@@ -156,6 +156,7 @@ const SignInSignUp = () => {
     console.log("result", result);
     if (result.EC === 0 && result?.result?.accessToken) {
       showPopup(result.EM);
+      localStorage.setItem("compareList", JSON.stringify([]));
       navigate("/");
     } else {
       showPopup(result.EM, false);
@@ -166,6 +167,7 @@ const SignInSignUp = () => {
     const result = await handlLoginWithGoogle();
     if (result?.result?.accessToken) {
       showPopup(result.EM);
+      localStorage.setItem("compareList", JSON.stringify([]));
       navigate("/");
     } else {
       showPopup("Lỗi khi đăng nhập với Google", false);

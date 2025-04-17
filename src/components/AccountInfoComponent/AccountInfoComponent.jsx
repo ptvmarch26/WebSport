@@ -42,6 +42,7 @@ const AccountInfoComponent = () => {
 
   const handleSubmitLogout = async () => {
     await handleLogout();
+    localStorage.setItem("compareList", JSON.stringify([]));
     // navigate("/sign-in", { replace: true });
     window.location.href = "/sign-in";
   };

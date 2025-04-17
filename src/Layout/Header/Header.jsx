@@ -22,20 +22,48 @@ const Header = () => {
   const [language, setLanguage] = useState("vi");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
-  const { selectedUser } = useUser();
+  const { selectedUser, fetchUser, handleDeleteSearch } = useUser();
   const { token } = useAuth();
   const navigate = useNavigate();
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
-  const handleSearch = async () => {
+  useEffect(() => {
+    const savedHistory = localStorage.getItem("searchHistory");
 
-    if (!searchQuery.trim()) return;
+    if (token) {
+      localStorage.removeItem("searchHistory");
+      if (selectedUser && selectedUser?.searchhistory) {
+        const reversedHistory = [...selectedUser.searchhistory]
+          .map((item, index) => ({ ...item, originalIndex: index }))
+          .reverse();
+        setSearchHistory(reversedHistory.slice(0, 5));
+      }
+    } else if (savedHistory) {
+      try {
+        const parsedHistory = JSON.parse(savedHistory);
+        if (Array.isArray(parsedHistory)) {
+          setSearchHistory(parsedHistory);
+        }
+      } catch (error) {
+        console.error("Lỗi khi parse lịch sử tìm kiếm:", error);
+        localStorage.removeItem("searchHistory");
+      }
+    }
+  }, [token, selectedUser]);
+
+  const handleSearch = async (customQuery) => {
+    const query = customQuery !== undefined ? customQuery : searchQuery;
+    if (!query.trim()) return;
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -43,7 +71,7 @@ const Header = () => {
         params: { message: query },
         headers: {
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` })
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
 
@@ -65,6 +93,20 @@ const Header = () => {
             updatedHistory = updatedHistory.slice(0, 5);
           setSearchHistory(updatedHistory);
           localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+        } else if (selectedUser && selectedUser?.searchhistory) {
+          const newHistoryItem = { message: query, originalIndex: -1 };
+
+          // const filteredHistory = searchHistory.filter(
+          //   (item) => item.message !== query
+          // );
+
+          const updatedHistory = [newHistoryItem, ...searchHistory];
+          const limitedHistory = updatedHistory.slice(0, 5);
+
+          setSearchHistory(limitedHistory);
+
+          // Gán lại index -1 thành mới nhất
+          fetchUser();
         }
 
         setSearchOpen(!searchOpen);
@@ -80,11 +122,23 @@ const Header = () => {
     }
   };
 
-  const removeHistoryItem = (index) => {
-    const updatedHistory = [...searchHistory];
-    updatedHistory.splice(index, 1);
-    setSearchHistory(updatedHistory);
-    localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+  const removeHistoryItem = async (index) => {
+    const historyItem = searchHistory[index];
+    if (token && historyItem?.originalIndex !== undefined) {
+      try {
+        await handleDeleteSearch(historyItem.originalIndex);
+        const updatedHistory = [...searchHistory];
+        updatedHistory.splice(index, 1);
+        setSearchHistory(updatedHistory);
+      } catch (error) {
+        console.error("Xóa lịch sử thất bại:", error);
+      }
+    } else {
+      const updatedHistory = [...searchHistory];
+      updatedHistory.splice(index, 1);
+      setSearchHistory(updatedHistory);
+      localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+    }
   };
 
   const options = [
@@ -388,17 +442,18 @@ const Header = () => {
                 <li
                   key={index}
                   className="flex justify-between items-center hover:bg-[#eaeaea] rounded px-2 py-[10px] cursor-pointer"
+                  onClick={() => {
+                    const value = token ? item.message : item;
+                    setSearchQuery(value);
+                    handleSearch(value);
+                  }}
                 >
-                  <span
-                    onClick={() => {
-                      setSearchQuery(item);
-                      handleSearch(item); // Truyền trực tiếp giá trị item vào hàm handleSearch
-                    }}
-                  >
-                    {item}
-                  </span>
+                  <span>{token ? item.message : item}</span>
                   <button
-                    onClick={() => removeHistoryItem(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeHistoryItem(index);
+                    }}
                     className="text-md text-red-600 hover:scale-105 ml-2"
                   >
                     <IoTrashOutline className="text-2xl text-red-500" />
