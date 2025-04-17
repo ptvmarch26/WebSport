@@ -3,12 +3,20 @@ import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi"; // import API
+import { useAuth } from "../../context/AuthContext"; // import context
+import { usePopup } from "../../context/PopupContext";
 
 
 const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const { token } = useAuth(); // lấy token từ context
+  const { showPopup } = usePopup(); // lấy hàm showPopup từ context
 
   const toggleFavorite = async (e) => {
+    if (!token) {
+      showPopup("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích", false);
+      return;
+    }
     e.stopPropagation(); 
     setIsFavorite(!isFavorite);
     await updateFavourite(item._id); 

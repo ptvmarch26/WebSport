@@ -27,8 +27,8 @@ const AccountInfoComponent = () => {
   const { selectedUser, fetchUser } = useUser();
 
   useEffect(() => {
-    fetchUser(); 
-  }, []); 
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     setSelectedKey(location.pathname);
@@ -41,11 +41,10 @@ const AccountInfoComponent = () => {
   };
 
   const handleSubmitLogout = async () => {
-    await handleLogout(); 
-    navigate("/sign-in", { replace: true });
+    await handleLogout();
+    // navigate("/sign-in", { replace: true });
+    window.location.href = "/sign-in";
   };
-
-  
 
   const toggleMenuVisibility = () => {
     setIsMenuVisible(!isMenuVisible);
@@ -83,7 +82,9 @@ const AccountInfoComponent = () => {
         <h2 className="text-lg font-semibold mt-3 text-gray-800">
           {selectedUser?.full_name || "Chưa cập nhật"}
         </h2>
-        <p className="text-gray-500 text-sm">{selectedUser?.user_name || "Chưa cập nhật"}</p>
+        <p className="text-gray-500 text-sm">
+          {selectedUser?.user_name || "Chưa cập nhật"}
+        </p>
       </div>
 
       <div className="lg:hidden absolute -top-[30px] right-0">

@@ -18,15 +18,18 @@ import { useProduct } from "../../context/ProductContext";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getFavourite } from "../../services/api/FavouriteApi";
+import { useUser } from "../../context/UserContext";
+import { usePopup } from "../../context/PopupContext";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const arrSlides = [slider1, slider1, slider1];
-
   const { products, fetchProducts } = useProduct();
   const [productFamous, setProductFamous] = useState([]);
   const [productSelled, setProductSelled] = useState([]);
+  const { fetchUser } = useUser();
   const [productNew, setProductNew] = useState([]);
+  const { showPopup } = usePopup();
 
   useEffect(() => {
     fetchProducts();
@@ -51,7 +54,10 @@ const HomePage = () => {
 
   // Gọi khi component mount hoặc khi token thay đổi
   useEffect(() => {
-    fetchFavourites();
+    if (token) {
+      fetchUser();
+      fetchFavourites();
+    }
   }, [token]);
 
   useEffect(() => {
