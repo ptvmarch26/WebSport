@@ -173,7 +173,7 @@ const ProductFeedBackComponent = ({ product }) => {
         </div>
       )}
       {feedbacks.length === 0 && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mb-5">
           <img
             src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/shoprating/7d900d4dc402db5304b2.png"
             alt="No Feedback"

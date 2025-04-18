@@ -52,10 +52,13 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
 
   const toggleFavorite = async (e) => {
     if (!token) {
-      showPopup("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích", false);
+      showPopup(
+        "Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích",
+        false
+      );
       return;
     }
-    e.stopPropagation(); 
+    e.stopPropagation();
     setIsFavorite(!isFavorite);
     await updateFavourite(item._id);
     onFavouriteChange?.();
@@ -71,7 +74,7 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
     <div className="relative group text-black overflow-hidden shadow-sm hover:shadow-xl transition-transform duration-300 transform cursor-pointer">
       <div
         onClick={onClick}
-        className="relative w-full h-[250px] overflow-hidden"
+        className="relative w-full h-[300px] sm:h-[350px] overflow-hidden"
       >
         <img
           src={item.product_img}
@@ -130,7 +133,11 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
         </div>
 
         {
-          <div className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <div
+            className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4
+         opacity-100 translate-y-0
+         md:opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0
+         transition-all duration-300">
             <button
               className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
               onClick={toggleFavorite}

@@ -5,6 +5,7 @@ import PanigationComponent from "../../components/PanigationComponent/Panigation
 import { useProduct } from "../../context/ProductContext";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 
 const SearchPage = () => {
   const location = useLocation();
@@ -131,11 +132,12 @@ const SearchPage = () => {
         {products
           .slice((currentPage - 1) * 12, currentPage * 12)
           .map((product) => (
-            <ProductComponent
-              key={product._id}
-              item={product}
-              onClick={() => navigate(`/product/${product._id}`)}
-            />
+            <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>
+              <ProductComponent
+                item={product}
+                onClick={() => navigate(`/product/${product._id}`)}
+              />
+            </AnimationScroll>
           ))}
       </div>
       <div className="flex justify-center mt-10">

@@ -4,6 +4,7 @@ import ProductInfoComponent from "../../components/ProductInfoComponent/ProductI
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useProduct } from "../../context/ProductContext";
+import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -29,11 +30,12 @@ const ProductDetailsPage = () => {
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {products.slice(0, 8).map((product) => (
-            <ProductComponent
-              key={product._id}
-              item={product}
-              onClick={() => navigate(`/product/${product._id}`)} 
-            />
+            <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>
+              <ProductComponent
+                item={product}
+                onClick={() => navigate(`/product/${product._id}`)} 
+              />
+            </AnimationScroll>
           ))}
         </div>
       </div>

@@ -9,6 +9,7 @@ import soccer from "../../assets/images/soccer.jpg";
 import basketball from "../../assets/images/basketball.jpg";
 import { Carousel } from "@material-tailwind/react";
 import ProductComponent from "../../components/ProductComponent/ProductComponent";
+import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import Slider from "react-slick";
 import NextComponent from "../../components/NextComponent/NextComponent";
@@ -236,13 +237,18 @@ const HomePage = () => {
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {productStatus.products.slice(0, 8).map((product) => (
-                    <ProductComponent
+                    <AnimationScroll
                       key={product._id}
-                      item={product}
-                      favourites={favourites}
-                      onFavouriteChange={fetchFavourites}
-                      onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
-                    />
+                      type="fadeUp"
+                      delay={0.1}
+                    >
+                      <ProductComponent
+                        item={product}
+                        favourites={favourites}
+                        onFavouriteChange={fetchFavourites}
+                        onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
+                      />
+                    </AnimationScroll>
                   ))}
                 </div>
               </div>
@@ -256,7 +262,9 @@ const HomePage = () => {
             </p>
             <Slider {...settings}>
               {typeSports.map((sport, index) => (
-                <CardComponent key={index} {...sport} />
+                <AnimationScroll key={index} type="fadeUp" delay={0.1}>
+                  <CardComponent {...sport} />
+                </AnimationScroll>
               ))}
             </Slider>
           </div>
