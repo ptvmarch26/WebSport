@@ -1,4 +1,4 @@
-import AxiosInstance from "./axiosInstance";
+import AxiosInstance from "../api/AxiosInstance";
 
 export const createProduct = async (productData) => {
   const formData = new FormData();

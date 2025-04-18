@@ -1,5 +1,5 @@
 import React, { use, useEffect, useRef, useState } from "react";
-import SidebarSortComponent from "../../components/SidebarSortComponent/SideBarSortComponent";
+import SidebarSortComponent from "../../components/SidebarSortComponent/SidebarSortComponent";
 import ProductComponent from "../../components/ProductComponent/ProductComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import PanigationComponent from "../../components/PanigationComponent/PanigationComponent";

@@ -1,4 +1,4 @@
-import AxiosInstance from "./axiosInstance";
+import AxiosInstance from "../api/AxiosInstance";
 import { auth, provider, signInWithPopup } from "../../config/firebase";
 
 export const signUp = async (user_name, email, password) => {
