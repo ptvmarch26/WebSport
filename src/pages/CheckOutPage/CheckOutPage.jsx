@@ -36,8 +36,6 @@ function CheckoutPage() {
   const { fetchProductDetails, productDetails } = useProduct();
   const { fetchCart, cart, setCart} = useCart();
 
-  
-
   const { fetchDiscountForOrder, discounts } = useDiscount();
 
   const [newAddress, setNewAddress] = useState({

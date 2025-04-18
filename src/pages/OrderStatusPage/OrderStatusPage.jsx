@@ -1,37 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@material-tailwind/react";
 import { useOrder } from "../../context/OrderContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
+import ConfirmDialogComponent from "../../components/ConfirmDialogComponent/ConfirmDialogComponent";
+import { usePopup } from "../../context/PopupContext";
 
 const OrderStatusPage = () => {
   const [activeTab, setActiveTab] = useState("all");
   const navigate = useNavigate();
   const location = useLocation();
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [openRequireRefundDialog, setOpenRequireRefundDialog] = useState(false);
+  const [openCancelRequireRefundDialog, setOpenCancelRequireRefundDialog] =
+    useState(false);
+  const [openBuyAgainDialog, setOpenBuyAgainDialog] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const { showPopup } = usePopup();
+  const { orders, setOrders, fetchOrdersByUser, handleUpdateOrderStatus } =
+    useOrder();
 
-  const { orders, fetchOrdersByUser } = useOrder();
   useEffect(() => {
     fetchOrdersByUser();
   }, []);
-  console.log("orders", orders);
 
   const tabs = [
     { id: "all", label: "Tất cả" },
     { id: "Chờ xác nhận", label: "Chờ xác nhận" },
     { id: "Đang giao", label: "Đang giao" },
-    { id: "Giao hàng thành công", label: "Giao hàng thành công" },
-    { id: "Hủy hàng", label: "Hủy hàng" },
+    { id: "Hoàn thành", label: "Hoàn thành" },
+    { id: "Yêu cầu hoàn", label: "Yêu cầu hoàn" },
     { id: "Hoàn hàng", label: "Hoàn hàng" },
+    { id: "Hủy hàng", label: "Hủy hàng" },
   ];
-  const sortedOrders = [...orders].sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
-
-  const filteredOrders =
-    activeTab === "all"
-      ? sortedOrders
-      : sortedOrders.filter((order) => order.order_status === activeTab);
+  const filteredOrders = useMemo(() => {
+    const sorted = [...(orders || [])].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    return activeTab === "all"
+      ? sorted
+      : sorted.filter((order) => order.order_status === activeTab);
+  }, [orders, activeTab]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -42,8 +52,76 @@ const OrderStatusPage = () => {
   }, [location]);
 
   const handleTabChange = (tabId, index) => {
-    setActiveTab(tabId);
     navigate(`/orders?tab=${index + 1}`);
+    setActiveTab(tabId);
+  };
+
+  const confirmCancelOrder = async () => {
+    if (selectedOrder) {
+      const result = await handleUpdateOrderStatus(selectedOrder, "Hủy hàng");
+      if (result.EC === 0) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === selectedOrder
+              ? { ...order, order_status: "Hủy hàng" }
+              : order
+          )
+        );
+        if (
+          result.result.order_payment_method === "Paypal" &&
+          result.result.is_paid
+        )
+          showPopup(result.EM);
+        else showPopup("Hủy đơn hàng thành công");
+      } else showPopup(result.EM, false);
+    }
+    setOpenCancelDialog(false);
+    setSelectedOrder(null);
+  };
+
+  const confirmRequireRefund = async () => {
+    if (selectedOrder) {
+      const result = await handleUpdateOrderStatus(
+        selectedOrder,
+        "Yêu cầu hoàn"
+      );
+      if (result.EC === 0) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === selectedOrder
+              ? { ...order, order_status: "Yêu cầu hoàn" }
+              : order
+          )
+        );
+        showPopup(result.EM);
+      } else showPopup(result.EM, false);
+    }
+    setOpenRequireRefundDialog(false);
+    setSelectedOrder(null);
+  };
+
+  const confirmCancelRequireRefund = async () => {
+    if (selectedOrder) {
+      const result = await handleUpdateOrderStatus(selectedOrder, "Hoàn thành");
+      if (result.EC === 0) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === selectedOrder
+              ? { ...order, order_status: "Hoàn thành" }
+              : order
+          )
+        );
+        showPopup(result.EM);
+      } else showPopup(result.EM, false);
+    }
+    setOpenCancelRequireRefundDialog(false);
+    setSelectedOrder(null);
+  };
+
+  const confirmBuyAgain = async () => {
+    if (selectedOrder) {
+      navigate("/cart", { state: { fromBuyAgain: selectedOrder.products } });
+    }
   };
 
   // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
@@ -116,9 +194,19 @@ const OrderStatusPage = () => {
               key={order._id}
               className="p-4 my-5 border border-gray-300 rounded-md"
             >
-              <p className="text-end uppercase text-sm font-semibold">
-                {order.order_status}
-              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm font-semibold text-end sm:text-start gap-1 sm:gap-4">
+                <p className="uppercase">{order.order_status}</p>
+                <p>
+                  <span
+                    className={
+                      order.is_paid ? "text-green-600" : "text-red-600"
+                    }
+                  >
+                    {order.is_paid ? "Đã thanh toán" : "Chưa thanh toán"}
+                  </span>{" "}
+                  ({order.order_payment_method})
+                </p>
+              </div>
               {order.products.map((product, index) => {
                 const { variantPrice, productImage } =
                   findProductDetails(product);
@@ -171,8 +259,34 @@ const OrderStatusPage = () => {
               </div>
 
               <div className="mt-4 text-right space-x-2">
-                {order.order_status === "Giao hàng thành công" && (
+                {order.order_status === "Hoàn thành" && (
                   <>
+                    <Button
+                      variant="filled"
+                      color="white"
+                      className={
+                        "!bg-gradient-to-r from-[#FF416C] to-[#FF4B2B] text-white hover:brightness-110"
+                      }
+                      onClick={() => {
+                        const receivedDate = new Date(order.received_date);
+                        const now = new Date();
+                        const diffInDays = Math.floor(
+                          (now - receivedDate) / (1000 * 60 * 60 * 24)
+                        );
+
+                        if (diffInDays > 3) {
+                          showPopup(
+                            "Không thể hoàn đơn hàng đã quá 3 ngày kể từ ngày nhận hàng",
+                            false
+                          );
+                        } else {
+                          setSelectedOrder(order._id);
+                          setOpenRequireRefundDialog(true);
+                        }
+                      }}
+                    >
+                      Yêu cầu hoàn
+                    </Button>
                     {!order.is_feedback && (
                       <Button
                         variant="filled"
@@ -187,10 +301,27 @@ const OrderStatusPage = () => {
                       variant="filled"
                       color="white"
                       className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-black border rounded font-medium"
+                      onClick={() => {
+                        setSelectedOrder(order);
+                        setOpenBuyAgainDialog(true);
+                      }}
                     >
                       Mua lại
                     </Button>
                   </>
+                )}
+                {order.order_status === "Yêu cầu hoàn" && (
+                  <Button
+                    variant="filled"
+                    color="black"
+                    className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] rounded font-medium border transition duration-200 bg-yellow-100 text-yellow-700 border-yellow-400 hover:brightness-110"
+                    onClick={() => {
+                      setSelectedOrder(order._id);
+                      setOpenCancelRequireRefundDialog(true);
+                    }}
+                  >
+                    Hủy yêu cầu
+                  </Button>
                 )}
                 {(order.order_status === "Hủy hàng" ||
                   order.order_status === "Hoàn hàng") && (
@@ -198,6 +329,10 @@ const OrderStatusPage = () => {
                     variant="filled"
                     color="black"
                     className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      setOpenBuyAgainDialog(true);
+                    }}
                   >
                     Mua lại
                   </Button>
@@ -207,6 +342,10 @@ const OrderStatusPage = () => {
                     variant="filled"
                     color="black"
                     className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
+                    onClick={() => {
+                      setSelectedOrder(order._id);
+                      setOpenCancelDialog(true);
+                    }}
                   >
                     Hủy đơn
                   </Button>
@@ -216,6 +355,46 @@ const OrderStatusPage = () => {
           ))}
         </div>
       </div>
+      <ConfirmDialogComponent
+        open={openCancelDialog}
+        onClose={() => {
+          setOpenCancelDialog(false);
+          setSelectedOrder(null);
+        }}
+        onConfirm={confirmCancelOrder}
+        title="Xác nhận hủy đơn"
+        message="Bạn có chắc chắn muốn hủy đơn hàng này không?"
+      />
+      <ConfirmDialogComponent
+        open={openRequireRefundDialog}
+        onClose={() => {
+          setOpenRequireRefundDialog(false);
+          setSelectedOrder(null);
+        }}
+        onConfirm={confirmRequireRefund}
+        title={"Xác nhận yêu cầu hoàn hàng"}
+        message={"Bạn có chắc chắn muốn yêu cầu hoàn đơn hàng này không?"}
+      />
+      <ConfirmDialogComponent
+        open={openCancelRequireRefundDialog}
+        onClose={() => {
+          setOpenCancelRequireRefundDialog(false);
+          setSelectedOrder(null);
+        }}
+        onConfirm={confirmCancelRequireRefund}
+        title={"Xác nhận hủy yêu cầu hoàn hàng"}
+        message={"Bạn có chắc chắn muốn hủy yêu cầu hoàn đơn hàng này không?"}
+      />
+      <ConfirmDialogComponent
+        open={openBuyAgainDialog}
+        onClose={() => {
+          setOpenBuyAgainDialog(false);
+          setSelectedOrder(null);
+        }}
+        onConfirm={confirmBuyAgain}
+        title={"Xác nhận thực hiện mua lại đơn hàng"}
+        message={"Bạn có chắc chắn muốn mua lại đơn hàng này không?"}
+      />
     </div>
   );
 };
