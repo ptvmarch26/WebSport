@@ -103,7 +103,7 @@ const DefaultLayout = ({ children }) => {
     window.dispatchEvent(new CustomEvent("compareListUpdated"));
   };
 
-  console.log("compareProducts", compareProducts);
+  // console.log("compareProducts", compareProducts);
 
   return (
     <div>
@@ -116,7 +116,7 @@ const DefaultLayout = ({ children }) => {
       <div className="mt-[100px]">{children}</div>
 
       {token && <BottomMenuComponent />}
-      {!authPages[location.pathname] && token ? <AIChatButton /> : null}
+      {!authPages[location.pathname] ? <AIChatButton /> : null}
 
       {token && compareCount > 0 && (
         <div className="fixed bottom-60 lg:bottom-[140px] right-10 z-50">

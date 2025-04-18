@@ -7,10 +7,6 @@ const Profile = () => {
   const { selectedUser, fetchUser, handleUpdateUser } = useUser();
   const [avatarFile, setAvatarFile] = useState(null);
 
-  // useEffect(() => {
-  //   fetchUser();
-  // }, []);
-
   const [formData, setFormData] = useState({
     user_name: selectedUser?.user_name || "Chưa cập nhật",
     full_name: selectedUser?.full_name,

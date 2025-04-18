@@ -3,6 +3,7 @@ import { FaRobot, FaTimes, FaArrowRight } from "react-icons/fa";
 // import { ChatwithBot } from "../../services/api/UserApi";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { useUser } from "../../context/UserContext";
 
 const AIChatButton = () => {
   const [showChat, setShowChat] = useState(false);
@@ -41,26 +42,61 @@ const CompactChatBot = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const endOfMessagesRef = useRef(null);
 
-  useEffect(() => {
-    const savedMessages = localStorage.getItem("chatMessages");
-    if (savedMessages) {
-      setMessages(JSON.parse(savedMessages));
-    }
-  }, []);
+  const { token } = useAuth();
+  const { handleGetChatHistory } = useUser();
 
   useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
-  }, [messages]);
+    const fetchHistory = async () => {
+      if (token) {
+        try {
+          const data = await handleGetChatHistory();
+          if (data?.EC === 0 && Array.isArray(data.result)) {
+            const formattedMessages = data.result.slice(1).map((msg) => ({
+              text: msg.content,
+              sender: msg.role === "assistant" ? "bot" : "user",
+              timestamp: new Date(msg.timestamp).toLocaleString(),
+            }));
+            setMessages([
+              {
+                text: "Chào bạn, tôi có thể giúp gì cho bạn hôm nay?",
+                sender: "bot",
+                timestamp: new Date().toLocaleString(),
+              },
+              ...formattedMessages,
+            ]);
+          }
+        } catch (error) {
+          console.error("Lỗi khi tải lịch sử chat:", error);
+        }
+      } else {
+        const savedMessages = localStorage.getItem("chatMessages");
+        if (savedMessages) {
+          setMessages(JSON.parse(savedMessages));
+        }
+      }
+    };
 
+    fetchHistory();
+  }, [token, handleGetChatHistory]);
+
+  // Auto scroll
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Lưu localStorage nếu chưa đăng nhập
+  useEffect(() => {
+    if (!token) {
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
+    }
+  }, [messages, token]);
+
   const handleResetChat = () => {
     setMessages([]);
-    localStorage.removeItem("chatMessages");
+    if (!token) {
+      localStorage.removeItem("chatMessages");
+    }
   };
-  const { token } = useAuth();
 
   const handleSendMessage = async () => {
     if (input.trim() === "") return;
@@ -68,7 +104,6 @@ const CompactChatBot = ({ onClose }) => {
     const userMessage = {
       text: input,
       sender: "user",
-      timestamp: new Date().toLocaleString(),
     };
 
     const newMessages = [...messages, userMessage];
@@ -86,7 +121,7 @@ const CompactChatBot = ({ onClose }) => {
                 role: msg.sender === "bot" ? "assistant" : "user",
                 content: msg.text,
               }))
-            : undefined, // không gửi nếu có token, backend dùng DB
+            : undefined,
         },
         {
           headers: {
@@ -99,7 +134,6 @@ const CompactChatBot = ({ onClose }) => {
       const botMessage = {
         text: res.data.result || "Xin lỗi, có lỗi xảy ra!",
         sender: "bot",
-        timestamp: new Date().toLocaleString(),
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -110,7 +144,6 @@ const CompactChatBot = ({ onClose }) => {
         {
           text: "Bot gặp lỗi kết nối!",
           sender: "bot",
-          timestamp: new Date().toLocaleString(),
         },
       ]);
     } finally {
@@ -154,7 +187,6 @@ const CompactChatBot = ({ onClose }) => {
               }`}
             >
               <div className="text-sm">{message.text}</div>
-              <div className="text-xs opacity-70 mt-1">{message.timestamp}</div>
             </div>
           </div>
         ))}

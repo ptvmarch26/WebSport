@@ -29,10 +29,6 @@ const Header = () => {
     setSearchOpen(!searchOpen);
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };

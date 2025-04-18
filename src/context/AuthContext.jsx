@@ -7,7 +7,6 @@ import {
   resetPassword,
   loginWithGoogle,
 } from "../services/api/AuthApi";
-import { useUser } from "./UserContext";
 
 const AuthContext = createContext();
 
@@ -15,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(
     localStorage.getItem("accessToken") || null
   );
-
+  
   useEffect(() => {
     if (token) {
       localStorage.setItem("accessToken", token);
