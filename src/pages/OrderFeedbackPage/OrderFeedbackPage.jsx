@@ -6,6 +6,7 @@ import { FaRegStar, FaStar, FaTimesCircle } from "react-icons/fa";
 import { useOrder } from "../../context/OrderContext";
 import { usePopup } from "../../context/PopupContext";
 import { createFeedback } from "../../services/api/FeedbackApi";
+import ConfirmDialogComponent from "../../components/ConfirmDialogComponent/ConfirmDialogComponent";
 
 const ratings = [1, 2, 3, 4, 5];
 
@@ -22,6 +23,7 @@ const OrderFeedbackPage = () => {
 
   const [feedbackInitialized, setFeedbackInitialized] = useState(false);
   const [feedback, setFeedback] = useState([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   useEffect(() => {
     if (
@@ -175,10 +177,18 @@ const OrderFeedbackPage = () => {
     }
   };
 
-  const handleCancel = () => {
-    navigate("/orders");
+  const handleCancelClick = () => {
+    setOpenConfirmDialog(true);
   };
 
+  const handleCloseDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+
+  const handleConfirmCancel = () => {
+    setOpenConfirmDialog(false);
+    navigate("/orders");
+  };
   if (!orderDetails || !orderDetails.products) {
     return (
       <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
@@ -350,7 +360,7 @@ const OrderFeedbackPage = () => {
             variant="filled"
             color="white"
             className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-black border rounded font-medium"
-            onClick={handleCancel}
+            onClick={handleCancelClick}
             disabled={isSubmitting}
           >
             Hủy
@@ -366,6 +376,13 @@ const OrderFeedbackPage = () => {
           </Button>
         </div>
       </div>
+      <ConfirmDialogComponent
+        open={openConfirmDialog}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirmCancel}
+        title="Xác nhận hủy đánh giá"
+        message="Bạn có chắc chắn muốn hủy đánh giá? Tất cả thông tin đánh giá sẽ không được lưu"
+      />
     </div>
   );
 };

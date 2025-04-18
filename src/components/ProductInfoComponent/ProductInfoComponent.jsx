@@ -178,7 +178,7 @@ const ProductInfoComponent = ({ product }) => {
               <img
                 src={img}
                 alt={`Product ${index}`}
-                className="w-full h-[500px] sm:h-[800px] lg:h-96 object-cover border"
+                className="w-full h-[500px] sm:h-[800px] lg:h-[600px] object-cover border"
               />
             </div>
           ))}

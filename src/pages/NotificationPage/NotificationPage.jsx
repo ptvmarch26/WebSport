@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import { useState } from "react";
 import order_img from "../../assets/images/order_img.jpg";
 import product_img from "../../assets/images/product_img.jpg";
 import voucher_img from "../../assets/images/voucher_img.jpg";
@@ -7,6 +7,7 @@ import user_img from "../../assets/images/user_img.jpg";
 import not_found_img from "../../assets/images/not_found_img.jpg";
 import { Button } from "@material-tailwind/react";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
+import { IoTrashOutline } from "react-icons/io5";
 
 const fakeNotifications = [
   {
@@ -69,6 +70,13 @@ const NotificationPage = () => {
     );
   };
 
+  const handleDeleteNotification = (id, e) => {
+    e.stopPropagation();
+    setNotifications(
+      notifications.filter((notification) => notification.id !== id)
+    );
+  };
+
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="lg:flex justify-between gap-6">
@@ -99,7 +107,7 @@ const NotificationPage = () => {
                 <div key={notification.id} className="mb-2">
                   <div
                     className={clsx(
-                      "p-4 mb-2 shadow-sm rounded-md cursor-pointer border border-gray-300 transition-all duration-300",
+                      "p-4 mb-2 shadow-sm rounded-md cursor-pointer border border-gray-300 transition-all duration-300 relative",
                       {
                         "bg-[#e8eaed] hover:bg-gray-200": !notification.isRead,
                         "bg-white": notification.isRead,
@@ -107,6 +115,15 @@ const NotificationPage = () => {
                     )}
                     onClick={() => handleNotificationClick(notification)}
                   >
+                    <div
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700 cursor-pointer p-2"
+                      onClick={(e) =>
+                        handleDeleteNotification(notification.id, e)
+                      }
+                    >
+                      <IoTrashOutline size={20} />
+                    </div>
+
                     <div className="flex items-center gap-4">
                       <img
                         src={getNotificationImage(notification.notify_type)}

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const presets = {
   fade: {
@@ -25,7 +25,7 @@ const presets = {
 
 const AnimationScroll = ({
   children,
-  type = 'fadeUp', // chọn hiệu ứng trong preset
+  type = "fadeUp",
   duration = 0.6,
   delay = 0,
 }) => {
@@ -35,8 +35,9 @@ const AnimationScroll = ({
     <motion.div
       initial={initial}
       whileInView={whileInView}
+      exit={initial}
       transition={{ duration, delay }}
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: false, amount: 0.2 }}
     >
       {children}
     </motion.div>
