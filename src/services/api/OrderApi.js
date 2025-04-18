@@ -19,7 +19,7 @@ export const getAllOrders = async (orderStatus = "all") => {
     return response.data;
   } catch (error) {
     // nếu lỗi 401 thì redrect về trang login
-    if (error.response.status === 403) {
+    if (error.response.status === 403 || error.response.status === 401) {
       window.location.href = "/sign-in";
     } else return error.response?.data || null;
   }
@@ -57,7 +57,7 @@ export const updateOrderStatus = async (orderId, status) => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
-    return null;
+    return error.response.data;
   }
 };
 
@@ -66,10 +66,9 @@ export const handleCancelPayment = async (orderCode) => {
     const response = await AxiosInstance.patch(
       `/order/handle-cancel-payment/${orderCode}`
     );
-    console.log("response", response);
     return response.data;
   } catch (error) {
     console.error("Lỗi khi hủy thanh toán:", error);
-    return null;
+    return error.response.data;
   }
 };

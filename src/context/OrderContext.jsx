@@ -40,13 +40,14 @@ export const OrderProvider = ({ children }) => {
 
   const handleUpdateOrderStatus = async (orderId, status) => {
     const res = await updateOrderStatus(orderId, status);
-    if (res) fetchOrders();
+    return res;
   };
 
   return (
     <OrderContext.Provider
       value={{
         orders,
+        setOrders,
         orderDetails,
         fetchOrders,
         fetchOrdersByUser,

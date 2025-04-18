@@ -11,8 +11,6 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
     }
   };
 
-  console.log("item", item);
-
   const increaseQuantity = () => {
     onIncrease(item._id, item.quantity + 1);
   };
@@ -61,14 +59,14 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
             ) : (
               <p className="text-md font-bold text-[#ba2b20] mr-4">
                 {(
-                  selectedVariant.variant_price /
+                  selectedVariant?.variant_price /
                   (1 - item.product_id?.product_percent_discount / 100)
                 ).toLocaleString()}đ
               </p>
             )}
           </div>
           <p className="text-md">
-            {selectedColor.color_name} - Size {selectedVariant.variant_size}{" "}
+            {selectedColor?.color_name} - Size {selectedVariant?.variant_size}{" "}
           </p>
         </div>
         <div className="flex flex-col gap-2">
