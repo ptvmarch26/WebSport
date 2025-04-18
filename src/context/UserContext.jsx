@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress, deleteAddress, getDiscount, deleteSearch, getChatHistory, deleteChatHistory} from "../services/api/UserApi";
 import { message } from "antd";
-// import { useAuth } from "./AuthContext";
+import { useAuth } from "./AuthContext";
 
 const UserContext = createContext();
 
@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [discounts, setDiscounts] = useState([]);
-  // const {token } = useAuth();
+  const {token } = useAuth();
   const fetchUsers = async () => {
     try {
       const data = await getAllUsers();
@@ -40,20 +40,11 @@ export const UserProvider = ({ children }) => {
     return data;
   };
 
-  // useEffect(() => {
-  //   fetchUsers();
-  //   const fetchUserData = async () => {
-  //     const data = await getUser();
-  //     console.log("data", data);
-  //     if (data?.EC === 0) {
-  //       setSelectedUser(data?.result);
-  //     } else {
-  //       message.error("Không tìm thấy thông tin người dùng!");
-  //     }
-  //     return data;
-  //   };
-  //   fetchUserData();
-  // }, []);
+  useEffect(() => {
+    if (token){
+      fetchUser();
+    }
+  }, [token]);
 
   const handleUpdateUser = async (userData) => {
     const updatedUser = await updateUser(userData);
