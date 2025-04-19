@@ -21,7 +21,7 @@ const shippingMethods = [
 ];
 
 const paymentMethods = [
-  { id: "Cod", label: "Thanh toán khi nhận hàng (COD)" },
+  { id: "cod", label: "Thanh toán khi nhận hàng (COD)" },
   { id: "Paypal", label: "Phương Thức Chuyển Khoản" },
   { id: "Momo", label: "Phương Thức Momo" },
 ];
@@ -35,8 +35,6 @@ function CheckoutPage() {
   const { id: productId } = useParams();
   const { fetchProductDetails, productDetails } = useProduct();
   const { fetchCart, cart, setCart} = useCart();
-
-  
 
   const { fetchDiscountForOrder, discounts } = useDiscount();
 

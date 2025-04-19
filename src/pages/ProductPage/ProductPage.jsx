@@ -9,6 +9,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getFavourite } from "../../services/api/FavouriteApi"; // import API
+import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 const ProductPage = () => {
   const [selectedFilters, setSelectedFilters] = useState({});
   
@@ -135,13 +136,15 @@ const ProductPage = () => {
         {products
           .slice((currentPage - 1) * 12, currentPage * 12)
           .map((product) => (
-            <ProductComponent
-              key={product._id}
-              item={product}
-              favourites={favourites}
-              onFavouriteChange={fetchFavourites}
-              onClick={() => navigate(`/product/${product._id}`)} 
-            />
+            <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>
+              <ProductComponent
+                key={product._id}
+                item={product}
+                favourites={favourites}
+                onFavouriteChange={fetchFavourites}
+                onClick={() => navigate(`/product/${product._id}`)} 
+              />
+            </AnimationScroll>
           ))}
       </div>
 
