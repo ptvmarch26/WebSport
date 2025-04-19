@@ -32,7 +32,6 @@ const CartPage = () => {
     fetchCart();
   }, []);
 
-  console.log("cart", cart);
   const [selectedItemToRemove, setSelectedItemToRemove] = useState(null);
   const [openClearAllDialog, setOpenClearAllDialog] = useState(false);
 
@@ -111,20 +110,15 @@ const CartPage = () => {
               Hiện không có sản phẩm nào trong giỏ
             </p>
           ) : (
-            cartItems?.map((item) => (
+            cartItems?.map((item, index) => (
               <CartItemComponent
-                key={item.product_id?._id}
+                key={index}
                 item={item}
                 onRemove={() => setSelectedItemToRemove(item)}
                 onDecrease={() => {
                   const newQuantity = item.quantity - 1;
                   if (newQuantity > 0) {
                     handleDecreaseQuantity(
-                      item?.product_id?._id,
-                      item?.color_name,
-                      item?.variant_name
-                    );
-                    console.log(
                       item?.product_id?._id,
                       item?.color_name,
                       item?.variant_name

@@ -10,10 +10,8 @@ import {
 // Tạo Context
 const CartContext = createContext();
 
-
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-
 
   const fetchCart = async () => {
     const data = await getCart();
@@ -21,7 +19,12 @@ export const CartProvider = ({ children }) => {
     return data;
   };
 
-  const handleAddToCart = async (productId, color_name, variant_name, quantity) => {
+  const handleAddToCart = async (
+    productId,
+    color_name,
+    variant_name,
+    quantity
+  ) => {
     return await addToCart(productId, color_name, variant_name, quantity);
   };
 
@@ -33,11 +36,13 @@ export const CartProvider = ({ children }) => {
     return await clearCart();
   };
 
-  const handleDecreaseQuantity = async (productId, color_name, variant_name) => {
+  const handleDecreaseQuantity = async (
+    productId,
+    color_name,
+    variant_name
+  ) => {
     return await decreaseQuantity(productId, color_name, variant_name);
   };
-
-  
 
   return (
     <CartContext.Provider

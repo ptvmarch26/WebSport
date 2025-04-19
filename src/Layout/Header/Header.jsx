@@ -15,6 +15,9 @@ import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
 import { IoTrashOutline } from "react-icons/io5";
+import { useCart } from "../../context/CartContext";
+import { useNotifications } from "../../context/NotificationContext";
+import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
 
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -26,8 +29,12 @@ const Header = () => {
   const [displayAllHistory, setDisplayAllHistory] = useState(false);
   const [fullSearchHistory, setFullSearchHistory] = useState([]);
   const { selectedUser, fetchUser, handleDeleteSearch } = useUser();
+  const { cart, fetchCart } = useCart();
+  const { unreadCount } = useNotifications();
   const { token } = useAuth();
   const navigate = useNavigate();
+  const showCartDot = cart?.products?.length;
+  const showNotificationDot = unreadCount;
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -50,6 +57,7 @@ const Header = () => {
         setFullSearchHistory(reversedHistory);
         setSearchHistory(reversedHistory.slice(0, 5));
       }
+      fetchCart();
     } else if (savedHistory) {
       try {
         const parsedHistory = JSON.parse(savedHistory);
@@ -289,17 +297,27 @@ const Header = () => {
                   </div>
                 </Link>
                 <Link to={"/account"} className="order-1">
-                  <div>
+                  <div className=" relative">
                     <img
                       src={selectedUser?.avt_img || avatar_false}
                       alt="User avatar"
                       className="w-7 h-7 rounded-full ml-1"
                     />
+                    {showNotificationDot > 0 && (
+                      <span className="absolute -bottom-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                        {showNotificationDot}
+                      </span>
+                    )}
                   </div>
                 </Link>
                 <Link to={"/cart"}>
-                  <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
+                  <div className="relative p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                     <FaShoppingCart />
+                    {showCartDot && (
+                      <span className="absolute -bottom-0 -right-0 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                        {showCartDot}
+                      </span>
+                    )}
                   </div>
                 </Link>
               </div>
@@ -512,6 +530,7 @@ const Header = () => {
           </div>
         </div>
       )}
+      <NotificationBanner unreadCount={unreadCount} />
     </div>
   );
 };

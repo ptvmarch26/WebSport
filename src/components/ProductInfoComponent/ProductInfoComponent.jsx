@@ -83,7 +83,7 @@ const ProductInfoComponent = ({ product }) => {
     await updateFavourite(product._id);
   };
 
-  const { handleAddToCart } = useCart();
+  const { handleAddToCart, setCart, cart } = useCart();
   const handlePushtoCart = async () => {
     const res = await handleAddToCart(
       product._id,
@@ -91,11 +91,36 @@ const ProductInfoComponent = ({ product }) => {
       selectedSize,
       quantity
     );
-    showPopup("Thêm sản phẩm vào giỏ thành công");
-    console.log(res);
+    if (res.EC === 0) {
+      const existingIndex = cart.products.findIndex(
+        (item) =>
+          item.product_id._id === product._id &&
+          item.color_name === selectedColor &&
+          item.variant_name === selectedSize
+      );
+
+      const updatedCart = { ...cart };
+      const updatedProducts = [...cart.products];
+
+      if (existingIndex !== -1) {
+        updatedProducts[existingIndex].quantity += quantity;
+      } else {
+        const newProduct = {
+          product_id: product,
+          color_name: selectedColor,
+          variant_name: selectedSize,
+          quantity,
+        };
+        updatedProducts.push(newProduct);
+      }
+      updatedCart.products = updatedProducts;
+      setCart(updatedCart);
+      showPopup(res.EM);
+    } else {
+      showPopup(res.EM || "Đã có lỗi xảy ra.");
+    }
   };
 
-  console.log(product);
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
@@ -123,7 +148,9 @@ const ProductInfoComponent = ({ product }) => {
   const decreaseQuantity = () => quantity > 1 && setQuantity(quantity - 1);
 
   const handleNavigateCheckout = () => {
-    navigate(`/checkout/${product._id}?quantity=${quantity}&color=${selectedColor}&size=${selectedSize}`);
+    navigate(
+      `/checkout/${product._id}?quantity=${quantity}&color=${selectedColor}&size=${selectedSize}`
+    );
   };
 
   // Hàm lấy ảnh chính và biến thể đưa vào để hiển thị, nếu nhỏ hơn 5 thì gấp đôi lên tại setting đang để min là 5 á

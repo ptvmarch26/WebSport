@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
 
   const handleSignUp = async (user_name, email, password) => {
     const data = await signUp(user_name, email, password);
-    console.log(data);
     return data;
   };
 

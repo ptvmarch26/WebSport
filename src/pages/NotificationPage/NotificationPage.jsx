@@ -1,91 +1,65 @@
 import clsx from "clsx";
-import { useState } from "react";
-import order_img from "../../assets/images/order_img.jpg";
-import product_img from "../../assets/images/product_img.jpg";
-import voucher_img from "../../assets/images/voucher_img.jpg";
-import user_img from "../../assets/images/user_img.jpg";
-import not_found_img from "../../assets/images/not_found_img.jpg";
+// import { useState } from "react";
 import { Button } from "@material-tailwind/react";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
 import { IoTrashOutline } from "react-icons/io5";
-
-const fakeNotifications = [
-  {
-    id: 1,
-    notify_type: "Tình trạng đơn hàng",
-    notify_title: "Đơn hàng đã được xác nhận",
-    notify_desc: "Đơn hàng #12345 của bạn đã được xác nhận.",
-    isRead: false,
-  },
-  {
-    id: 2,
-    notify_type: "Khuyến mãi",
-    notify_title: "Giảm giá đặc biệt!",
-    notify_desc: "Nhận ngay ưu đãi giảm 20% cho đơn hàng tiếp theo.",
-    isRead: true,
-  },
-  {
-    id: 3,
-    notify_type: "Sản phẩm",
-    notify_title: "Đơn hàng đang giao",
-    notify_desc: "Đơn hàng #12345 đang trên đường giao đến bạn.",
-    isRead: false,
-  },
-  {
-    id: 44,
-    notify_type: "Tài khoảnn",
-    notify_title: "Đơn hàng đang giao",
-    notify_desc: "Đơn hàng #12345 đang trên đường giao đến bạn.",
-    isRead: false,
-  },
-];
-
-const getNotificationImage = (type) => {
-  switch (type) {
-    case "Tình trạng đơn hàng":
-      return order_img;
-    case "Khuyến mãi":
-      return voucher_img;
-    case "Sản phẩm":
-      return product_img;
-    case "Tài khoản":
-      return user_img;
-    default:
-      return not_found_img;
-  }
-};
+import { useNotifications } from "../../context/NotificationContext";
+import { readNotification, deleteNotification } from "../../services/api/NotificationApi";
+import { usePopup } from "../../context/PopupContext";
 
 const NotificationPage = () => {
-  const [notifications, setNotifications] = useState(fakeNotifications);
+  const { notifications, setNotifications } = useNotifications();
+  const { showPopup } = usePopup();
+  const markAllAsRead = async () => {
+    const unreadNotifications = notifications.filter((n) => !n.isRead);
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
-  };
+    const updatedNotifications = [...notifications]; // tạo bản sao
 
-  const handleNotificationClick = (notification) => {
-    setNotifications(
-      notifications.map((n) =>
-        n.id === notification.id ? { ...n, isRead: true } : n
-      )
+    await Promise.all(
+      unreadNotifications.map(async (n) => {
+        const res = await readNotification(n._id);
+        if (res.EC === 0) {
+          const index = updatedNotifications.findIndex(
+            (item) => item._id === n._id
+          );
+          if (index !== -1) {
+            updatedNotifications[index].isRead = true;
+          }
+        }
+      })
     );
+
+    setNotifications(updatedNotifications);
   };
 
-  const handleDeleteNotification = (id, e) => {
+  const handleNotificationClick = async (notificationId) => {
+    const res = await readNotification(notificationId);
+    if (res.EC === 0) {
+      setNotifications(
+        notifications.map((n) =>
+          n._id === notificationId ? { ...n, isRead: true } : n
+        )
+      );
+    } else showPopup(res.EM, false);
+  };
+
+  const handleDeleteNotification = async (id, e) => {
     e.stopPropagation();
-    setNotifications(
-      notifications.filter((notification) => notification.id !== id)
-    );
+    const res = await deleteNotification(id);
+    if (res.EC === 0)
+    {
+      setNotifications(
+        notifications.filter((notification) => notification._id !== id)
+      );
+      showPopup(res.EM);
+    } else showPopup(res.EM, false);
   };
 
   return (
     <div className="xl:max-w-[1200px] container mx-auto py-10 px-2">
       <div className="lg:flex justify-between gap-6">
         <div className="lg:block pb-10 lg:pb-0">
-          <AccountInfoComponent
-            full_name="Dương Anh Vũ"
-            user_name="rain494"
-            // src_img=""
-          />
+          <AccountInfoComponent />
         </div>
         <div className="flex-1">
           <div className="flex justify-end mb-4">
@@ -104,7 +78,7 @@ const NotificationPage = () => {
               </p>
             ) : (
               notifications.map((notification) => (
-                <div key={notification.id} className="mb-2">
+                <div key={notification._id} className="mb-2">
                   <div
                     className={clsx(
                       "p-4 mb-2 shadow-sm rounded-md cursor-pointer border border-gray-300 transition-all duration-300 relative",
@@ -113,12 +87,12 @@ const NotificationPage = () => {
                         "bg-white": notification.isRead,
                       }
                     )}
-                    onClick={() => handleNotificationClick(notification)}
+                    onClick={() => handleNotificationClick(notification._id)}
                   >
                     <div
                       className="absolute top-2 right-2 text-red-500 hover:text-red-700 cursor-pointer p-2"
                       onClick={(e) =>
-                        handleDeleteNotification(notification.id, e)
+                        handleDeleteNotification(notification._id, e)
                       }
                     >
                       <IoTrashOutline size={20} />
@@ -126,7 +100,7 @@ const NotificationPage = () => {
 
                     <div className="flex items-center gap-4">
                       <img
-                        src={getNotificationImage(notification.notify_type)}
+                        src={notification.img}
                         alt={notification.notify_type}
                         className="w-20 h-20 rounded-md object-cover border"
                       />

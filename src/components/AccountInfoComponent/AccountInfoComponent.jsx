@@ -16,6 +16,7 @@ import avt_false from "../../assets/images/avatar-false.jpg";
 import { Button } from "@material-tailwind/react";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
+import { useNotifications } from "../../context/NotificationContext";
 
 const AccountInfoComponent = () => {
   const [selectedKey, setSelectedKey] = useState("/account/profile");
@@ -66,7 +67,12 @@ const AccountInfoComponent = () => {
     },
     { icon: <FaLock />, text: "Mật khẩu", path: "/account/edit-password" },
     { icon: <FaShoppingBag />, text: "Đơn hàng", path: "/orders" },
-    { icon: <FaBell />, text: "Thông báo", path: "/notifications" },
+    {
+      icon: <FaBell />,
+      text: "Thông báo",
+      path: "/notifications",
+      showNotificationDot: true,
+    },
     { icon: <FaTicketAlt />, text: "Kho voucher", path: "/vouchers" },
   ];
 
@@ -111,6 +117,7 @@ const AccountInfoComponent = () => {
               path={item.path}
               selectedKey={selectedKey}
               onClick={handleNavigate}
+              showNotificationDot={item.showNotificationDot}
             />
           ))}
 
@@ -123,6 +130,7 @@ const AccountInfoComponent = () => {
               path={item.path}
               selectedKey={selectedKey}
               onClick={() => handleNavigate(item.path)}
+              showNotificationDot={item.showNotificationDot}
             />
           ))}
           <li className="mt-5">
@@ -149,6 +157,7 @@ const AccountInfoComponent = () => {
               path={item.path}
               selectedKey={selectedKey}
               onClick={handleNavigate}
+              showNotificationDot={item.showNotificationDot}
             />
           ))}
 
@@ -161,6 +170,7 @@ const AccountInfoComponent = () => {
               path={item.path}
               selectedKey={selectedKey}
               onClick={handleNavigate}
+              showNotificationDot={item.showNotificationDot}
             />
           ))}
           <li className="mt-5">
@@ -176,20 +186,35 @@ const AccountInfoComponent = () => {
     </div>
   );
 };
-
-const MenuItem = ({ icon, text, path, selectedKey, onClick }) => {
+const MenuItem = ({
+  icon,
+  text,
+  path,
+  selectedKey,
+  onClick,
+  showNotificationDot,
+}) => {
   const isSelected = selectedKey === path;
+  const { unreadCount } = useNotifications();
+  const Dot = unreadCount;
 
   return (
     <li
-      className={`flex items-center p-4 cursor-pointer transition duration-200 ${
+      className={`flex items-center p-4 cursor-pointer transition duration-200 relative ${
         isSelected
           ? "bg-white text-black border-l-2 border-black"
           : "hover:bg-gray-200 text-black"
       }`}
       onClick={() => onClick(path)}
     >
-      {icon} <span className="ml-3">{text}</span>
+      {icon}
+      <span className="ml-3">{text}</span>
+
+      {showNotificationDot && Dot > 0 && (
+        <span className="absolute right-4 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+          {Dot}
+        </span>
+      )}
     </li>
   );
 };
