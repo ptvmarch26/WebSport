@@ -8,8 +8,7 @@ export const getDetailDiscount = async (discountId) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching discount details:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -19,8 +18,7 @@ export const getAllDiscounts = async () => {
     const response = await AxiosInstance.get(`/discount/get-all`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching all discounts:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -31,8 +29,7 @@ export const createDiscount = async (discountData) => {
     console.log(response);
     return response.data;
   } catch (error) {
-    console.error("Error creating discount:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -45,8 +42,7 @@ export const updateDiscount = async (discountId, discountData) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error updating discount:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -58,8 +54,7 @@ export const deleteDiscount = async (discountId) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error deleting discount:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -71,7 +66,6 @@ export const getDiscountForOrder = async (productIds) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching discount for order:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };

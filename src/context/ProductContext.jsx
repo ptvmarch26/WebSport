@@ -39,7 +39,7 @@ export const ProductProvider = ({ children }) => {
     
     setProducts((prev) =>
       prev.map((product) =>
-        product._id === productId ? res.data : product
+        product?._id === productId ? res.data : product
       )
     );
 
