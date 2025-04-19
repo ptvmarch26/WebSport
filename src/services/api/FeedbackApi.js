@@ -6,8 +6,7 @@ export const createFeedback = async (feedbackData) => {
     const res = await AxiosInstance.post("/feedback/create", feedbackData);
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi tạo feedback:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -20,8 +19,7 @@ export const updateFeedback = async (feedbackId, updateData) => {
     );
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi cập nhật feedback:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -31,8 +29,7 @@ export const deleteFeedback = async (feedbackId) => {
     const res = await AxiosInstance.delete(`/feedback/delete/${feedbackId}`);
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi xóa feedback:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -42,7 +39,6 @@ export const getAllFeedback = async (productId) => {
     const res = await AxiosInstance.get(`/feedback/get-all/${productId}`);
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách feedback:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };

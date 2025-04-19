@@ -5,8 +5,7 @@ export const getUser = async () => {
     const response = await AxiosInstance.get("/user");
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin người dùng:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -15,8 +14,7 @@ export const getAllUsers = async () => {
     const response = await AxiosInstance.get("/user/get_all_user");
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin users:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -28,8 +26,7 @@ export const changePassword = async (oldPassword, newPassword) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error changing password:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -40,8 +37,7 @@ export const updateUser = async (userData) => {
     const response = await AxiosInstance.put("/user", userData);
     return response.data;
   } catch (error) {
-    console.error("Error updating user:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -54,8 +50,7 @@ export const addAddress = async (addressData) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error adding address:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -67,8 +62,7 @@ export const updateAddress = async (index, updateData) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error updating address:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -77,8 +71,7 @@ export const deleteAddress = async (index) => {
     const response = await AxiosInstance.delete(`/user/address/${index}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting address:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -87,8 +80,7 @@ export const getDiscount = async () => {
     const response = await AxiosInstance.get("/user/get-discount");
     return response.data;
   } catch (error) {
-    console.error("Error fetching discount:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -97,8 +89,7 @@ export const deleteSearch = async (index) => {
     const response = await AxiosInstance.delete(`/user/delete-search-history/${index}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting search history:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 }
 
@@ -107,8 +98,7 @@ export const getChatHistory = async () => {
     const response = await AxiosInstance.get("/user/get-chat-history");
     return response.data;
   } catch (error) {
-    console.error("Error fetching chat history:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 }
 
@@ -117,7 +107,6 @@ export const deleteChatHistory = async () => {
     const response = await AxiosInstance.delete("/user/delete-chat-history");
     return response.data;
   } catch (error) {
-    console.error("Error deleting chat history:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 }

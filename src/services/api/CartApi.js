@@ -5,8 +5,7 @@ export const getCart = async () => {
     const res = await AxiosInstance.get("/cart");
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi lấy giỏ hàng:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -25,8 +24,7 @@ export const addToCart = async (
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi thêm vào giỏ hàng:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -38,8 +36,7 @@ export const removeFromCart = async (productId, color_name, variant_name) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi xóa sản phẩm:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -48,8 +45,7 @@ export const clearCart = async () => {
     const res = await AxiosInstance.delete("/cart");
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi xóa giỏ hàng:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -62,7 +58,6 @@ export const decreaseQuantity = async (productId, color_name, variant_name) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi giảm số lượng sản phẩm:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };

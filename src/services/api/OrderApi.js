@@ -6,8 +6,7 @@ export const createOrder = async (orderData) => {
     const response = await AxiosInstance.post("/order/create", orderData);
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi tạo đơn hàng:", error);
-    return error.response?.data || null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -21,7 +20,7 @@ export const getAllOrders = async (orderStatus = "all") => {
     // nếu lỗi 401 thì redrect về trang login
     if (error.response.status === 403 || error.response.status === 401) {
       window.location.href = "/sign-in";
-    } else return error.response?.data || null;
+    } else return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -32,8 +31,7 @@ export const getOrderByUser = async (userId, orderStatus = "all") => {
     });
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy đơn hàng theo user:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -42,8 +40,7 @@ export const getOrderDetail = async (orderId) => {
     const response = await AxiosInstance.get(`/order/get-detail/${orderId}`);
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -56,8 +53,7 @@ export const updateOrderStatus = async (orderId, status) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -68,7 +64,6 @@ export const handleCancelPayment = async (orderCode) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi hủy thanh toán:", error);
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };

@@ -6,8 +6,7 @@ export const updateFavourite = async (productId) => {
     const res = await AxiosInstance.patch("/favourite", { productId });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi cập nhật danh sách yêu thích:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -17,8 +16,7 @@ export const getFavourite = async () => {
     const res = await AxiosInstance.get("/favourite");
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách yêu thích:", error);
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -28,7 +26,6 @@ export const clearFavourites = async () => {
     const res = await AxiosInstance.delete("/favourite");
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi xóa danh sách yêu thích:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };

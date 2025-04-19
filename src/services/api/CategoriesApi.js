@@ -1,27 +1,53 @@
 import AxiosInstance from "./axiosInstance";
 
 const createCategory = async (categoryData) => {
-  return AxiosInstance.post("/category/create", categoryData);
+  try {
+    return AxiosInstance.post("/category/create", categoryData);
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
 };
 
 const getDetailCategory = async (id) => {
-  return AxiosInstance.get(`/category/get-detail/${id}`);
+  try {
+    return AxiosInstance.get(`/category/get-detail/${id}`);
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
 };
 
 const getAllCategory = async (categoryLevel = 1) => {
-  return AxiosInstance.get(`/category/get-all?category_level=${categoryLevel}`);
+  try {
+    return AxiosInstance.get(
+      `/category/get-all?category_level=${categoryLevel}`
+    );
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
 };
 
 const getSubCategory = async (id) => {
-  return AxiosInstance.get(`/category/get-sub/${id}`);
+  try {
+    return AxiosInstance.get(`/category/get-sub/${id}`);
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
 };
 
 const updateCategory = async (id, updateData) => {
-  return AxiosInstance.patch(`/category/update/${id}`, updateData);
+  try {
+    return AxiosInstance.patch(`/category/update/${id}`, updateData);
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
 };
 
 const deleteCategory = async (id) => {
-  return AxiosInstance.delete(`/category/delete/${id}`);
+  try {
+    return AxiosInstance.delete(`/category/delete/${id}`);
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
 };
 
 export {
