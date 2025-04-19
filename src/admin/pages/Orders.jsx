@@ -11,7 +11,7 @@ const statusColors = [
   "Chờ xác nhận",
   "Đang chuẩn bị hàng",
   "Đang giao",
-  "Giao hàng thành công",
+  "Hoàn thành",
   // "Hoàn hàng",
   // "Hủy hàng",
 ];

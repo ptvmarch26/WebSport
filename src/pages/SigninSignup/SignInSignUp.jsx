@@ -9,7 +9,6 @@ import { Button, Checkbox } from "@material-tailwind/react";
 import facebook from "../../assets/images/logo_facebook.png";
 import google from "../../assets/images/logo_google.png";
 import { useAuth } from "../../context/AuthContext";
-// import { useUser } from "../../context/UserContext";
 import { usePopup } from "../../context/PopupContext";
 
 const SignInSignUp = () => {

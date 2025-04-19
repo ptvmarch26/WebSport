@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 import PopupComponent from "../components/PopupComponent/PopupComponent";
 
 const PopupContext = createContext();

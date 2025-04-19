@@ -10,27 +10,30 @@ import { CategoriesProvider } from "./context/CategoriesContext.jsx";
 import { OrderProvider } from "./context/OrderContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { PopupProvider } from "./context/PopupContext.jsx";
+import { LoadingProvider } from "./context/LoadingContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
-      <PopupProvider>
-        <AuthProvider>
-          <UserProvider>
-            <ProductProvider>
-              <DiscountProvider>
-                <CategoriesProvider>
-                  <OrderProvider>
-                    <CartProvider>
-                      <App />
-                    </CartProvider>
-                  </OrderProvider>
-                </CategoriesProvider>
-              </DiscountProvider>
-            </ProductProvider>
-          </UserProvider>
-        </AuthProvider>
-      </PopupProvider>
+      <LoadingProvider>
+        <PopupProvider>
+          <AuthProvider>
+            <UserProvider>
+              <ProductProvider>
+                <DiscountProvider>
+                  <CategoriesProvider>
+                    <OrderProvider>
+                      <CartProvider>
+                        <App />
+                      </CartProvider>
+                    </OrderProvider>
+                  </CategoriesProvider>
+                </DiscountProvider>
+              </ProductProvider>
+            </UserProvider>
+          </AuthProvider>
+        </PopupProvider>
+      </LoadingProvider>
     </ThemeProvider>
   </StrictMode>
 );

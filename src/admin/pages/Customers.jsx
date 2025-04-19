@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, Input, Select, Button, Tag, Modal, message } from "antd";
-import { DeleteOutlined, ExportOutlined } from "@ant-design/icons";
+import { Table, Input, Select, Button, Tag } from "antd";
+import { ExportOutlined } from "@ant-design/icons";
 import { useUser } from "../../context/UserContext";
 const { Option } = Select;
 
@@ -14,7 +14,6 @@ const Customers = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchDataUsers = async () => {
@@ -50,7 +49,7 @@ const Customers = () => {
           <img
             src={image}
             alt="Ảnh sản phẩm"
-            className="w-16 h-16 object-cover rounded"
+            className="w-12 h-12 object-cover rounded-full"
           />
         ) : (
           "Không có ảnh"
