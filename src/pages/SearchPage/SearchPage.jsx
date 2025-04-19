@@ -47,12 +47,49 @@ const SearchPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRef = useRef(null);
   const { products, fetchProducts } = useProduct();
+  const [sortProducts, setSortProducts] = useState([]);
+  const [currentSort, setCurrentSort] = useState("");
 
   const handleSortChange = (sortOption) => {
-    console.log(sortOption);
+    setCurrentSort(sortOption);
     setSortText(sortOption);
     setSortOpen(false);
+
+    applySorting(sortOption, products);
   };
+
+  const applySorting = (sortOption, productsToSort) => {
+    let sortedProducts = [...productsToSort];
+
+    switch (sortOption) {
+      case "Giá: Cao đến Thấp":
+        sortedProducts.sort((a, b) => b.product_price - a.product_price);
+        break;
+      case "Giá: Thấp đến Cao":
+        sortedProducts.sort((a, b) => a.product_price - b.product_price);
+        break;
+      case "Mới nhất":
+        sortedProducts.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        break;
+      case "Bán chạy":
+        sortedProducts.sort((a, b) => b.product_selled - a.product_selled);
+        break;
+      default:
+        break;
+    }
+
+    setSortProducts(sortedProducts);
+  };
+
+  useEffect(() => {
+    if (currentSort) {
+      applySorting(currentSort, products);
+    } else {
+      setSortProducts(products);
+    }
+  }, [products, currentSort]);
 
   const navigate = useNavigate();
 
@@ -76,7 +113,9 @@ const SearchPage = () => {
       <div className="relative">
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5"></div>
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold uppercase">Kết quả tìm kiếm: {result}</h2>
+          <h2 className="text-xl font-bold uppercase">
+            Kết quả tìm kiếm: {result}
+          </h2>
           {/* Nút Lọc Theo + Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <ButtonComponent
@@ -129,7 +168,7 @@ const SearchPage = () => {
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5 mb-10"></div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {products
+        {sortProducts
           .slice((currentPage - 1) * 12, currentPage * 12)
           .map((product) => (
             <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>

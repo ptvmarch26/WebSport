@@ -1,4 +1,4 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SidebarSortComponent from "../../components/SidebarSortComponent/SideBarSortComponent";
 import ProductComponent from "../../components/ProductComponent/ProductComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -12,7 +12,7 @@ import { getFavourite } from "../../services/api/FavouriteApi"; // import API
 import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 const ProductPage = () => {
   const [selectedFilters, setSelectedFilters] = useState({});
-  
+
   useEffect(() => {
     fetchProducts(selectedFilters);
   }, [selectedFilters]);
@@ -20,35 +20,73 @@ const ProductPage = () => {
   const { token } = useAuth();
   const [favourites, setFavourites] = useState([]);
   const fetchFavourites = async () => {
-      if (token) {
-        try {
-          const res = await getFavourite();
-          if (res?.result) {
-            setFavourites(res.result);
-          }
-        } catch (error) {
-          console.error("Lỗi khi fetch danh sách yêu thích:", error);
+    if (token) {
+      try {
+        const res = await getFavourite();
+        if (res?.result) {
+          setFavourites(res.result);
         }
+      } catch (error) {
+        console.error("Lỗi khi fetch danh sách yêu thích:", error);
       }
-    };
-    
-    // Gọi khi component mount hoặc khi token thay đổi
-    useEffect(() => {
-      fetchFavourites();
-    }, [token]);
+    }
+  };
+
+  // Gọi khi component mount hoặc khi token thay đổi
+  useEffect(() => {
+    fetchFavourites();
+  }, [token]);
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSortOpen, setSortOpen] = useState(false);
   const [sortText, setSortText] = useState("Lọc theo");
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRef = useRef(null);
-  const { products, fetchProducts } = useProduct(); 
+  const { products, fetchProducts } = useProduct();
+  const [sortProducts, setSortProducts] = useState([]);
+  const [currentSort, setCurrentSort] = useState("");
+  
+  useEffect(() => {
+    if (currentSort) {
+      applySorting(currentSort, products);
+    } else {
+      setSortProducts(products);
+    }
+  }, [products, currentSort]);
 
   const handleSortChange = (sortOption) => {
-    console.log(sortOption);
+    setCurrentSort(sortOption);
     setSortText(sortOption);
     setSortOpen(false);
+
+    applySorting(sortOption, products);
   };
+
+  const applySorting = (sortOption, productsToSort) => {
+    let sortedProducts = [...productsToSort];
+
+    switch (sortOption) {
+      case "Giá: Cao đến Thấp":
+        sortedProducts.sort((a, b) => b.product_price - a.product_price);
+        break;
+      case "Giá: Thấp đến Cao":
+        sortedProducts.sort((a, b) => a.product_price - b.product_price);
+        break;
+      case "Mới nhất":
+        sortedProducts.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        break;
+      case "Bán chạy":
+        sortedProducts.sort((a, b) => b.product_selled - a.product_selled);
+        break;
+      default:
+        break;
+    }
+
+    setSortProducts(sortedProducts);
+  };
+
 
   const navigate = useNavigate();
 
@@ -66,6 +104,9 @@ const ProductPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [setSortOpen]);
+
+  console.log("products", products);
+  console.log("sortProducts", sortProducts);
 
   return (
     <div className="container mx-auto px-2 my-10">
@@ -133,7 +174,7 @@ const ProductPage = () => {
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5 mb-10"></div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {products
+        {sortProducts
           .slice((currentPage - 1) * 12, currentPage * 12)
           .map((product) => (
             <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>
@@ -142,7 +183,7 @@ const ProductPage = () => {
                 item={product}
                 favourites={favourites}
                 onFavouriteChange={fetchFavourites}
-                onClick={() => navigate(`/product/${product._id}`)} 
+                onClick={() => navigate(`/product/${product._id}`)}
               />
             </AnimationScroll>
           ))}
@@ -154,11 +195,11 @@ const ProductPage = () => {
         onFilterChange={setSelectedFilters}
       />
       <div className="flex justify-center mt-10">
-      <PanigationComponent
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+        <PanigationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

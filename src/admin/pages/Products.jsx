@@ -11,6 +11,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useCategories } from "../../context/CategoriesContext";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "antd";
+import { useLoading } from "../../context/LoadingContext";
 
 const { Option } = Select;
 
@@ -25,6 +26,7 @@ const Products = () => {
   const [isEditProductModalVisible, setIsEditProductgModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
+  const { setLoading } = useLoading();
 
   const { categories, fetchCategories } = useCategories();
 
@@ -51,6 +53,7 @@ const Products = () => {
 
   const handleAddProduct = async () => {
     try {
+      setLoading(true, "Đang thêm sản phẩm");
       await form.validateFields();
       const newProduct = form.getFieldsValue();
       
@@ -63,6 +66,7 @@ const Products = () => {
     } catch (error) {
       console.log("Lỗi khi xác thực form:", error);
     }
+    setLoading(false);
   };
 
   
@@ -562,7 +566,7 @@ const Products = () => {
             <Select>
               {categories?.map((cat) => (
                 <Select.Option key={cat._id} value={cat._id}>
-                  {cat.category_type}
+                  {cat.category_type} - {cat.category_gender}
                 </Select.Option>
               ))}
             </Select>

@@ -197,15 +197,15 @@ const OrderStatusPage = () => {
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm font-semibold text-end sm:text-start gap-1 sm:gap-4">
                 <p className="uppercase">{order.order_status}</p>
-                <p>
+                <p className="uppercase">
                   <span
                     className={
                       order.is_paid ? "text-green-600" : "text-red-600"
                     }
                   >
-                    {order.is_paid ? "Đã thanh toán" : "Chưa thanh toán"}
-                  </span>{" "}
-                  ({order.order_payment_method})
+                    {order.is_paid ? "Đã thanh toán" : "Chưa thanh toán"} (
+                    {order.order_payment_method})
+                  </span>
                 </p>
               </div>
               {order.products.map((product, index) => {
@@ -264,10 +264,8 @@ const OrderStatusPage = () => {
                   <>
                     <Button
                       variant="filled"
-                      color="white"
-                      className={
-                        "!bg-gradient-to-r from-[#FF416C] to-[#FF4B2B] text-white hover:brightness-110"
-                      }
+                      color="blue"
+                      className="w-[120px] h-[30px] sm:w-[150px] sm:h-[40px] rounded font-medium"
                       onClick={() => {
                         const receivedDate = new Date(order.received_date);
                         const now = new Date();

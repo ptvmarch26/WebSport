@@ -7,7 +7,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useEffect } from "react";
 import userScrollHandling from "../../hooks/userScrollHandling";
 import { AnimatePresence, motion } from "framer-motion";
-import { MdNavigateNext } from "react-icons/md";
+import { MdNavigateNext, MdExpandMore, MdExpandLess } from "react-icons/md";
 import flag_vn from "../../assets/images/flag_vn.jpg";
 import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
@@ -15,6 +15,7 @@ import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
 import { IoTrashOutline } from "react-icons/io5";
+
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,11 +23,15 @@ const Header = () => {
   const [language, setLanguage] = useState("vi");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
+  const [displayAllHistory, setDisplayAllHistory] = useState(false);
+  const [fullSearchHistory, setFullSearchHistory] = useState([]);
   const { selectedUser, fetchUser, handleDeleteSearch } = useUser();
   const { token } = useAuth();
   const navigate = useNavigate();
+
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
+    setDisplayAllHistory(false);
   };
 
   const toggleMenu = () => {
@@ -42,13 +47,15 @@ const Header = () => {
         const reversedHistory = [...selectedUser.searchhistory]
           .map((item, index) => ({ ...item, originalIndex: index }))
           .reverse();
+        setFullSearchHistory(reversedHistory);
         setSearchHistory(reversedHistory.slice(0, 5));
       }
     } else if (savedHistory) {
       try {
         const parsedHistory = JSON.parse(savedHistory);
         if (Array.isArray(parsedHistory)) {
-          setSearchHistory(parsedHistory);
+          setFullSearchHistory(parsedHistory);
+          setSearchHistory(parsedHistory.slice(0, 5));
         }
       } catch (error) {
         console.error("Lỗi khi parse lịch sử tìm kiếm:", error);
@@ -71,41 +78,34 @@ const Header = () => {
         },
       });
 
-      // console.log("Kết quả tìm kiếm:", res.data.result);
       if (res.data.EC === 0) {
         const result = res.data.result;
         const parsedResult =
           typeof result === "string" ? JSON.parse(result) : result;
-        // console.log("Kết quả tìm kiếm:", parsedResult);
         console.log("query:", parsedResult);
 
         // Lưu vào local storage
         if (!token) {
           let updatedHistory = [
             query,
-            ...searchHistory.filter((q) => q !== query),
+            ...fullSearchHistory.filter((q) => q !== query),
           ];
-          if (updatedHistory.length > 5)
-            updatedHistory = updatedHistory.slice(0, 5);
-          setSearchHistory(updatedHistory);
+          setFullSearchHistory(updatedHistory);
+          setSearchHistory(updatedHistory.slice(0, 5));
           localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
         } else if (selectedUser && selectedUser?.searchhistory) {
           const newHistoryItem = { message: query, originalIndex: -1 };
+          const updatedHistory = [newHistoryItem, ...fullSearchHistory];
 
-          // const filteredHistory = searchHistory.filter(
-          //   (item) => item.message !== query
-          // );
-
-          const updatedHistory = [newHistoryItem, ...searchHistory];
-          const limitedHistory = updatedHistory.slice(0, 5);
-
-          setSearchHistory(limitedHistory);
+          setFullSearchHistory(updatedHistory);
+          setSearchHistory(updatedHistory.slice(0, 5));
 
           // Gán lại index -1 thành mới nhất
           fetchUser();
         }
 
         setSearchOpen(!searchOpen);
+        setDisplayAllHistory(false);
         const queryString = new URLSearchParams(parsedResult).toString();
         navigate(`/search?${queryString}`, {
           state: {
@@ -118,24 +118,57 @@ const Header = () => {
     }
   };
 
-  const removeHistoryItem = async (index) => {
-    const historyItem = searchHistory[index];
+  const removeHistoryItem = async (index, isFullView = false) => {
+    const targetArray = isFullView ? fullSearchHistory : searchHistory;
+    const historyItem = targetArray[index];
+
     if (token && historyItem?.originalIndex !== undefined) {
       try {
         await handleDeleteSearch(historyItem.originalIndex);
-        const updatedHistory = [...searchHistory];
-        updatedHistory.splice(index, 1);
-        setSearchHistory(updatedHistory);
+
+        const updatedFullHistory = [...fullSearchHistory];
+        const fullIndex = isFullView
+          ? index
+          : fullSearchHistory.findIndex(
+              (item) => item.originalIndex === historyItem.originalIndex
+            );
+
+        if (fullIndex !== -1) {
+          updatedFullHistory.splice(fullIndex, 1);
+          setFullSearchHistory(updatedFullHistory);
+          setSearchHistory(updatedFullHistory.slice(0, 5));
+        }
       } catch (error) {
         console.error("Xóa lịch sử thất bại:", error);
       }
     } else {
-      const updatedHistory = [...searchHistory];
-      updatedHistory.splice(index, 1);
-      setSearchHistory(updatedHistory);
-      localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+      const updatedFullHistory = [...fullSearchHistory];
+      const fullIndex = isFullView
+        ? index
+        : fullSearchHistory.indexOf(historyItem);
+
+      if (fullIndex !== -1) {
+        updatedFullHistory.splice(fullIndex, 1);
+        setFullSearchHistory(updatedFullHistory);
+        setSearchHistory(updatedFullHistory.slice(0, 5));
+        localStorage.setItem(
+          "searchHistory",
+          JSON.stringify(updatedFullHistory)
+        );
+      }
     }
   };
+
+  const toggleDisplayAllHistory = () => {
+    setDisplayAllHistory(!displayAllHistory);
+  };
+
+  const displayedHistory = displayAllHistory
+    ? fullSearchHistory
+    : searchHistory;
+  const hasMoreHistory = fullSearchHistory.length > 5;
+
+  // console.log("us", selectedUser?.searchhistory);
 
   const options = [
     { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
@@ -430,11 +463,11 @@ const Header = () => {
         </div>
       )}
 
-      {searchHistory.length > 0 && searchOpen && (
+      {fullSearchHistory.length > 0 && searchOpen && (
         <div className="absolute left-0 right-0 w-full bg-white overflow-y-auto z-30">
           <div className="w-1/2 max-w-[800px] mx-auto py-[10px]">
             <ul className="">
-              {searchHistory.map((item, index) => (
+              {displayedHistory.map((item, index) => (
                 <li
                   key={index}
                   className="flex justify-between items-center hover:bg-[#eaeaea] rounded px-2 py-[10px] cursor-pointer"
@@ -448,7 +481,7 @@ const Header = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeHistoryItem(index);
+                      removeHistoryItem(index, displayAllHistory);
                     }}
                     className="text-md text-red-600 hover:scale-105 ml-2"
                   >
@@ -457,6 +490,25 @@ const Header = () => {
                 </li>
               ))}
             </ul>
+
+            {hasMoreHistory && (
+              <div
+                className="flex justify-center items-center mt-2 py-2 font-medium cursor-pointer hover:bg-gray-100 rounded"
+                onClick={toggleDisplayAllHistory}
+              >
+                {displayAllHistory ? (
+                  <div className="flex items-center">
+                    <span>Thu gọn</span>
+                    <MdExpandLess className="ml-1 text-xl" />
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <span>Xem tất cả</span>
+                    <MdExpandMore className="ml-1 text-xl" />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
