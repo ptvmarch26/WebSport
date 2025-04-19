@@ -21,7 +21,7 @@ const shippingMethods = [
 ];
 
 const paymentMethods = [
-  { id: "cod", label: "Thanh toán khi nhận hàng (COD)" },
+  { id: "Cod", label: "Thanh toán khi nhận hàng (COD)" },
   { id: "Paypal", label: "Phương Thức Chuyển Khoản" },
   { id: "Momo", label: "Phương Thức Momo" },
 ];

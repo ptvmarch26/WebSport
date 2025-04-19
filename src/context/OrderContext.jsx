@@ -39,8 +39,7 @@ export const OrderProvider = ({ children }) => {
   };
 
   const handleUpdateOrderStatus = async (orderId, status) => {
-    const res = await updateOrderStatus(orderId, status);
-    return res;
+    return await updateOrderStatus(orderId, status);
   };
 
   return (

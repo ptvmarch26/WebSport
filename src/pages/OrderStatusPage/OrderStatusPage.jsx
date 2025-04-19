@@ -28,6 +28,7 @@ const OrderStatusPage = () => {
   const tabs = [
     { id: "all", label: "Tất cả" },
     { id: "Chờ xác nhận", label: "Chờ xác nhận" },
+    { id: "Đang chuẩn bị hàng", label: "Đang chuẩn bị hàng" },
     { id: "Đang giao", label: "Đang giao" },
     { id: "Hoàn thành", label: "Hoàn thành" },
     { id: "Yêu cầu hoàn", label: "Yêu cầu hoàn" },

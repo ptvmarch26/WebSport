@@ -4,16 +4,18 @@ import { ExportOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import moment from "moment";
+import { usePopup } from "../../context/PopupContext";
 
 const { Option } = Select;
 
-const statusColors = [
+const statusOrder = [
   "Chờ xác nhận",
   "Đang chuẩn bị hàng",
   "Đang giao",
-  "Giao hàng thành công",
-  // "Hoàn hàng",
-  // "Hủy hàng",
+  "Hoàn thành",
+  "Yêu cầu hoàn",
+  "Hoàn hàng",
+  "Hủy hàng",
 ];
 
 const Orders = () => {
@@ -23,6 +25,7 @@ const Orders = () => {
   const [filterStatus, setFilterStatus] = useState(null);
   const navigate = useNavigate();
   const [ordersState, setOrdersState] = useState(orders);
+  const { showPopup } = usePopup();
 
   useEffect(() => {
     fetchOrders();
@@ -32,15 +35,19 @@ const Orders = () => {
     setOrdersState(orders);
   }, [orders]);
 
-  const handleStatusChange = (orderId, newStatus) => {
-    const updatedOrders = ordersState.map((order) => {
-      if (order._id === orderId) {
-        return { ...order, order_status: newStatus };
-      }
-      return order;
-    });
-    setOrdersState(updatedOrders);
-    handleUpdateOrderStatus(orderId, newStatus);
+  const handleStatusChange = async (orderId, newStatus) => {
+    const result = await handleUpdateOrderStatus(orderId, newStatus);
+    console.log(result);
+    if (result.EC === 0) {
+      const updatedOrders = ordersState.map((order) => {
+        if (order._id === orderId) {
+          return { ...order, order_status: newStatus };
+        }
+        return order;
+      });
+      setOrdersState(updatedOrders);
+      showPopup(result.EM);
+    } else showPopup(result.EM, false);
   };
 
   const filteredOrders = ordersState.filter((order) => {
@@ -106,7 +113,7 @@ const Orders = () => {
           className="min-w-[200px]"
           onClick={(e) => e.stopPropagation()}
         >
-          {statusColors.map((s) => (
+          {statusOrder.map((s) => (
             <Option key={s} value={s}>
               {s}
             </Option>
@@ -149,7 +156,7 @@ const Orders = () => {
             allowClear
             className="w-[300px]"
           >
-            {statusColors.map((status, index) => (
+            {statusOrder.map((status, index) => (
               <Option key={index} value={status}>
                 {status}
               </Option>
