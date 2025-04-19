@@ -10,8 +10,7 @@ export const signUp = async (user_name, email, password) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi đăng ký:", error);
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -24,8 +23,7 @@ export const login = async (user_name, password) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi đăng nhập:", error);
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -61,8 +59,7 @@ export const resetPassword = async (email, newPassword) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi đặt lại mật khẩu:", error);
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -74,11 +71,7 @@ export const changePassword = async (oldPassword, newPassword) => {
     });
     return res.data;
   } catch (error) {
-    if (error.response) {
-      const { data } = error.response;
-      console.error("Lỗi khi đổi mật khẩu:", data?.EM || "Lỗi không xác định");
-    }
-    return error.response.data;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -98,7 +91,7 @@ export const loginWithGoogle = async () => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi đăng nhập với Google:", error);
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -114,7 +107,6 @@ export const refreshToken = async () => {
     });
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi làm mới token:", error);
-    throw error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };

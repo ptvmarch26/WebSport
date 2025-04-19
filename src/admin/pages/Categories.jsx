@@ -31,6 +31,7 @@ const Categories = () => {
     useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { fetchUser } = useUser();
+  // const { showPopup } = usePopup();
 
   const {
     categories,

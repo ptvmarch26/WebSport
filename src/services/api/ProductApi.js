@@ -24,11 +24,7 @@ export const createProduct = async (productData) => {
       productData.product_img[0].originFileObj || productData.product_img[0];
     if (imageFile instanceof File) {
       formData.append("product_img", imageFile);
-    } else {
-      console.error("Ảnh sản phẩm không hợp lệ");
     }
-  } else {
-    console.error("Không có ảnh sản phẩm");
   }
 
   // Xử lý danh sách màu sắc
@@ -76,13 +72,13 @@ export const createProduct = async (productData) => {
     const response = await AxiosInstance.post("/product/create", formData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
 // Hàm cập nhật sản phẩm
 export const updateProduct = async (productId, productData) => {
-  console.log("productId", productId);
+  console.log("productData", productData);
   const formData = new FormData();
   // Thông tin cơ bản của sản phẩm
   formData.append("product_title", productData.product_title);
@@ -105,11 +101,7 @@ export const updateProduct = async (productId, productData) => {
       productData.product_img[0].originFileObj || productData.product_img[0];
     if (imageFile instanceof File) {
       formData.append("product_img", imageFile);
-    } else {
-      console.error("Ảnh sản phẩm không hợp lệ");
     }
-  } else {
-    console.error("Không có ảnh sản phẩm");
   }
 
   // Xử lý danh sách màu sắc
@@ -160,7 +152,7 @@ export const updateProduct = async (productId, productData) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response?.data || error;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -169,8 +161,7 @@ export const getDetailsProduct = async (productId) => {
     const res = await AxiosInstance.get(`/product/get-details/${productId}`);
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin sản phẩm:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -179,8 +170,7 @@ export const deleteProduct = async (productId) => {
     const res = await AxiosInstance.delete(`/product/delete/${productId}`);
     return res.data;
   } catch (error) {
-    console.error("Lỗi khi xóa sản phẩm:", error);
-    return null;
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
 
@@ -194,12 +184,6 @@ export const getAllProducts = async (filters) => {
     });
     return response.data;
   } catch (error) {
-    return (
-      error.response?.data || {
-        EC: 1,
-        EM: "Lỗi khi lấy danh sách sản phẩm",
-        filters,
-      }
-    );
+    return error.response?.data || "Lỗi kết nối đến server";
   }
 };
