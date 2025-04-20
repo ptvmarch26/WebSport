@@ -137,7 +137,8 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
             className="absolute top-[20px] right-0 flex flex-col items-center gap-2 px-4
          opacity-100 translate-y-0
          md:opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0
-         transition-all duration-300">
+         transition-all duration-300"
+          >
             <button
               className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
               onClick={toggleFavorite}
@@ -148,18 +149,16 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
                 <FaRegHeart className="text-xl" />
               )}
             </button>
-            {token && (
-              <button
-                className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
-                onClick={toggleCompare}
-              >
-                {isCompared ? (
-                  <FaCheckCircle className="text-green-500 text-xl" />
-                ) : (
-                  <FaPlusCircle className="text-gray-600 text-xl" />
-                )}
-              </button>
-            )}
+            <button
+              className="p-2 hover:scale-105 rounded-full bg-gray-200 transition cursor-pointer shadow-md hover:shadow-lg"
+              onClick={toggleCompare}
+            >
+              {isCompared ? (
+                <FaCheckCircle className="text-green-500 text-xl" />
+              ) : (
+                <FaPlusCircle className="text-gray-600 text-xl" />
+              )}
+            </button>
           </div>
         }
       </div>

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import { useUser } from "../../../context/UserContext";
 import avt_false from "../../../assets/images/avatar-false.jpg";
+import { useLoading } from "../../../context/LoadingContext";
 
 const Profile = () => {
   const { selectedUser, fetchUser, handleUpdateUser } = useUser();
   const [avatarFile, setAvatarFile] = useState(null);
+  const { setLoading } = useLoading();
 
   const [formData, setFormData] = useState({
     user_name: selectedUser?.user_name || "Chưa cập nhật",
@@ -41,25 +43,27 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
+    setLoading(true, "Đang đổi thông tin");
     const form = new FormData();
-  form.append("user_name", formData.user_name);
-  form.append("full_name", formData.full_name);
-  form.append("birth", formData.birth);
-  form.append("gender", formData.gender);
+    form.append("user_name", formData.user_name);
+    form.append("full_name", formData.full_name);
+    form.append("birth", formData.birth);
+    form.append("gender", formData.gender);
 
-  if (avatarFile) {
-    form.append("avatar", avatarFile); // <- tên phải trùng với `multer` backend
-  }
+    if (avatarFile) {
+      form.append("avatar", avatarFile); // <- tên phải trùng với `multer` backend
+    }
 
-  const res = await handleUpdateUser(form);
-  if (res?.EC === 0) {
-    fetchUser();
-    setOriginalData(formData);
-    setIsChanged(false);
-    setIsEditing(false);
-  } else {
-    console.error("Lỗi khi cập nhật thông tin:", res);
-  }
+    const res = await handleUpdateUser(form);
+    if (res?.EC === 0) {
+      fetchUser();
+      setOriginalData(formData);
+      setIsChanged(false);
+      setIsEditing(false);
+    } else {
+      console.error("Lỗi khi cập nhật thông tin:", res);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {

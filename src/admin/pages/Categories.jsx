@@ -15,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import { useCategories } from "../../context/CategoriesContext";
 import { useUser } from "../../context/UserContext";
+import { usePopup } from "../../context/PopupContext";
 
 const { Option } = Select;
 
@@ -31,7 +32,7 @@ const Categories = () => {
     useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { fetchUser } = useUser();
-  // const { showPopup } = usePopup();
+  const { showPopup } = usePopup();
 
   const {
     categories,
