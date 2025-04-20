@@ -44,7 +44,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center bg-[#e3e6ff] py-12 px-6 lg:px-8">
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white p-8 rounded-lg shadow-lg">
+      <div className="mt-10 w-full sm:mx-auto sm:w-full md:max-w-sm bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-2xl text-center mb-4 font-bold uppercase text-black">
           Đăng nhập
         </h1>

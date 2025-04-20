@@ -27,7 +27,7 @@ function AddressFormComponent({
 
   useEffect(() => {
     apiGetProvinces()
-      .then((res) => setProvinces(res.results))
+      .then((res) => setProvinces(res))
       .catch((err) => console.error("Error fetching provinces:", err));
   }, []);
 
@@ -45,9 +45,9 @@ function AddressFormComponent({
   const handleProvinceChange = async (e) => {
     const provinceName = e.target.value;
     const selectedProvince = provinces.find(
-      (province) => province.province_name === provinceName
+      (province) => province.name === provinceName
     );
-    const provinceId = selectedProvince ? selectedProvince.province_id : "";
+    const provinceId = selectedProvince ? selectedProvince.code : "";
 
     setNewAddress({
       ...newAddress,
@@ -61,7 +61,7 @@ function AddressFormComponent({
 
     try {
       const res = await apiGetDistricts(provinceId);
-      setDistricts(res.results);
+      setDistricts(res);
     } catch (err) {
       console.error("Error fetching districts:", err);
     }
@@ -70,9 +70,9 @@ function AddressFormComponent({
   const handleDistrictChange = async (e) => {
     const districtName = e.target.value;
     const selectedDistrict = districts.find(
-      (district) => district.district_name === districtName
+      (district) => district.name === districtName
     );
-    const districtId = selectedDistrict ? selectedDistrict.district_id : "";
+    const districtId = selectedDistrict ? selectedDistrict.code : "";
 
     setNewAddress({
       ...newAddress,
@@ -84,7 +84,7 @@ function AddressFormComponent({
 
     try {
       const res = await apiGetWards(districtId);
-      setWards(res.results);
+      setWards(res);
     } catch (err) {
       console.error("Error fetching wards:", err);
     }
@@ -162,9 +162,9 @@ function AddressFormComponent({
             }`}
           >
             <option value="">Tỉnh/Thành phố</option>
-            {provinces.map((province) => (
-              <option key={province.province_id} value={province.province_name}>
-                {province.province_name}
+            {provinces?.map((province) => (
+              <option key={province.code} value={province.name}>
+                {province.name}
               </option>
             ))}
           </select>
@@ -186,9 +186,9 @@ function AddressFormComponent({
             }`}
           >
             <option value="">Quận/Huyện</option>
-            {districts.map((district) => (
-              <option key={district.district_id} value={district.district_name}>
-                {district.district_name}
+            {districts?.map((district) => (
+              <option key={district.code} value={district.name}>
+                {district.name}
               </option>
             ))}
           </select>
@@ -212,9 +212,9 @@ function AddressFormComponent({
             }`}
           >
             <option value="">Phường/Xã</option>
-            {wards.map((ward) => (
-              <option key={ward.ward_id} value={ward.ward_name}>
-                {ward.ward_name}
+            {wards?.map((ward) => (
+              <option key={ward.code} value={ward.name}>
+                {ward.name}
               </option>
             ))}
           </select>
@@ -241,7 +241,7 @@ function AddressFormComponent({
         />
         <label
           htmlFor="home_address"
-          className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all peer-focus:-top-2.5 peer-focus:text-xs peer-focus:scale-90"
+          className="absolute !text-sm bg-white px-1 left-2.5 top-2.5 text-black transition-all transform origin-left peer-placeholder-shown:text-base peer-placeholder-shown:text-black peer-focus:-top-2.5 peer-focus:left-2.5 peer-[&:not(:placeholder-shown)]:-top-2.5 peer-[&:not(:placeholder-shown)]:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90 cursor-text peer-not-placeholder-shown:opacity-0"
         >
           Địa chỉ cụ thể
         </label>

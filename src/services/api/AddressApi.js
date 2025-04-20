@@ -2,18 +2,16 @@ import axios from "axios";
 
 // Lấy danh sách tỉnh/thành phố
 export const apiGetProvinces = () =>
-  axios
-    .get("https://vapi.vnappmob.com/api/v2/province/")
-    .then((res) => res.data);
+  axios.get("https://provinces.open-api.vn/api/p/").then((res) => res.data);
 
 // Lấy danh sách quận/huyện theo tỉnh/thành phố
-export const apiGetDistricts = (provinceId) =>
+export const apiGetDistricts = (provinceCode) =>
   axios
-    .get(`https://vapi.vnappmob.com/api/v2/province/district/${provinceId}`)
-    .then((res) => res.data);
+    .get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`)
+    .then((res) => res.data.districts);
 
 // Lấy danh sách phường/xã theo quận/huyện
-export const apiGetWards = (districtId) =>
+export const apiGetWards = (districtCode) =>
   axios
-    .get(`https://vapi.vnappmob.com/api/v2/province/ward/${districtId}`)
-    .then((res) => res.data);
+    .get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`)
+    .then((res) => res.data.wards);

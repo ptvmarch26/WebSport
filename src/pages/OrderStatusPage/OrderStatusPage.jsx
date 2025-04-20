@@ -15,7 +15,7 @@ const OrderStatusPage = () => {
   const [openRequireRefundDialog, setOpenRequireRefundDialog] = useState(false);
   const [openCancelRequireRefundDialog, setOpenCancelRequireRefundDialog] =
     useState(false);
-  const [openBuyAgainDialog, setOpenBuyAgainDialog] = useState(false);
+  // const [openBuyAgainDialog, setOpenBuyAgainDialog] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const { showPopup } = usePopup();
   const { orders, setOrders, fetchOrdersByUser, handleUpdateOrderStatus } =
@@ -119,12 +119,6 @@ const OrderStatusPage = () => {
     setSelectedOrder(null);
   };
 
-  const confirmBuyAgain = async () => {
-    if (selectedOrder) {
-      navigate("/cart", { state: { fromBuyAgain: selectedOrder.products } });
-    }
-  };
-
   // Hàm tìm giá variant và hình ảnh dựa vào màu sắc và kích thước
   const findProductDetails = (product) => {
     const colorOption = product.product_id?.colors.find(
@@ -164,30 +158,32 @@ const OrderStatusPage = () => {
         <div className="lg:block pb-10 lg:pb-0">
           <AccountInfoComponent />
         </div>
-        <div className="min-h-[400px] flex-1 p-6 bg-white text-black border border-gray-300 rounded-lg">
-          <div className="flex border-b border-gray-300 relative">
-            {tabs.map((tab, index) => (
-              <button
-                key={tab.id}
-                className={`px-4 py-2 text-sm font-medium relative transition-colors duration-300 ${
-                  activeTab === tab.id
-                    ? "text-black"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-                onClick={() => handleTabChange(tab.id, index)}
-              >
-                {tab.label}
-                {activeTab === tab.id && (
-                  <motion.div
-                    layoutId="underline"
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute bottom-0 left-0 h-0.5 bg-black"
-                  />
-                )}
-              </button>
-            ))}
+        <div className="min-h-[400px] w-full overflow-x-auto custom-scroll flex-1 p-6 bg-white text-black border border-gray-300 rounded-lg">
+          <div className="border-b border-gray-300 relative overflow-x-auto">
+            <div className="flex whitespace-nowrap">
+              {tabs.map((tab, index) => (
+                <button
+                  key={tab.id}
+                  className={`px-4 py-2 text-sm font-medium relative transition-colors duration-300 ${
+                    activeTab === tab.id
+                      ? "text-black"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => handleTabChange(tab.id, index)}
+                >
+                  {tab.label}
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="underline"
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute bottom-0 left-0 h-0.5 bg-black"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           {filteredOrders?.map((order) => (
@@ -301,8 +297,9 @@ const OrderStatusPage = () => {
                       color="white"
                       className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-black border rounded font-medium"
                       onClick={() => {
-                        setSelectedOrder(order);
-                        setOpenBuyAgainDialog(true);
+                        navigate("/cart", {
+                          state: { fromBuyAgain: order.products },
+                        });
                       }}
                     >
                       Mua lại
@@ -329,8 +326,9 @@ const OrderStatusPage = () => {
                     color="black"
                     className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
                     onClick={() => {
-                      setSelectedOrder(order);
-                      setOpenBuyAgainDialog(true);
+                      navigate("/cart", {
+                        state: { fromBuyAgain: order.products },
+                      });
                     }}
                   >
                     Mua lại
@@ -383,16 +381,6 @@ const OrderStatusPage = () => {
         onConfirm={confirmCancelRequireRefund}
         title={"Xác nhận hủy yêu cầu hoàn hàng"}
         message={"Bạn có chắc chắn muốn hủy yêu cầu hoàn đơn hàng này không?"}
-      />
-      <ConfirmDialogComponent
-        open={openBuyAgainDialog}
-        onClose={() => {
-          setOpenBuyAgainDialog(false);
-          setSelectedOrder(null);
-        }}
-        onConfirm={confirmBuyAgain}
-        title={"Xác nhận thực hiện mua lại đơn hàng"}
-        message={"Bạn có chắc chắn muốn mua lại đơn hàng này không?"}
       />
     </div>
   );

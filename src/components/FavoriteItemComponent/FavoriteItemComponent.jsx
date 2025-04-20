@@ -6,7 +6,6 @@ import { useState } from "react";
 
 const FavoriteItemComponent = ({ productDetails, onRemove }) => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-  console.log("productDetails", productDetails);
   const navigate = useNavigate();
 
   const handleOpenDialog = () => setOpenConfirmDialog(!openConfirmDialog);
@@ -19,7 +18,7 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
   return (
     <div>
       <div className="flex gap-10 mt-10 sm:my-10">
-        <Link to={"/"}>
+        <Link to={`/product/${productDetails?._id}`}>
           <img
             src={productDetails.product_img}
             alt={productDetails.title}

@@ -7,7 +7,6 @@ import { Button } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useCart } from "../../context/CartContext";
 import { useDiscount } from "../../context/DiscountContext";
-import { Button as MButton } from "@material-tailwind/react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
 import { useProduct } from "../../context/ProductContext";

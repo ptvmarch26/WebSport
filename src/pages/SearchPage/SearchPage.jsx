@@ -112,11 +112,12 @@ const SearchPage = () => {
     <div className="container mx-auto px-2 my-10">
       <div className="relative">
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5"></div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between space-x-2">
           <h2 className="text-xl font-bold uppercase">
             Kết quả tìm kiếm: {result}
           </h2>
           {/* Nút Lọc Theo + Dropdown */}
+          <div>
           <div className="relative" ref={dropdownRef}>
             <ButtonComponent
               text={sortText}
@@ -163,6 +164,7 @@ const SearchPage = () => {
                 </ul>
               </div>
             )}
+          </div>
           </div>
         </div>
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5 mb-10"></div>

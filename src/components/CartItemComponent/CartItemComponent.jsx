@@ -1,14 +1,33 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { IoTrashOutline } from "react-icons/io5";
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { getFavourite, updateFavourite } from "../../services/api/FavouriteApi";
 
 const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
   const decreaseQuantity = () => {
     if (item.quantity > 1) {
       onDecrease(item._id, item.quantity - 1);
     }
+  };
+
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      const favouritesData = await getFavourite();
+
+      if (favouritesData && favouritesData.result) {
+        setIsFavorite(favouritesData.result.includes(item.product_id._id));
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [item.product_id._id]);
+
+  const toggleFavorite = async () => {
+    setIsFavorite(!isFavorite);
+    await updateFavourite(item.product_id._id);
   };
 
   const increaseQuantity = () => {
@@ -53,7 +72,8 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
                   {(
                     selectedVariant.variant_price /
                     (1 - item.product_id?.product_percent_discount / 100)
-                  ).toLocaleString()}đ
+                  ).toLocaleString()}
+                  đ
                 </p>
               </div>
             ) : (
@@ -61,7 +81,8 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
                 {(
                   selectedVariant?.variant_price /
                   (1 - item.product_id?.product_percent_discount / 100)
-                ).toLocaleString()}đ
+                ).toLocaleString()}
+                đ
               </p>
             )}
           </div>
@@ -71,8 +92,18 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">
-            <button className="p-2 hover:bg-gray-200 transition-all duration-300 hover:rounded-full">
-              <FaRegHeart className="text-xl" />
+            <button
+              className="p-2 hover:bg-gray-200 transition-all duration-300 hover:rounded-full"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite();
+              }}
+            >
+              {isFavorite ? (
+                <FaHeart className="text-red-500 text-xl" />
+              ) : (
+                <FaRegHeart className="text-xl" />
+              )}
             </button>
             <button
               onClick={(e) => {
