@@ -1,8 +1,18 @@
-# React + Vite
+# [IE213.P21.GROUPX] - ĐỒ ÁN XÂY DỰNG WEBSITE BÁN CÁC SẢN PHẨM THỂ THAO PHẦN FRONT_END DÀNH CHO USER VÀ ADMIN
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+* Trường Đại học Công nghệ Thông tin, Đại học Quốc gia Thành phố Hồ Chí Minh (ĐHQG-HCM)
+* Khoa: Khoa học và Kỹ thuật Thông tin (KH&KTTT)
+* GVHD: ThS. Võ Tấn Khoa
+* Nhóm sinh viên thực hiện: Nhóm X
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Danh sách thành viên
+|STT | Họ tên | MSSV|Chức vụ|
+|:---:|:-------------:|:-----:|:-----:|
+|1. 	| Châu Đức Mạnh | 22520846 | Nhóm trưởng |
+|2. 	| Võ Văn Phi Thông		| 22521435 | Thành viên |
+|3. 	| Dương Anh Vũ		|	22521688 | Thành viên |
+|44. 	| Phạm Quang Vũ | 22521696 | Thành viên |
+  
+## Tổng hợp link các github
+* [FE_USER VÀ FE_ADMIN](https://github.com/ptvmarch26/WebSport)
+* [BE](https://github.com/ChauManh/SportEcommerceServices)
