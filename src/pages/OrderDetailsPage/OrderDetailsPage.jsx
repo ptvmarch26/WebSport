@@ -74,11 +74,11 @@ const OrderDetailsPage = () => {
             Số điện thoại:{" "}
           </strong>
           {orderDetails?.shipping_address?.phone}
-        </p>
+        </p>{" "}
         <p>
           <strong className="text-sm inline-block font-semibold min-w-[100px]">
             Địa chỉ:{" "}
-          </strong>{" "}
+          </strong>
           {orderDetails?.shipping_address?.home_address},{" "}
           {orderDetails?.shipping_address?.ward},{" "}
           {orderDetails?.shipping_address?.district},{" "}
@@ -93,10 +93,38 @@ const OrderDetailsPage = () => {
           <strong className="text-sm inline-block font-semibold min-w-[100px]">
             Thanh toán:{" "}
           </strong>
-          {orderDetails?.order_payment_method === "cod"
+          {orderDetails?.order_payment_method === "Cod"
             ? "Thanh toán khi nhận hàng"
             : orderDetails?.order_payment_method}
         </p>
+        <p>
+          <strong className="text-sm inline-block font-semibold min-w-[100px]">
+            Trạng thái:{" "}
+          </strong>
+          {orderDetails?.order_status === "Hoàn hàng"
+            ? "Đã hoàn tiền"
+            : orderDetails?.is_paid
+            ? "Đã thanh toán"
+            : "Chưa thanh toán"}
+        </p>
+        {orderDetails?.estimated_delivery_date && (
+          <p>
+            <strong className="text-sm inline-block font-semibold min-w-[100px]">
+              Dự kiến giao:{" "}
+            </strong>
+            {new Date(orderDetails.estimated_delivery_date).toLocaleDateString(
+              "vi-VN"
+            )}
+          </p>
+        )}
+        {orderDetails?.received_date && (
+          <p>
+            <strong className="text-sm inline-block font-semibold min-w-[100px]">
+              Đã nhận hàng:{" "}
+            </strong>
+            {new Date(orderDetails.received_date).toLocaleDateString("vi-VN")}
+          </p>
+        )}
       </div>
       <div className="bg-[#f6f6f6] rounded-lg mb-4 p-5 space-y-2">
         <h3 className="text-lg uppercase font-semibold">Thông tin đơn hàng</h3>

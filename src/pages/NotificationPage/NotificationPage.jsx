@@ -6,10 +6,12 @@ import { IoTrashOutline } from "react-icons/io5";
 import { useNotifications } from "../../context/NotificationContext";
 import { readNotification, deleteNotification } from "../../services/api/NotificationApi";
 import { usePopup } from "../../context/PopupContext";
+import { useNavigate } from "react-router-dom";
 
 const NotificationPage = () => {
   const { notifications, setNotifications } = useNotifications();
   const { showPopup } = usePopup();
+  const navigate = useNavigate();
   const markAllAsRead = async () => {
     const unreadNotifications = notifications.filter((n) => !n.isRead);
 
@@ -32,14 +34,16 @@ const NotificationPage = () => {
     setNotifications(updatedNotifications);
   };
 
-  const handleNotificationClick = async (notificationId) => {
-    const res = await readNotification(notificationId);
+  const handleNotificationClick = async (notification) => {
+    const res = await readNotification(notification._id);
     if (res.EC === 0) {
       setNotifications(
         notifications.map((n) =>
-          n._id === notificationId ? { ...n, isRead: true } : n
+          n._id === notification._id ? { ...n, isRead: true } : n
         )
       );
+      if (notification.order_id)
+      navigate(`/orders/order-details/${notification.order_id}`);
     } else showPopup(res.EM, false);
   };
 
@@ -87,7 +91,7 @@ const NotificationPage = () => {
                         "bg-white": notification.isRead,
                       }
                     )}
-                    onClick={() => handleNotificationClick(notification._id)}
+                    onClick={() => handleNotificationClick(notification)}
                   >
                     <div
                       className="absolute top-2 right-2 text-red-500 hover:text-red-700 cursor-pointer p-2"

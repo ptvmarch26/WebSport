@@ -100,6 +100,7 @@ export const UserProvider = ({ children }) => {
       value={{
         users,
         selectedUser,
+        setSelectedUser,
         discounts,
         fetchUsers,
         fetchUser,

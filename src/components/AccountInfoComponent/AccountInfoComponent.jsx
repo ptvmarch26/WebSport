@@ -25,7 +25,7 @@ const AccountInfoComponent = () => {
   const location = useLocation();
   const defaultAvatar = avt_false;
   const { handleLogout } = useAuth();
-  const { selectedUser, fetchUser } = useUser();
+  const { selectedUser, fetchUser, setSelectedUser } = useUser();
 
   useEffect(() => {
     fetchUser();
@@ -47,6 +47,7 @@ const AccountInfoComponent = () => {
     window.dispatchEvent(new CustomEvent("compareListUpdated"));
     // // navigate("/sign-in", { replace: true });
     // window.location.href = "/";
+    setSelectedUser(null);
     navigate("/", { replace: true });
   };
 

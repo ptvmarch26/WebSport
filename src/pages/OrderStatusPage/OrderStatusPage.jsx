@@ -199,8 +199,11 @@ const OrderStatusPage = () => {
                       order.is_paid ? "text-green-600" : "text-red-600"
                     }
                   >
-                    {order.is_paid ? "Đã thanh toán" : "Chưa thanh toán"} (
-                    {order.order_payment_method})
+                    {order.order_status === "Hoàn hàng"
+                      ? "Đã hoàn tiền"
+                      : `${
+                          order.is_paid ? "Đã thanh toán" : "Chưa thanh toán"
+                        } (${order.order_payment_method})`}
                   </span>
                 </p>
               </div>
@@ -258,30 +261,32 @@ const OrderStatusPage = () => {
               <div className="mt-4 text-right space-x-2">
                 {order.order_status === "Hoàn thành" && (
                   <>
-                    <Button
-                      variant="filled"
-                      color="blue"
-                      className="w-[120px] h-[30px] sm:w-[150px] sm:h-[40px] rounded font-medium"
-                      onClick={() => {
-                        const receivedDate = new Date(order.received_date);
-                        const now = new Date();
-                        const diffInDays = Math.floor(
-                          (now - receivedDate) / (1000 * 60 * 60 * 24)
-                        );
-
-                        if (diffInDays > 3) {
-                          showPopup(
-                            "Không thể hoàn đơn hàng đã quá 3 ngày kể từ ngày nhận hàng",
-                            false
+                    {!order.is_require_refund && (
+                      <Button
+                        variant="filled"
+                        color="blue"
+                        className="w-[120px] h-[30px] sm:w-[150px] sm:h-[40px] rounded font-medium"
+                        onClick={() => {
+                          const receivedDate = new Date(order.received_date);
+                          const now = new Date();
+                          const diffInDays = Math.floor(
+                            (now - receivedDate) / (1000 * 60 * 60 * 24)
                           );
-                        } else {
-                          setSelectedOrder(order._id);
-                          setOpenRequireRefundDialog(true);
-                        }
-                      }}
-                    >
-                      Yêu cầu hoàn
-                    </Button>
+
+                          if (diffInDays > 3) {
+                            showPopup(
+                              "Không thể hoàn đơn hàng đã quá 3 ngày kể từ ngày nhận hàng",
+                              false
+                            );
+                          } else {
+                            setSelectedOrder(order._id);
+                            setOpenRequireRefundDialog(true);
+                          }
+                        }}
+                      >
+                        Yêu cầu hoàn
+                      </Button>
+                    )}
                     {!order.is_feedback && (
                       <Button
                         variant="filled"
@@ -297,7 +302,7 @@ const OrderStatusPage = () => {
                       color="white"
                       className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-black border rounded font-medium"
                       onClick={() => {
-                        navigate("/cart", {
+                        navigate("/checkout", {
                           state: { fromBuyAgain: order.products },
                         });
                       }}
@@ -326,7 +331,7 @@ const OrderStatusPage = () => {
                     color="black"
                     className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
                     onClick={() => {
-                      navigate("/cart", {
+                      navigate("/checkout", {
                         state: { fromBuyAgain: order.products },
                       });
                     }}

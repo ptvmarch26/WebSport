@@ -11,9 +11,9 @@ import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
 import { useProduct } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useLocation } from "react-router-dom";
 import { usePopup } from "../../context/PopupContext";
-import { handleCancelPayment } from "../../services/api/OrderApi"; 
+import { handleCancelPayment } from "../../services/api/OrderApi";
 
 const shippingMethods = [
   { id: "standard", label: "Giao hàng tiêu chuẩn", price: "50.000 đ" },
@@ -33,7 +33,8 @@ function CheckoutPage() {
   const size = searchParams.get("size");
   const { id: productId } = useParams();
   const { fetchProductDetails, productDetails } = useProduct();
-  const { fetchCart, cart, setCart} = useCart();
+  const { fetchCart, cart, setCart } = useCart();
+  const location = useLocation();
 
   const { fetchDiscountForOrder, discounts } = useDiscount();
 
@@ -64,8 +65,6 @@ function CheckoutPage() {
   );
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
-  
-
   useEffect(() => {
     fetchUser();
     const query = new URLSearchParams(window.location.search);
@@ -87,11 +86,6 @@ function CheckoutPage() {
     }
   }, []);
   const [cartItems, setCartItems] = useState([]);
-
-  
-
-  console.log(cartItems);
-
   useEffect(() => {
     const initCart = async () => {
       if (productId) {
@@ -100,7 +94,7 @@ function CheckoutPage() {
         await fetchCart();
       }
     };
-  
+
     initCart();
   }, [productId]);
 
@@ -109,7 +103,7 @@ function CheckoutPage() {
       setCartItems([
         {
           product_id: {
-           ...productDetails,
+            ...productDetails,
           },
           quantity: Number(quantity) || 1,
           color_name: color,
@@ -120,6 +114,18 @@ function CheckoutPage() {
   }, [productDetails]);
 
   useEffect(() => {
+    if (location.state?.fromBuyAgain) {
+      const buyAgainItems = location.state.fromBuyAgain || [];
+
+      const convertedItems = buyAgainItems.map((item) => ({
+        ...item,
+        color_name: item.color, // rename
+        variant_name: item.variant, // rename
+      }));
+
+      setCartItems(convertedItems);
+      return;
+    }
     if (!productId && cart?.products) {
       setCartItems(cart.products);
     }
@@ -138,22 +144,27 @@ function CheckoutPage() {
     (discount) => discount.discount_type === "product"
   );
 
-  const { selectedUser, fetchUser, handleAddAddress, handleUpdateAddress, handleDeleteAddress } = useUser();
+  const {
+    selectedUser,
+    fetchUser,
+    handleAddAddress,
+    handleUpdateAddress,
+    handleDeleteAddress,
+  } = useUser();
 
   useEffect(() => {
     if (!selectedUser) return;
-  
+
     const addressesUser = selectedUser?.addresses || [];
     setAddresses(addressesUser);
-  
+
     if (!selectedAddress && addressesUser.length > 0) {
       const defaultAddress = addressesUser.find(
         (address) => address.is_default
       );
       if (defaultAddress) setSelectedAddress(defaultAddress);
     }
-  }, [selectedUser]); 
-
+  }, [selectedUser]);
 
   const handleAddAddresss = async () => {
     if (validateForm()) {
