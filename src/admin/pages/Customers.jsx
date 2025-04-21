@@ -10,7 +10,8 @@ const statusColors = {
 };
 // be thiếu trường tên khách hàng, cả phần đăng ký các kiểu...
 const Customers = () => {
-  const { fetchUsers, users, fetchUser } = useUser();
+  const { fetchUsers, fetchUser } = useUser();
+  const [users, setUsers] = useState();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
@@ -21,7 +22,8 @@ const Customers = () => {
       if (user.result.role !== "admin") {
         window.location.href = "/sign-in";
       } else {
-        fetchUsers();
+        const usersData = await fetchUsers();
+        setUsers(usersData);
       }
     };
     fetchDataUsers();

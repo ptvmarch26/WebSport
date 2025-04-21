@@ -1,4 +1,4 @@
-import AxiosInstance from "../api/AxiosInstance";
+import AxiosInstance from "./AxiosInstance";
 
 export const createOrder = async (orderData) => {
   console.log("orderData", orderData);

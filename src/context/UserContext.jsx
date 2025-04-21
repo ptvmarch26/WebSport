@@ -1,33 +1,46 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getUser, getAllUsers, updateUser, changePassword, addAddress, updateAddress, deleteAddress, getDiscount, deleteSearch, getChatHistory, deleteChatHistory} from "../services/api/UserApi";
+import {
+  getUser,
+  getAllUsers,
+  updateUser,
+  changePassword,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  getDiscount,
+  deleteSearch,
+  getChatHistory,
+  deleteChatHistory,
+} from "../services/api/UserApi";
 import { message } from "antd";
 import { useAuth } from "./AuthContext";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [discounts, setDiscounts] = useState([]);
-  const {token } = useAuth();
+  const { token } = useAuth();
   const fetchUsers = async () => {
     try {
       const data = await getAllUsers();
-  
-      if (data?.EM === "Get all users successfully" && Array.isArray(data.result)) {
-      const processedUsers = data.result.map(user => ({
-        ...user,
-        status: user.deleted_at ? "Đã khóa" : "Hoạt động", 
-      }));
 
-      setUsers(processedUsers);
+      if (
+        data?.EM === "Get all users successfully" &&
+        Array.isArray(data.result)
+      ) {
+        const processedUsers = data.result.map((user) => ({
+          ...user,
+          status: user.deleted_at ? "Đã khóa" : "Hoạt động",
+        }));
+        return processedUsers;
       } else {
         message.error("Không thể tải danh sách người dùng!");
       }
     } catch (error) {
       console.error("Lỗi khi gọi API:", error);
       message.error("Không thể tải danh sách người dùng!");
-    } 
+    }
   };
 
   const fetchUser = async () => {
@@ -41,21 +54,19 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (token){
+    if (token) {
       fetchUser();
     }
   }, [token]);
 
   const handleUpdateUser = async (userData) => {
     const updatedUser = await updateUser(userData);
-    console.log("updatedUser", updatedUser);
     setSelectedUser((prev) => ({
       ...prev,
       ...updatedUser.data,
     }));
     return updatedUser;
   };
-  
 
   const handleChangePassword = async (oldPassword, newPassword) => {
     return await changePassword(oldPassword, newPassword);
@@ -68,7 +79,7 @@ export const UserProvider = ({ children }) => {
   const handleUpdateAddress = async (index, updateData) => {
     return await updateAddress(index, updateData);
   };
-  
+
   const handleDeleteAddress = async (index) => {
     return await deleteAddress(index);
   };
@@ -81,24 +92,23 @@ export const UserProvider = ({ children }) => {
       message.error("Không tìm thấy thông tin giảm giá!");
     }
     return data;
-  }
+  };
 
-  const handleDeleteSearch = async(index) => {
+  const handleDeleteSearch = async (index) => {
     return await deleteSearch(index);
-  }
+  };
 
   const handleGetChatHistory = async () => {
     return await getChatHistory();
-  }
+  };
 
   const handleDeleteChatHistory = async () => {
     return await deleteChatHistory();
-  }
+  };
 
   return (
     <UserContext.Provider
       value={{
-        users,
         selectedUser,
         setSelectedUser,
         discounts,
