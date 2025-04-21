@@ -23,6 +23,7 @@ import axios from "axios";
 import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
+import { usePopup } from "../../context/PopupContext";
 
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -42,6 +43,7 @@ const Header = () => {
   const showCartDot = cart?.products?.length;
   const showNotificationDot = unreadCount;
   const { handleLogout } = useAuth();
+  const { showPopup } = usePopup();
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -93,11 +95,20 @@ const Header = () => {
         },
       });
 
+      console.log("res", res);
+
       if (res.data.EC === 0) {
         const result = res.data.result;
-        const parsedResult =
-          typeof result === "string" ? JSON.parse(result) : result;
-        console.log("query:", parsedResult);
+
+        let parsedResult;
+        try {
+          parsedResult =
+            typeof result === "string" ? JSON.parse(result) : result;
+        } catch (err) {
+        setSearchOpen(!searchOpen);
+          showPopup(res.data.result, false);
+          return;
+        }
 
         // Lưu vào local storage
         if (!token) {
