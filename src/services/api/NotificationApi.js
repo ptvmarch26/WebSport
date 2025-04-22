@@ -1,4 +1,4 @@
-import AxiosInstance from "./AxiosInstance";
+import AxiosInstance from "../api/AxiosInstance";
 
 export const createNotificationForAll = async (notificationData) => {
   console.log("notificationData", notificationData);

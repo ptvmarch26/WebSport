@@ -1,13 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { FaRobot, FaTimes, FaArrowRight } from "react-icons/fa";
-// import { ChatwithBot } from "../../services/api/UserApi";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
 
 const AIChatButton = () => {
   const [showChat, setShowChat] = useState(false);
-
   const toggleChat = () => {
     setShowChat(!showChat);
   };
@@ -44,6 +42,8 @@ const CompactChatBot = ({ onClose }) => {
 
   const { token } = useAuth();
   const { handleGetChatHistory } = useUser();
+
+
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -98,6 +98,8 @@ const CompactChatBot = ({ onClose }) => {
     }
   };
 
+  const URL = import.meta.env.VITE_API_URL;
+
   const handleSendMessage = async () => {
     if (input.trim() === "") return;
 
@@ -113,7 +115,7 @@ const CompactChatBot = ({ onClose }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/chat",
+        `${URL}/chat`,
         {
           message: input,
           history: !token
