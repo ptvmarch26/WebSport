@@ -1,4 +1,3 @@
-// import React from 'react'
 import { Link } from "react-router-dom";
 import facebook from "../../assets/images/facebook.svg";
 import instagram from "../../assets/images/instagram.svg";
@@ -56,19 +55,19 @@ const Footer = () => {
               </h3>
               <nav className="space-y-2">
                 <Link
-                  to={"/"}
+                  to={"/about-us"}
                   className="block text-sm opacity-80 hover:opacity-100 hover:font-medium transition"
                 >
                   Về chúng tôi
                 </Link>
                 <Link
-                  to={"/"}
+                  to={"/term-of-use"}
                   className="block text-sm opacity-80 hover:opacity-100 hover:font-medium transition"
                 >
                   Điều khoản chung
                 </Link>
                 <Link
-                  to={"/"}
+                  to={"/private-policy"}
                   className="block text-sm opacity-80 hover:opacity-100 hover:font-medium transition"
                 >
                   Chính sách bảo mật

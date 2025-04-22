@@ -1,9 +1,4 @@
-
-import React from "react";
-
-
-
-const Term = () => {
+const TermOfUsePage = () => {
     const terms = [
         {
           title: "Giới thiệu",
@@ -27,7 +22,7 @@ const Term = () => {
         {
           title: "Thay đổi hoặc hủy bỏ giao dịch",
           content:
-            "Khách hàng có thể yêu cầu hủy giao dịch nếu đáp ứng một trong các điều kiện sau:\n\n- Gửi yêu cầu hủy qua hotline 093 234 55 10 hoặc email contact@wtmsport.vn\n\n- Trả lại sản phẩm trong tình trạng chưa qua sử dụng và còn nguyên vẹn.",
+            "Khách hàng có thể yêu cầu hủy giao dịch nếu đáp ứng một trong các điều kiện sau:\n\n- Gửi yêu cầu hủy qua hotline 059 527 56 88 hoặc email wtmsport.contact@gmail.vn\n\n- Trả lại sản phẩm trong tình trạng chưa qua sử dụng và còn nguyên vẹn.",
         },
         {
           title: "Giải quyết hậu quả do lỗi nhập sai thông tin",
@@ -69,7 +64,7 @@ const Term = () => {
   return (
     <div className="container mx-auto flex flex-col py-10 px-2">
       
-      <h1 className="text-4xl pacifico font-medium text-primary text-center">
+      <h1 className="text-4xl font-semibold uppercase text-primary text-center">
         WTM Sport - Điều khoản sử dụng
       </h1>
       <div className="flex justify-center py-7">
@@ -105,4 +100,4 @@ const Term = () => {
   );
 };
 
-export default Term;
+export default TermOfUsePage;

@@ -31,9 +31,9 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress";
 import ProductDetails from "../admin/pages/ProductDetails";
 import SearchPage from "../pages/SearchPage/SearchPage";
-import AboutUs from "../pages/AboutUsPage/AboutUsPage";
-import PrivatePolicy from "../pages/PrivatePolicyPage/PrivatePolicyPage";
-import Term from "../pages/TermOfUsePage/TermOfUsePage";
+import AboutUsPage from "../pages/AboutUsPage/AboutUsPage";
+import PrivatePolicyPage from "../pages/PrivatePolicyPage/PrivatePolicyPage";
+import TermOfUsePage from "../pages/TermOfUsePage/TermOfUsePage";
 
 const publicRoutes = [
   {
@@ -84,15 +84,15 @@ const publicRoutes = [
   },
   {
     path: "/about-us",
-    component: AboutUs,
+    component: AboutUsPage,
   },
   {
     path: "/private-policy",
-    component: PrivatePolicy
+    component: PrivatePolicyPage
   },
   {
     path: "/term-of-use",
-    component: Term
+    component: TermOfUsePage
   },
   {
     path: "*",

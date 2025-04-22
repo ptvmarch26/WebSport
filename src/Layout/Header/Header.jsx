@@ -623,7 +623,7 @@ const Header = () => {
                   <p>
                     <Link
                       className="block"
-                      to="/about-shop"
+                      to="/about-us"
                       onClick={toggleMenu}
                     >
                       Về chúng tôi
