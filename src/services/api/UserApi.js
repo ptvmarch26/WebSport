@@ -110,3 +110,15 @@ export const deleteChatHistory = async () => {
     return error.response?.data || "Lỗi kết nối đến server";
   }
 }
+
+export const getChatBotSearch = async (query) => {
+  try {
+      const response = await AxiosInstance.get("/chat", {
+          params: { message: query },
+      });
+
+      return response.data;
+  } catch (error) {
+      return error.response?.data || null;
+  }
+};

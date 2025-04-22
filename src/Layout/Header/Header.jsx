@@ -13,12 +13,11 @@ import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
-import axios from "axios";
 import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
 import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
-
+import { getChatBotSearch } from "../../services/api/UserApi";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -76,18 +75,10 @@ const Header = () => {
     const query = customQuery !== undefined ? customQuery : searchQuery;
     if (!query.trim()) return;
     try {
-      const token = localStorage.getItem("accessToken");
-
-      const res = await axios.get("http://localhost:5000/chat", {
-        params: { message: query },
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      });
-
-      if (res.data.EC === 0) {
-        const result = res.data.result;
+      const res = await getChatBotSearch(query);
+      
+      if (res?.EC === 0) {
+        const result = res.result;
         const parsedResult =
           typeof result === "string" ? JSON.parse(result) : result;
         console.log("query:", parsedResult);
