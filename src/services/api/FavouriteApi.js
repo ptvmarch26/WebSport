@@ -1,4 +1,4 @@
-import AxiosInstance from "../api/AxiosInstance";
+import AxiosInstance from "./AxiosInstance";
 
 // Thêm hoặc xóa sản phẩm khỏi danh sách yêu thích
 export const updateFavourite = async (productId) => {

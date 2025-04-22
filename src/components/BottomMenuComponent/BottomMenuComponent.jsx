@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
-import { IoHomeOutline } from "react-icons/io5";
+import { IoBagHandle, IoBagHandleOutline, IoHomeOutline, IoTicketOutline, IoTicketSharp } from "react-icons/io5";
 import { IoHomeSharp } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoMdNotifications } from "react-icons/io";
-import { HiOutlineClipboardList } from "react-icons/hi";
-import { HiClipboardList } from "react-icons/hi";
+import { useNotifications } from "../../context/NotificationContext";
 
 const BottomMenuComponent = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const location = useLocation();
+  const { unreadCount } = useNotifications();
+  const showNotificationDot = unreadCount;
 
   const menuItems = [
     {
@@ -20,21 +21,28 @@ const BottomMenuComponent = () => {
       label: "Trang chủ",
     },
     {
-      path: "/notifications",
-      iconDefault: <IoIosNotificationsOutline />,
-      iconActive: <IoMdNotifications />,
-      label: "Thông báo",
-    },
-    {
       path: "/favorite",
       iconDefault: <FaRegHeart />,
       iconActive: <FaHeart />,
       label: "Yêu thích",
     },
     {
+      path: "/notifications",
+      iconDefault: <IoIosNotificationsOutline />,
+      iconActive: <IoMdNotifications />,
+      label: "Thông báo",
+      showBadge: showNotificationDot > 0,
+    },
+    {
+      path: "/vouchers",
+      iconDefault: <IoTicketOutline />,
+      iconActive: <IoTicketSharp />,
+      label: "Voucher",
+    },
+    {
       path: "/orders",
-      iconDefault: <HiOutlineClipboardList />,
-      iconActive: <HiClipboardList />,
+      iconDefault: <IoBagHandleOutline />,
+      iconActive: <IoBagHandle />,
       label: "Đơn hàng",
     },
   ];
@@ -63,6 +71,13 @@ const BottomMenuComponent = () => {
           onMouseLeave={handleMouseLeave}
         >
           {isActive(index, item.path) ? item.iconActive : item.iconDefault}
+          <div className="relative">
+            {item.showBadge && (
+              <span className="absolute -top-7 -right-4 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                {showNotificationDot}
+              </span>
+            )}
+          </div>
           <span className="text-sm">{item.label}</span>
         </Link>
       ))}

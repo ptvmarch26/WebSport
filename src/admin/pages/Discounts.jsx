@@ -68,9 +68,10 @@ const Discounts = () => {
     fetchDiscountsData();
   }, []);
 
-  // useEffect(() => {
-  //   fetchCategories();
-  // }, []);
+  useEffect(() => {
+    fetchCategories();
+    fetchProducts();
+  }, []);
 
   const handleDelete = async () => {
     try {

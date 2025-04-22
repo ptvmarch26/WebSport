@@ -116,9 +116,9 @@ const DefaultLayout = ({ children }) => {
       <div className="mt-[100px]">{children}</div>
 
       {token && <BottomMenuComponent />}
-      {!authPages[location.pathname] && token ? <AIChatButton /> : null}
+      {!authPages[location.pathname] ? <AIChatButton /> : null}
 
-      {token && compareCount > 0 && (
+      {!authPages[location.pathname] && compareCount > 0 && (
         <div className="fixed bottom-60 lg:bottom-[140px] right-10 z-50">
           <button
             onClick={() => setIsCompareOpen(true)}

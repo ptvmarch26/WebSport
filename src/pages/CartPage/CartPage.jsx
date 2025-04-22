@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CartItemComponent from "../../components/CartItemComponent/CartItemComponent";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import ConfirmDialogComponent from "../../components/ConfirmDialogComponent/ConfirmDialogComponent";
 
@@ -14,21 +14,8 @@ const CartPage = () => {
     handleAddToCart,
     handleClearCart,
   } = useCart();
-  const location = useLocation();
 
   useEffect(() => {
-    if (location.state?.fromBuyAgain) {
-      const buyAgainItems = location.state.fromBuyAgain || [];
-
-      const convertedItems = buyAgainItems.map((item) => ({
-        ...item,
-        color_name: item.color, // rename
-        variant_name: item.variant, // rename
-      }));
-
-      setCart({ products: convertedItems });
-      return;
-    }
     fetchCart();
   }, []);
 

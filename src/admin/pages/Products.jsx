@@ -38,12 +38,6 @@ const Products = () => {
     fetchCategories();
   }, []);
 
-  // useEffect(() => {
-  //   if (selectedProduct) {
-  //     form.setFieldsValue(selectedProduct);
-  //   }
-  // }, [selectedProduct]);
-
   const handleDelete = async () => {
     try {
       await Promise.all(selectedRowKeys.map((id) => removeProduct(id)));
@@ -78,55 +72,6 @@ const Products = () => {
     setLoading(false);
   };
 
-  // const handleEditProduct = (record) => {
-  //   const recordWithNormalizedImages = {
-  //     ...record,
-  //     product_img: (Array.isArray(record.product_img)
-  //       ? record.product_img
-  //       : [record.product_img]
-  //     )
-  //       .filter(Boolean)
-  //       .map((url, index) => ({
-  //         uid: `${index}`,
-  //         name: `product-image-${index}.png`,
-  //         status: "done",
-  //         originFileObj: { name: `product-image-${index}.png`, url },
-  //       })),
-  //     product_category: record.product_category._id,
-  //     colors: record.colors?.map((color, colorIndex) => ({
-  //       ...color,
-  //       imgs: {
-  //         img_main: color.imgs?.img_main
-  //           ? [
-  //               {
-  //                 uid: `main-${colorIndex}`,
-  //                 name: `main-color-${colorIndex}.png`,
-  //                 status: "done",
-  //                 url: color.imgs.img_main,
-  //               },
-  //             ]
-  //           : [],
-  //         img_subs: Array.isArray(color.imgs?.img_subs)
-  //           ? color.imgs.img_subs.map((url, idx) => ({
-  //               uid: `sub-${colorIndex}-${idx}`,
-  //               name: `sub-color-${colorIndex}-${idx}.png`,
-  //               status: "done",
-  //               originFileObj: {
-  //                 name: `sub-color-${colorIndex}-${idx}.png`,
-  //                 url,
-  //               },
-  //             }))
-  //           : [],
-  //       },
-  //     })),
-  //   };
-
-  //   console.log("recordWithNormalizedImages", recordWithNormalizedImages);
-  //   setSelectedProduct(recordWithNormalizedImages);
-  //   form.setFieldsValue(recordWithNormalizedImages);
-  //   setIsEditProductgModalVisible(true);
-  // };
-
   const urlToFile = async (url, filename, mimeType = "image/png") => {
     const res = await fetch(url);
     const blob = await res.blob();
@@ -134,6 +79,7 @@ const Products = () => {
   };
 
   const handleEditProduct = async (record) => {
+    setLoading(true, "Đang mở form sản phẩm");
     const productImages = await Promise.all(
       (Array.isArray(record.product_img)
         ? record.product_img
@@ -178,6 +124,7 @@ const Products = () => {
               }))
             )
           : [];
+        setLoading(false);
 
         return {
           ...color,
@@ -202,6 +149,7 @@ const Products = () => {
   };
 
   const handleUpdate = async () => {
+    setLoading(true, "Đang sửa sản phẩm");
     try {
       await form.validateFields();
       const updatedFields = form.getFieldsValue();
@@ -216,6 +164,7 @@ const Products = () => {
     } catch (error) {
       console.error("Lỗi khi cập nhật sản phẩm:", error);
     }
+    setLoading(false);
   };
 
   const filteredProducts = products.filter((product) => {

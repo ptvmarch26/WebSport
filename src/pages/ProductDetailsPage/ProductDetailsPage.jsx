@@ -2,14 +2,15 @@ import ProductComponent from "../../components/ProductComponent/ProductComponent
 import ProductFeedBackComponent from "../../components/ProductFeedBackComponent/ProductFeedBackComponent";
 import ProductInfoComponent from "../../components/ProductInfoComponent/ProductInfoComponent";
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useProduct } from "../../context/ProductContext";
 import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { fetchProductDetails, productDetails, fetchProducts, products } = useProduct();
+  const { fetchProductDetails, productDetails, fetchProducts, products } =
+    useProduct();
   useEffect(() => {
     fetchProductDetails(id);
     window.scrollTo(0, 0);
@@ -18,6 +19,34 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const [itemsToShow, setItemsToShow] = useState(6);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setItemsToShow(8); 
+      } else {
+        setItemsToShow(6); 
+      }
+    };
+
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const relatedProducts = products
+    .filter(
+      (p) =>
+        p._id !== productDetails._id &&
+        p.product_category.category_type ===
+          productDetails.product_category.category_type &&
+        p.product_category.category_gender ===
+          productDetails.product_category.category_gender
+    )
+    .slice(0, itemsToShow);
 
   return (
     <div className="container mx-auto px-2">
@@ -29,11 +58,11 @@ const ProductDetailsPage = () => {
           Sản phẩm liên quan
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products.slice(0, 8).map((product) => (
+          {relatedProducts.map((product) => (
             <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>
               <ProductComponent
                 item={product}
-                onClick={() => navigate(`/product/${product._id}`)} 
+                onClick={() => navigate(`/product/${product._id}`)}
               />
             </AnimationScroll>
           ))}

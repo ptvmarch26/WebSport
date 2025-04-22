@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaUser,
   FaShoppingBag,
   FaBell,
-  FaTicketAlt,
   FaSignOutAlt,
   FaEnvelope,
   FaPhone,
@@ -17,6 +16,7 @@ import { Button } from "@material-tailwind/react";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
 import { useNotifications } from "../../context/NotificationContext";
+import { IoTicketSharp } from "react-icons/io5";
 
 const AccountInfoComponent = () => {
   const [selectedKey, setSelectedKey] = useState("/account/profile");
@@ -25,7 +25,7 @@ const AccountInfoComponent = () => {
   const location = useLocation();
   const defaultAvatar = avt_false;
   const { handleLogout } = useAuth();
-  const { selectedUser, fetchUser } = useUser();
+  const { selectedUser, fetchUser, setSelectedUser } = useUser();
 
   useEffect(() => {
     fetchUser();
@@ -43,9 +43,12 @@ const AccountInfoComponent = () => {
 
   const handleSubmitLogout = async () => {
     await handleLogout();
-    localStorage.setItem("compareList", JSON.stringify([]));
-    // navigate("/sign-in", { replace: true });
-    window.location.href = "/sign-in";
+    localStorage.removeItem("compareList");
+    window.dispatchEvent(new CustomEvent("compareListUpdated"));
+    // // navigate("/sign-in", { replace: true });
+    // window.location.href = "/";
+    setSelectedUser(null);
+    navigate("/", { replace: true });
   };
 
   const toggleMenuVisibility = () => {
@@ -73,7 +76,7 @@ const AccountInfoComponent = () => {
       path: "/notifications",
       showNotificationDot: true,
     },
-    { icon: <FaTicketAlt />, text: "Kho voucher", path: "/vouchers" },
+    { icon: <IoTicketSharp />, text: "Kho voucher", path: "/vouchers" },
   ];
 
   return (
@@ -211,7 +214,7 @@ const MenuItem = ({
       <span className="ml-3">{text}</span>
 
       {showNotificationDot && Dot > 0 && (
-        <span className="absolute right-4 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+        <span className="absolute left-6 top-3 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
           {Dot}
         </span>
       )}

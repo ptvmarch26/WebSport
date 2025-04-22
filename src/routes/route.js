@@ -31,6 +31,9 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import MyAddress from "../pages/AccountPage/PageChildren/MyAddress";
 import ProductDetails from "../admin/pages/ProductDetails";
 import SearchPage from "../pages/SearchPage/SearchPage";
+import AboutUs from "../pages/AboutUsPage/AboutUsPage";
+import PrivatePolicy from "../pages/PrivatePolicyPage/PrivatePolicyPage";
+import Term from "../pages/TermOfUsePage/TermOfUsePage";
 
 const publicRoutes = [
   {
@@ -78,6 +81,18 @@ const publicRoutes = [
   {
     path: "/orders/order-feedback/:id",
     component: OrderFeedbackPage,
+  },
+  {
+    path: "/about-us",
+    component: AboutUs,
+  },
+  {
+    path: "/private-policy",
+    component: PrivatePolicy
+  },
+  {
+    path: "/term-of-use",
+    component: Term
   },
   {
     path: "*",

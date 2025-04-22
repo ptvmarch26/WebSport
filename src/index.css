@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 @tailwind base;
@@ -6,6 +7,7 @@
 /* @import './grid.css'; */
 
 body {
+  font-family: "Inter", serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -35,4 +37,26 @@ h6 {
   html {
     font-size: 80%;
   }
+}
+
+.custom-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; 
+  border-radius: 9999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af; 
+}
+
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
 }

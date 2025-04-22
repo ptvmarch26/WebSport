@@ -1,4 +1,4 @@
-import AxiosInstance from "../api/AxiosInstance";
+import AxiosInstance from "./AxiosInstance";
 
 export const getUser = async () => {
   try {
@@ -31,8 +31,6 @@ export const changePassword = async (oldPassword, newPassword) => {
 };
 
 export const updateUser = async (userData) => {
-  console.log("userData", userData);
-
   try {
     const response = await AxiosInstance.put("/user", userData);
     return response.data;

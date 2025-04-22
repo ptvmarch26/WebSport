@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { FaHeart, FaShoppingCart, FaSearch, FaBars } from "react-icons/fa";
+import {
+  FaHeart,
+  FaShoppingCart,
+  FaSearch,
+  FaBars,
+  FaBell,
+} from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 import { AiOutlineClose } from "react-icons/ai";
 import { useEffect } from "react";
@@ -16,12 +22,13 @@ import { useUser } from "../../context/UserContext";
 import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
-import NotificationBanner from "../../components/NotificationBanner/NotificationBanner";
+import { usePopup } from "../../context/PopupContext";
 import { getChatBotSearch } from "../../services/api/UserApi";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
+  const [openNestedSubMenu, setOpenNestedSubMenu] = useState(null);
   const [language, setLanguage] = useState("vi");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
@@ -34,6 +41,8 @@ const Header = () => {
   const navigate = useNavigate();
   const showCartDot = cart?.products?.length;
   const showNotificationDot = unreadCount;
+  const { handleLogout } = useAuth();
+  const { showPopup } = usePopup();
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -75,13 +84,30 @@ const Header = () => {
     const query = customQuery !== undefined ? customQuery : searchQuery;
     if (!query.trim()) return;
     try {
-      const res = await getChatBotSearch(query);
-      
-      if (res?.EC === 0) {
-        const result = res.result;
-        const parsedResult =
-          typeof result === "string" ? JSON.parse(result) : result;
-        console.log("query:", parsedResult);
+      const token = localStorage.getItem("accessToken");
+
+      const res = await axios.get("http://localhost:5000/chat", {
+        params: { message: query },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      console.log("res", res);
+
+      if (res.data.EC === 0) {
+        const result = res.data.result;
+
+        let parsedResult;
+        try {
+          parsedResult =
+            typeof result === "string" ? JSON.parse(result) : result;
+        } catch (err) {
+        setSearchOpen(!searchOpen);
+          showPopup(res.data.result, false);
+          return;
+        }
 
         // Lưu vào local storage
         if (!token) {
@@ -167,15 +193,116 @@ const Header = () => {
     : searchHistory;
   const hasMoreHistory = fullSearchHistory.length > 5;
 
-  // console.log("us", selectedUser?.searchhistory);
+  const navigateToCategory = (
+    category_gender,
+    category = null,
+    category_sub = null
+  ) => {
+    const params = new URLSearchParams();
+
+    if (category_gender) {
+      params.append("category_gender", category_gender);
+    }
+
+    if (category) {
+      params.append("category", category);
+    }
+
+    if (category_sub) {
+      params.append("category_sub", category_sub);
+    }
+
+    const url = `/search?${params.toString()}`;
+    return url;
+  };
 
   const options = [
-    { name: "Hàng mới về", subOptions: ["Giày mới", "Áo mới", "Phụ kiện mới"] },
-    { name: "Nam", subOptions: ["Giày nam", "Quần áo nam", "Phụ kiện nam"] },
-    { name: "Nữ", subOptions: ["Giày nữ", "Quần áo nữ", "Phụ kiện nữ"] },
-    { name: "Trẻ em", subOptions: ["Giày trẻ em", "Áo trẻ em"] },
-    { name: "Thể thao", subOptions: ["Bóng đá", "Bóng rổ", "Gym"] },
-    { name: "Giảm giá", subOptions: ["Flash Sale", "Mua 1 tặng 1"] },
+    // {
+    //   name: "Hàng mới về",
+    //   subOptions: [
+    //     {
+    //       name: "Giày mới",
+    //       subCategories: ["Giày đá bóng", "Giày chạy bộ", "Giày thể thao"],
+    //     },
+    //     {
+    //       name: "Áo mới",
+    //       subCategories: ["Áo thun", "Áo polo", "Áo khoác"],
+    //     },
+    //     {
+    //       name: "Phụ kiện mới",
+    //       subCategories: ["Túi xách", "Mũ nón", "Tất vớ"],
+    //     },
+    //   ],
+    // },
+    {
+      name: "Nam",
+      subOptions: [
+        {
+          name: "Giày",
+          subCategories: [
+            "Giày đá bóng",
+            "Giày chạy bộ",
+            "Giày bóng rổ",
+            "Giày tennis",
+            "Giày tập gym",
+          ],
+        },
+        {
+          name: "Quần",
+          subCategories: ["Quần đá bóng", "Quần chạy bộ"],
+        },
+        {
+          name: "Áo",
+          subCategories: ["Áo thun", "Áo đá bóng"],
+        },
+      ],
+    },
+    {
+      name: "Nữ",
+      subOptions: [
+        {
+          name: "Giày",
+          subCategories: [
+            "Giày đá bóng",
+            "Giày chạy bộ",
+            "Giày bóng rổ",
+            "Giày tennis",
+            "Giày tập gym",
+          ],
+        },
+        {
+          name: "Quần",
+          subCategories: ["Quần đá bóng", "Quần chạy bộ"],
+        },
+        {
+          name: "Áo",
+          subCategories: ["Áo thun", "Áo đá bóng"],
+        },
+      ],
+    },
+    {
+      name: "Unisex",
+      subOptions: [
+        {
+          name: "Giày",
+          subCategories: [
+            "Giày đá bóng",
+            "Giày chạy bộ",
+            "Giày bóng rổ",
+            "Giày tennis",
+            "Giày tập gym",
+          ],
+        },
+        {
+          name: "Quần",
+          subCategories: ["Quần đá bóng", "Quần chạy bộ"],
+        },
+        {
+          name: "Áo",
+          subCategories: ["Áo thun", "Áo đá bóng"],
+        },
+      ],
+    },
   ];
 
   const { scrollDirection } = userScrollHandling();
@@ -203,10 +330,29 @@ const Header = () => {
 
   const toggleSubMenu = (index) => {
     setOpenSubMenu(openSubMenu === index ? null : index);
+    setOpenNestedSubMenu(null);
+  };
+
+  const toggleNestedSubMenu = (index) => {
+    setOpenNestedSubMenu(openNestedSubMenu === index ? null : index);
   };
 
   const toggleLanguage = () => {
     setLanguage(language === "vi" ? "en" : "vi");
+  };
+
+  const handleSubmitLogout = async () => {
+    await handleLogout();
+    localStorage.removeItem("compareList");
+    window.dispatchEvent(new CustomEvent("compareListUpdated"));
+    navigate("/", { replace: true });
+  };
+
+  const handleMenuItemClick = (url) => {
+    navigate(url);
+    if (menuOpen) {
+      toggleMenu();
+    }
   };
 
   return (
@@ -244,18 +390,35 @@ const Header = () => {
                   after:scale-x-0 hover:after:scale-x-100 
                   after:transition-transform after:duration-300"
                 >
-                  <Link to={"/"}>{option.name}</Link>
+                  <Link to={navigateToCategory(option.name)}>
+                    {option.name}
+                  </Link>
                   <div className="absolute left-0 top-[60px] bg-white text-black w-48 shadow-lg p-2 z-10 opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-700">
                     {option.subOptions.map((sub, i) => (
-                      <Link
-                        key={i}
-                        to="/"
-                        className={`block px-4 py-2 hover:bg-gray-200 rounded opacity-0 translate-y-2 transition-all duration-300 delay-[${
-                          i * 75
-                        }ms] group-hover:opacity-100 group-hover:translate-y-0`}
-                      >
-                        {sub}
-                      </Link>
+                      <div key={i} className="relative group/sub">
+                        <Link
+                          to={navigateToCategory(option.name, sub.name)}
+                          className="px-4 py-2 hover:bg-gray-200 rounded flex justify-between items-center opacity-0 translate-y-2 transition-all duration-300 delay-[calc(var(--i)*75ms)] group-hover:opacity-100 group-hover:translate-y-0"
+                        >
+                          {sub.name}
+                          <MdNavigateNext className="w-5 h-5" />
+                        </Link>
+                        <div className="absolute left-full top-0 bg-white text-black w-48 shadow-lg p-2 opacity-0 scale-95 invisible group-hover/sub:opacity-100 group-hover/sub:scale-100 group-hover/sub:visible transition-all duration-300">
+                          {sub.subCategories.map((category, j) => (
+                            <Link
+                              key={j}
+                              to={navigateToCategory(
+                                option.name,
+                                sub.name,
+                                category
+                              )}
+                              className="block px-4 py-2 hover:bg-gray-200 rounded opacity-0 translate-y-2 transition-all duration-300 delay-[calc(var(--j)*75ms)] group-hover/sub:opacity-100 group-hover/sub:translate-y-0"
+                            >
+                              {category}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </li>
@@ -271,7 +434,7 @@ const Header = () => {
           />
         </Link>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center">
           <div className="flex items-center space-x-4 text-white text-xl">
             <button
               onClick={toggleSearch}
@@ -287,25 +450,52 @@ const Header = () => {
                     <FaHeart />
                   </div>
                 </Link>
-                <Link to={"/account"} className="order-1">
-                  <div className=" relative">
-                    <img
-                      src={selectedUser?.avt_img || avatar_false}
-                      alt="User avatar"
-                      className="w-7 h-7 rounded-full ml-1"
-                    />
-                    {showNotificationDot > 0 && (
-                      <span className="absolute -bottom-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                        {showNotificationDot}
-                      </span>
-                    )}
+                <Link to={"/notifications"} className="hidden lg:block">
+                  <div className="p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
+                    <div className="relative">
+                      <FaBell />
+                      {showNotificationDot > 0 && (
+                        <span className="absolute -top-[6px] -right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                          {showNotificationDot}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </Link>
+                <div className="relative group order-1 rounded-none">
+                  <div className="flex items-center cursor-pointer">
+                    <Link to="/account">
+                      <img
+                        src={selectedUser?.avt_img || avatar_false}
+                        alt="User avatar"
+                        className="w-7 h-7 rounded-full ml-1"
+                      />
+                    </Link>
+                  </div>
+                  <div
+                    className="before:content-['']  before:absolute before:top-[-15px] before:right-0 before:w-[40px] before:h-4
+  text-sm absolute top-[35px] right-0 w-[150px] bg-white shadow-lg text-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
+                  >
+                    <Link
+                      to="/account"
+                      className="group block px-4 py-2 hover:bg-gray-100 border-b border-gray-200"
+                    >
+                      <span>Tài khoản của tôi</span>
+                    </Link>
+
+                    <button
+                      onClick={handleSubmitLogout}
+                      className="group block w-full text-left px-4 py-2 hover:bg-gray-100 hover:text-red-500"
+                    >
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
+                </div>
                 <Link to={"/cart"}>
                   <div className="relative p-2 rounded-full hover:bg-white/20 transition cursor-pointer">
                     <FaShoppingCart />
-                    {showCartDot && (
-                      <span className="absolute -bottom-0 -right-0 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                    {showCartDot > 0 && (
+                      <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
                         {showCartDot}
                       </span>
                     )}
@@ -378,20 +568,51 @@ const Header = () => {
                         <h3 className="font-bold text-gray-800">
                           {option.name}
                         </h3>
-                        <MdNavigateNext className="w-7 h-7" />
+                        {openSubMenu === index ? (
+                          <MdExpandLess className="w-7 h-7" />
+                        ) : (
+                          <MdNavigateNext className="w-7 h-7" />
+                        )}
                       </div>
                     </button>
                     {openSubMenu === index && (
                       <div className="space-y-2 pl-4">
                         {option.subOptions.map((sub, i) => (
-                          <Link
-                            key={i}
-                            to="/"
-                            className="block px-4 py-2 text-gray-600 hover:text-black text-lg"
-                            onClick={toggleMenu}
-                          >
-                            {sub}
-                          </Link>
+                          <div key={i}>
+                            <button
+                              onClick={() => toggleNestedSubMenu(i)}
+                              className="w-full px-4 py-2 text-gray-600 hover:text-black text-lg flex justify-between items-center"
+                            >
+                              <span>{sub.name}</span>
+                              {openNestedSubMenu === i ? (
+                                <MdExpandLess className="w-6 h-6" />
+                              ) : (
+                                <MdNavigateNext className="w-6 h-6" />
+                              )}
+                            </button>
+
+                            {openNestedSubMenu === i && (
+                              <div className="pl-4 space-y-1">
+                                {sub.subCategories.map((category, j) => (
+                                  <button
+                                    key={j}
+                                    className="block px-4 py-2 text-gray-500 hover:text-black text-base w-full text-left"
+                                    onClick={() => {
+                                      const categoryName = sub.name;
+                                      const url = navigateToCategory(
+                                        option.name,
+                                        categoryName,
+                                        category
+                                      );
+                                      handleMenuItemClick(url);
+                                    }}
+                                  >
+                                    {category}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     )}
@@ -521,7 +742,6 @@ const Header = () => {
           </div>
         </div>
       )}
-      <NotificationBanner unreadCount={unreadCount} />
     </div>
   );
 };

@@ -34,7 +34,7 @@ const ScrollToTopComponent = () => {
   return (
     <div
       onClick={scrollToTop}
-      className={`fixed bottom-20 lg:bottom-5 right-10 z-50 p-4 bg-primary hover:opacity-80 text-white cursor-pointer transition-opacity ${
+      className={`fixed bottom-20 lg:bottom-5 right-10 z-40 p-4 bg-primary hover:opacity-80 text-white cursor-pointer transition-opacity ${
         isVisible ? "opacity-100" : "opacity-0"
       } rounded-full w-12 h-12 flex justify-center items-center shadow-[0_4px_8px_0_rgba(255,255,255,0.3)]`}
     >
