@@ -198,25 +198,38 @@
 
 // export default OrderDetails;
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import { Table, Tag } from "antd";
+import { getPaymentInfoByOrderCode } from "../../services/api/PaymentApi";
 
 const statusColors = {
   "Chờ xác nhận": "orange",
+  "Đang chuẩn bị hàng": "teal",
   "Đang giao": "blue",
+  "Yêu cầu hoàn": "pink",
   "Hoàn thành": "green",
-  "Hủy hàng": "red",
   "Hoàn hàng": "purple",
+  "Hủy hàng": "red",
 };
 
 const OrderDetails = () => {
   const { id } = useParams();
   const { orderDetails, fetchOrderDetail } = useOrder();
+  const [paymentInfo, setPaymentInfo] = useState(null);
 
   useEffect(() => {
-    fetchOrderDetail(id);
+    const fetchData = async () => {
+      const order = await fetchOrderDetail(id);
+      if (order.order_payment_method === "Paypal" && order.is_paid) {
+        const res = await getPaymentInfoByOrderCode(order.order_code);
+        if (res.EC === 0 && res.result.transaction) {
+          setPaymentInfo(res.result);
+        }
+      }
+    };
+    fetchData();
   }, [id]);
 
   if (!orderDetails) {
@@ -238,6 +251,7 @@ const OrderDetails = () => {
     order_note,
     estimated_delivery_date,
     products,
+    received_date,
     shipping_address,
     is_feedback,
   } = orderDetails;
@@ -262,7 +276,6 @@ const OrderDetails = () => {
   });
 
   console.log("orderDetails", orderDetails);
-
 
   const columns = [
     {
@@ -333,7 +346,7 @@ const OrderDetails = () => {
         </p>
       </div>
       <div className="bg-white p-6 shadow-lg rounded-lg mt-4 space-y-5">
-        <h3 className="font-semibold">Thông tin khách hàng</h3>
+        <h3 className="font-semibold">Thông tin đơn hàng</h3>
         <div className="space-y-3 px-3 py-5 border rounded">
           <p>
             <strong>Họ tên:</strong> {shipping_address.name}
@@ -353,7 +366,39 @@ const OrderDetails = () => {
             <strong>Ngày giao dự kiến:</strong>{" "}
             {new Date(estimated_delivery_date).toLocaleString()}
           </p>
+          <p>
+            <strong>Đã nhận hàng:</strong>{" "}
+            {new Date(received_date).toLocaleString()}
+          </p>
         </div>
+        <h3 className="font-semibold">Thông tin thanh toán</h3>
+        {paymentInfo && (
+          <div className="space-y-3 px-3 py-5 border rounded">
+            <p>
+              <strong>Tên:</strong>{" "}
+              {paymentInfo.transactions[0].counterAccountName}
+            </p>
+            <p>
+              <strong>Số tài khoản:</strong>{" "}
+              {paymentInfo.transactions[0].counterAccountNumber}
+            </p>
+            <p>
+              <strong>ID Ngân hàng:</strong>{" "}
+              {paymentInfo.transactions[0].counterAccountBankId ??
+                "Không xác định"}
+            </p>
+            <p>
+              <strong>Nội dung:</strong>{" "}
+              {paymentInfo.transactions[0].description}
+            </p>
+            <p>
+              <strong>Thời gian giao dịch:</strong>{" "}
+              {new Date(
+                paymentInfo.transactions[0].transactionDateTime
+              ).toLocaleString()}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="bg-white p-4 shadow-lg rounded-lg mt-4 space-y-5 overflow-x-auto">

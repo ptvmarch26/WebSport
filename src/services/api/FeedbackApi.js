@@ -1,4 +1,4 @@
-import AxiosInstance from "../api/AxiosInstance";
+import AxiosInstance from "./AxiosInstance";
 
 // Tạo feedback mới
 export const createFeedback = async (feedbackData) => {

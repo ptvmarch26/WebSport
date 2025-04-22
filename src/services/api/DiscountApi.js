@@ -1,4 +1,4 @@
-import AxiosInstance from "../api/AxiosInstance";
+import AxiosInstance from "./AxiosInstance";
 
 // Lấy thông tin chi tiết mã giảm giá theo ID
 export const getDetailDiscount = async (discountId) => {

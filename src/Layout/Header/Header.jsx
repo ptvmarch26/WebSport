@@ -19,12 +19,11 @@ import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
-import axios from "axios";
 import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
 import { usePopup } from "../../context/PopupContext";
-
+import { getChatBotSearch } from "../../services/api/UserApi";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
