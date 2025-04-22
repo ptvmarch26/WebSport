@@ -1,4 +1,3 @@
-import React from "react";
 import about1 from "../../assets/images/about1.svg";
 import about2 from "../../assets/images/about2.svg";
 import about3 from "../../assets/images/about3.svg";
@@ -9,7 +8,7 @@ import reason4 from "../../assets/images/reason4.svg";
 import reason5 from "../../assets/images/reason5.svg";
 import reason6 from "../../assets/images/reason6.svg";
 
-const AboutUs = () => {
+const AboutUsPage = () => {
     const options = [
         {
             img: about1,
@@ -73,7 +72,7 @@ const AboutUs = () => {
     return (
         <div className="container mx-auto flex flex-col items-center py-10 px-2">
             <section>
-                <h1 className="text-4xl pacifico font-medium text-primary text-center">
+                <h1 className="text-4xl font-semibold uppercase text-primary text-center">
                     WTM Sport - Về chúng tôi
                 </h1>
                 <div className="flex justify-center py-7">
@@ -92,6 +91,7 @@ const AboutUs = () => {
                             <img
                                 src={option.img}
                                 alt={option.title}
+                                className="w-20 h-20"
                             />
                             <p className="font-bold text-lg my-3 text-center">
                                 {option.title}
@@ -102,7 +102,7 @@ const AboutUs = () => {
                 </div>
             </section>
             <section className="pb-10">
-                <h2 className="text-4xl pacifico font-medium text-primary text-center">
+                <h2 className="text-4xl font-semibold uppercase text-primary text-center">
                     Thế giới thể thao
                 </h2>
                 <div className="flex justify-center py-7">
@@ -118,25 +118,20 @@ const AboutUs = () => {
                     giúp bạn luôn tìm thấy sản phẩm phù hợp với nhu cầu tập luyện cũng như gu thẩm mỹ của mình. <br /> <br />
                     Nếu bạn đang tìm kiếm một địa chỉ đáng tin cậy để sở hữu trang phục, giày dép hoặc phụ kiện thể thao chất
                     lượng, hãy đến với <strong>WTM Sport</strong> – nơi mang đến trải nghiệm mua sắm chuyên nghiệp và truyền cảm hứng cho lối sống năng động, khỏe mạnh. <br /> <br />
-                    Thế mạnh của chúng mình là sự phong phú trong danh mục sản phẩm và sự thấu hiểu nhu cầu của người yêu thể thao. <strong>WTM Sport</strong>
+                    Thế mạnh của chúng mình là sự phong phú trong danh mục sản phẩm và sự thấu hiểu nhu cầu của người yêu thể thao. <strong>WTM Sport </strong>
                     tự hào có đội ngũ nhân viên am hiểu chuyên môn, luôn sẵn sàng hỗ trợ và tư vấn để bạn chọn được sản phẩm phù hợp nhất với mục tiêu rèn luyện hay thi đấu. <br /> <br />
                     Không chỉ là một cửa hàng bán đồ thể thao thông thường, <strong>WTM Sport</strong> còn là nơi kết nối cộng đồng yêu thể thao. Chúng mình luôn chia sẻ những kiến thức hữu ích về chăm sóc,
                     bảo quản thiết bị và lựa chọn sản phẩm phù hợp với từng bộ môn. Bên cạnh đó, <strong>WTM Sport</strong> cam kết mang đến mức giá hợp lý cùng chất lượng tốt nhất,
-                    để mỗi khách hàng đều cảm thấy hài lòng khi lựa chọn sản phẩm của chúng mình. <br /> <br /> Sự uy tín, chất lượng dịch vụ và phong cách chuyên nghiệp chính là điều khiến <strong>WTM Sport</strong>
+                    để mỗi khách hàng đều cảm thấy hài lòng khi lựa chọn sản phẩm của chúng mình. <br /> <br /> Sự uy tín, chất lượng dịch vụ và phong cách chuyên nghiệp chính là điều khiến <strong>WTM Sport </strong>
                     trở thành điểm đến yêu thích của những ai đam mê thể thao. Hãy để <strong>WTM Sport</strong> đồng hành cùng bạn trên hành trình bứt phá giới hạn và sống trọn đam mê thể thao mỗi ngày! </p>
             </section>
             <section>
-                <h2 className="text-4xl pacifico font-medium text-primary text-center">
+                <h2 className="text-4xl font-semibold uppercase text-primary text-center">
                     Tại sao nên chọn WTM Sport
                 </h2>
                 <div className="flex justify-center py-7">
                     <div className="h-[2px] w-[30%] bg-black"></div>
                 </div>
-                <p className="text-center text-xl font-bold">
-                    Với sứ mệnh tạo ra những giá trị bền vững, chúng mình luôn không ngừng
-                    nỗ lực phát triển, khẳng định dấu ấn thương hiệu handmade Việt và mang
-                    đến những giá trị lâu dài cho cộng đồng và khách hàng!
-                </p>
                 <div className="grid grid-cols-2 gap-5 py-10">
                     {reasons.map((reason, index) => (
                         <div
@@ -159,4 +154,4 @@ const AboutUs = () => {
     );
 };
 
-export default AboutUs;
+export default AboutUsPage;
