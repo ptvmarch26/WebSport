@@ -10,6 +10,7 @@ import facebook from "../../assets/images/logo_facebook.png";
 import google from "../../assets/images/logo_google.png";
 import { useAuth } from "../../context/AuthContext";
 import { usePopup } from "../../context/PopupContext";
+import { signUpWithGoogle } from "../../services/api/AuthApi";
 
 const SignInSignUp = () => {
   const navigate = useNavigate();
@@ -123,12 +124,10 @@ const SignInSignUp = () => {
 
   const handleSubmitSignUp = async (e) => {
     if (e) e.preventDefault(); // Vẫn giữ để ngăn submit mặc định
-
     // Sử dụng hàm validate tùy chỉnh
     if (!validateSignUp()) {
       return;
     }
-
     const result = await handleSignUp(
       signUpUserName,
       signUpEmail,
@@ -152,7 +151,6 @@ const SignInSignUp = () => {
       return;
     }
     const result = await handleLogin(userName, password);
-    console.log("result", result);
     if (result.EC === 0 && result?.result?.accessToken) {
       showPopup(result.EM);
       localStorage.removeItem("compareList");
@@ -165,13 +163,25 @@ const SignInSignUp = () => {
 
   const handleSignInWithGoogle = async () => {
     const result = await handlLoginWithGoogle();
-    if (result?.result?.accessToken) {
+    if (result.EC === 0 && result?.result?.accessToken) {
       showPopup(result.EM);
       localStorage.removeItem("compareList");
       window.dispatchEvent(new CustomEvent("compareListUpdated"));
       navigate("/");
     } else {
-      showPopup("Lỗi khi đăng nhập với Google", false);
+      showPopup(result.EM, false);
+    }
+  };
+
+  const handleSignUpWithGoogle = async () => {
+    const result = await signUpWithGoogle();
+    if (result.EC === 0 && result?.result?.accessToken) {
+      showPopup(result.EM);
+      localStorage.removeItem("compareList");
+      window.dispatchEvent(new CustomEvent("compareListUpdated"));
+      navigate("/");
+    } else {
+      showPopup(result.EM, false);
     }
   };
 
@@ -483,7 +493,7 @@ const SignInSignUp = () => {
                 </Button>
                 <div className="space-y-4">
                   <Button
-                    onClick={handleSignInWithGoogle}
+                    onClick={handleSignUpWithGoogle}
                     variant="outlined"
                     size="lg"
                     className="flex h-12 items-center justify-center gap-2"

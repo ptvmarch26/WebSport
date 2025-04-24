@@ -3,7 +3,7 @@ import { auth, provider, signInWithPopup } from "../../config/firebase";
 
 export const signUp = async (user_name, email, password) => {
   try {
-    const res = await AxiosInstance.post("/auth/sign_in", {
+    const res = await AxiosInstance.post("/auth/sign_up", {
       user_name,
       email,
       password,
@@ -75,15 +75,25 @@ export const changePassword = async (oldPassword, newPassword) => {
   }
 };
 
-export const loginWithGoogle = async () => {
+export const signUpWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    console.log("🔥 Firebase User:", {
+    const res = await AxiosInstance.post("/auth/signup_with_google", {
       email: user.email,
       user_name: user.email,
       uid: user.uid,
     });
+    return res.data;
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
+};
+
+export const loginWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
     const res = await AxiosInstance.post("/auth/login_with_google", {
       email: user.email,
       user_name: user.email,

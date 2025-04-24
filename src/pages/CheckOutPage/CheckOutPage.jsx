@@ -327,7 +327,10 @@ function CheckoutPage() {
 
     const res = await handleCreateOrder(orderData);
     if (res?.EC === 0 && selectedPayment === "Paypal") {
-      window.location.href = res.result.resultPayOS.checkoutUrl;
+      showPopup("Đặt hàng thành công, chuyển hướng tới trang thanh toán");
+      setTimeout(() => {
+        window.location.href = res.result.resultPayOS.checkoutUrl;
+      }, 2000);
       return;
     }
     if (res?.EC === 0) {
