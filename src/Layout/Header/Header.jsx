@@ -86,18 +86,12 @@ const Header = () => {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const res = await axios.get("http://localhost:5000/chat", {
-        params: { message: query },
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      });
+      const res = await getChatBotSearch(query);
 
       console.log("res", res);
 
-      if (res.data.EC === 0) {
-        const result = res.data.result;
+      if (res.EC === 0) {
+        const result = res.result;
 
         let parsedResult;
         try {
@@ -105,7 +99,7 @@ const Header = () => {
             typeof result === "string" ? JSON.parse(result) : result;
         } catch (err) {
         setSearchOpen(!searchOpen);
-          showPopup(res.data.result, false);
+          showPopup(res.result, false);
           return;
         }
 
