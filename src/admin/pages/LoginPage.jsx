@@ -31,13 +31,12 @@ const LoginPage = () => {
     setError(newError);
     // còn lỗi vặt ở hiển thị lỗi nào
     const response = await handleLogin(username, password);
-    console.log("response", response);
     if (response?.EC === 0 && response?.result?.user.role === "admin") {
       showPopup(`${response.EM}, Chào mừng bạn đến với trang quản trị`);
       navigate("/admin/dashboard");
     } else {
-      showPopup("Bạn không có quyền truy cập vào trang này", false);
-      window.location.href = "/sign-in";
+      showPopup(response.EM, false);
+      // window.location.href = "/sign-in";
       return;
     }
   };
