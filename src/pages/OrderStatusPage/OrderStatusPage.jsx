@@ -324,8 +324,23 @@ const OrderStatusPage = () => {
                     Hủy yêu cầu
                   </Button>
                 )}
-                {(order.order_status === "Hủy hàng" ||
-                  order.order_status === "Hoàn hàng") && (
+                {order.order_status === "Hủy hàng" && (
+                  <>
+                    <Button
+                      variant="filled"
+                      color="black"
+                      className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
+                      onClick={() => {
+                        navigate("/checkout", {
+                          state: { fromBuyAgain: order.products },
+                        });
+                      }}
+                    >
+                      Mua lại
+                    </Button>
+                  </>
+                )}
+                {order.order_status === "Hoàn hàng" && (
                   <Button
                     variant="filled"
                     color="black"
@@ -340,17 +355,43 @@ const OrderStatusPage = () => {
                   </Button>
                 )}
                 {order.order_status === "Chờ xác nhận" && (
-                  <Button
-                    variant="filled"
-                    color="black"
-                    className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
-                    onClick={() => {
-                      setSelectedOrder(order._id);
-                      setOpenCancelDialog(true);
-                    }}
-                  >
-                    Hủy đơn
-                  </Button>
+                  <div className="flex flex-wrap gap-2 justify-end">
+                    {!order.is_paid &&
+                      order.order_payment_method === "Paypal" &&
+                      order.checkoutUrl && (
+                        <Button
+                          variant="filled"
+                          color="blue"
+                          className="w-[150px] h-[30px] sm:h-[40px] rounded font-medium"
+                          onClick={() => {
+                            if (!order.checkoutUrl)
+                              showPopup(
+                                "Lỗi khi thực hiện thanh toán lại",
+                                false
+                              );
+                            else {
+                              showPopup("Chuyển hướng tới trang thanh toán");
+                              setTimeout(() => {
+                                window.location.href = order.checkoutUrl;
+                              }, 2000);
+                            }
+                          }}
+                        >
+                          Thanh toán lại
+                        </Button>
+                      )}
+                    <Button
+                      variant="filled"
+                      color="black"
+                      className="w-[100px] h-[30px] sm:w-[150px] sm:h-[40px] text-white !bg-black rounded font-medium"
+                      onClick={() => {
+                        setSelectedOrder(order._id);
+                        setOpenCancelDialog(true);
+                      }}
+                    >
+                      Hủy đơn
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>

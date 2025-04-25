@@ -1,4 +1,3 @@
-// import React from 'react'
 import { Link } from "react-router-dom";
 import facebook from "../../assets/images/facebook.svg";
 import instagram from "../../assets/images/instagram.svg";
@@ -7,8 +6,33 @@ import { IoLocationSharp } from "react-icons/io5";
 import { MdPhone } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
 import logo from "../../assets/images/logo.png";
+import { getDetailStore } from "../../services/api/StoreApi";
+import { useEffect, useState } from "react";
 
 const Footer = () => {
+  const storeId = "680a5a2fe8930a6de2ee81d2";
+  const [storeInfo, setStoreInfo] = useState({
+    address: "",
+    email: "",
+    phone: "",
+  });
+
+  useEffect(() => {
+    const fetchStoreInfo = async () => {
+      const res = await getDetailStore(storeId);
+      if (res.EC === 0 && res.EM) {
+        const { store_address, store_email, store_phone } = res.EM;
+        setStoreInfo({
+          address: store_address || "",
+          email: store_email || "",
+          phone: store_phone || "",
+        });
+      }
+    };
+
+    fetchStoreInfo();
+  }, []);
+
   return (
     <div>
       <div className="w-full bg-primary text-white pt-10 pb-[30px]">
@@ -56,19 +80,19 @@ const Footer = () => {
               </h3>
               <nav className="space-y-2">
                 <Link
-                  to={"/"}
+                  to={"/about-us"}
                   className="block text-sm opacity-80 hover:opacity-100 hover:font-medium transition"
                 >
                   Về chúng tôi
                 </Link>
                 <Link
-                  to={"/"}
+                  to={"/term-of-use"}
                   className="block text-sm opacity-80 hover:opacity-100 hover:font-medium transition"
                 >
                   Điều khoản chung
                 </Link>
                 <Link
-                  to={"/"}
+                  to={"/private-policy"}
                   className="block text-sm opacity-80 hover:opacity-100 hover:font-medium transition"
                 >
                   Chính sách bảo mật
@@ -108,30 +132,32 @@ const Footer = () => {
                 <div className="flex items-center">
                   <IoLocationSharp />
                   <a
-                    href="https://maps.google.com/?q=Linh+Trung,+Thủ+Đức,+HCM"
+                    href={`https://maps.google.com/?q=${encodeURIComponent(
+                      storeInfo.address
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-sm ml-1 opacity-80 hover:opacity-100 hover:font-medium transition"
                   >
-                    Linh Trung, Thủ Đức, HCM
+                    {storeInfo.address}
                   </a>
                 </div>
                 <div className="flex items-center">
                   <MdPhone />
                   <a
-                    href="tel:0595275688"
+                    href={`tel:${storeInfo.phone}`}
                     className="block text-sm ml-1 opacity-80 hover:opacity-100 hover:font-medium transition"
                   >
-                    0595 275 688
+                    {storeInfo.phone}
                   </a>
                 </div>
                 <div className="flex items-center">
                   <MdEmail />
                   <a
-                    href="mailto:wtmsport.contact@gmail.com"
+                    href={`mailto:${storeInfo.email}`}
                     className="block text-sm ml-1 opacity-80 hover:opacity-100 hover:font-medium transition"
                   >
-                    wtmsport.contact@gmail.com
+                    {storeInfo.email}
                   </a>
                 </div>
               </nav>

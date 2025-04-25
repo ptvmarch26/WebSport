@@ -7,11 +7,12 @@ import { IoIosArrowBack, IoIosEye, IoIosEyeOff } from "react-icons/io";
 import OTPComponent from "../../components/OTPComponent/OTPComponent";
 import { useAuth } from "../../context/AuthContext";
 import { usePopup } from "../../context/PopupContext";
+import { useLoading } from "../../context/LoadingContext"
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const { handleSendOTP, handleResetPassword, handleVerifyOTP } = useAuth();
-
+  const { setLoading } = useLoading();
   const [step, setStep] = useState(0);
   const [email, setEmail] = useState("");
   const [otpError, setOtpError] = useState("");
@@ -29,8 +30,8 @@ const ForgotPasswordPage = () => {
       return;
     }
     setError("");
+    setLoading(true, "Vui lòng chờ")
     const res = await handleSendOTP(email);
-    console.log(res);
     if (res?.EM === "OTP sent successfully") {
       setStep(1);
     } else if (res?.EM === "User not found") {
@@ -38,6 +39,7 @@ const ForgotPasswordPage = () => {
     } else {
       setError("Gửi mã OTP thất bại, vui lòng thử lại");
     }
+    setLoading(false);
   };
 
   const handleVerifyOtp = async (otpArray) => {

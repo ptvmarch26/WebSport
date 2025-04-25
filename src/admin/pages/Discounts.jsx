@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   Input,
@@ -68,9 +68,10 @@ const Discounts = () => {
     fetchDiscountsData();
   }, []);
 
-  // useEffect(() => {
-  //   fetchCategories();
-  // }, []);
+  useEffect(() => {
+    fetchCategories();
+    fetchProducts();
+  }, []);
 
   const handleDelete = async () => {
     try {

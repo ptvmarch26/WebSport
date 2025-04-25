@@ -1,8 +1,4 @@
-import React from "react";
-
-
-
-const PrivatePolicy = () => {
+const PrivatePolicyPage = () => {
     const policies = [
         {
             title: "Giới thiệu",
@@ -38,7 +34,7 @@ const PrivatePolicy = () => {
 
     return (
         <div className="container mx-auto flex flex-col py-10 px-2">
-            <h1 className="text-4xl pacifico font-medium text-primary text-center">
+            <h1 className="text-4xl font-semibold uppercase text-primary text-center">
                 WTM Sport - Chính sách bảo mật
             </h1>
             <div className="flex justify-center py-7">
@@ -63,4 +59,4 @@ const PrivatePolicy = () => {
     );
 };
 
-export default PrivatePolicy;
+export default PrivatePolicyPage;

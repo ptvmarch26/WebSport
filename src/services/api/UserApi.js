@@ -1,4 +1,4 @@
-import AxiosInstance from "../api/AxiosInstance";
+import AxiosInstance from "./AxiosInstance";
 
 export const getUser = async () => {
   try {
@@ -31,8 +31,6 @@ export const changePassword = async (oldPassword, newPassword) => {
 };
 
 export const updateUser = async (userData) => {
-  console.log("userData", userData);
-
   try {
     const response = await AxiosInstance.put("/user", userData);
     return response.data;
@@ -110,3 +108,15 @@ export const deleteChatHistory = async () => {
     return error.response?.data || "Lỗi kết nối đến server";
   }
 }
+
+export const getChatBotSearch = async (query) => {
+  try {
+      const response = await AxiosInstance.get("/chat", {
+          params: { message: query },
+      });
+
+      return response.data;
+  } catch (error) {
+      return error.response?.data || null;
+  }
+};

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import axios from "axios";
 import {
   FaHeart,
   FaShoppingCart,
@@ -19,10 +20,10 @@ import flag_us from "../../assets/images/flag_us.jpg";
 import { useAuth } from "../../context/AuthContext";
 import avatar_false from "../../assets/images/avatar-false.jpg";
 import { useUser } from "../../context/UserContext";
-import axios from "axios";
 import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
+import { usePopup } from "../../context/PopupContext";
 
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -42,6 +43,7 @@ const Header = () => {
   const showCartDot = cart?.products?.length;
   const showNotificationDot = unreadCount;
   const { handleLogout } = useAuth();
+  const { showPopup } = usePopup();
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -85,19 +87,22 @@ const Header = () => {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const res = await axios.get("http://localhost:5000/chat", {
-        params: { message: query },
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      });
+      const res = await getChatBotSearch(query);
 
-      if (res.data.EC === 0) {
-        const result = res.data.result;
-        const parsedResult =
-          typeof result === "string" ? JSON.parse(result) : result;
-        console.log("query:", parsedResult);
+      console.log("res", res);
+
+      if (res.EC === 0) {
+        const result = res.result;
+
+        let parsedResult;
+        try {
+          parsedResult =
+            typeof result === "string" ? JSON.parse(result) : result;
+        } catch (err) {
+        setSearchOpen(!searchOpen);
+          showPopup(res.result, false);
+          return;
+        }
 
         // Lưu vào local storage
         if (!token) {
@@ -202,7 +207,7 @@ const Header = () => {
       params.append("category_sub", category_sub);
     }
 
-    const url = `/search?${params.toString()}`;
+    const url = `/product?${params.toString()}`;
     return url;
   };
 
@@ -612,7 +617,7 @@ const Header = () => {
                   <p>
                     <Link
                       className="block"
-                      to="/about-shop"
+                      to="/about-us"
                       onClick={toggleMenu}
                     >
                       Về chúng tôi

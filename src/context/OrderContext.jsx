@@ -17,7 +17,7 @@ export const OrderProvider = ({ children }) => {
     const res = await getAllOrders(orderStatus);
     if (res?.EC === 0) {
       setOrders(res.result);
-      return res;
+      return res.result;
     }
   };
 
@@ -30,7 +30,7 @@ export const OrderProvider = ({ children }) => {
   const fetchOrderDetail = async (orderId) => {
     const res = await getOrderDetail(orderId);
     if (res) setOrderDetails(res?.result);
-    return res;
+    return res.result;
   };
 
   const handleCreateOrder = async (orderData) => {

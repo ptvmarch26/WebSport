@@ -2,32 +2,45 @@ import { LiaUsersSolid } from "react-icons/lia";
 import { IoCartSharp } from "react-icons/io5";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import Chart from "react-apexcharts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
-
+import { useOrder } from "../../context/OrderContext";
 
 function Dashboard() {
-  const { fetchUser } = useUser();
+  const { fetchUser, fetchUsers } = useUser();
+  const { fetchOrders } = useOrder();
+  const [users, setUsers] = useState();
+  const [orders, setOrders] = useState();
   useEffect(() => {
     const fetchData = async () => {
       const user = await fetchUser();
       if (user?.result?.role !== "admin") {
         window.location.href = "/sign-in";
       } else {
-        alert("Fetch data đi");
+        const usersData = await fetchUsers();
+        const ordersData = await fetchOrders();
+        setUsers(usersData);
+        setOrders(ordersData);
       }
     };
     fetchData();
   }, []);
 
-  const dashboardData = {
-    totalRevenue: 50000000,
-    totalOrders: 1200,
-    totalUsers: 500,
+  const totalRevenue = () => {
+    if (!orders) return 0;
+    return orders.reduce((acc, order) => {
+      if (order.is_paid && order.order_status === "Hoàn thành") {
+        return acc + order.order_total_final;
+      }
+      return acc;
+    }, 0);
   };
-  
 
-
+  const dashboardData = {
+    totalRevenue: totalRevenue() || 0,
+    totalOrders: orders?.length || 0,
+    totalUsers: users?.length || 0,
+  };
   // Dữ liệu cho biểu đồ đường
   const lineOptions = {
     chart: { type: "area" },
@@ -92,9 +105,34 @@ function Dashboard() {
       enabled: true,
     },
   };
+  // Hàm tạo mảng 12 phần tử ứng với 12 tháng
+  const getBarSeriesFromOrders = () => {
+    const paidCounts = new Array(12).fill(0);
+    const canceledCounts = new Array(12).fill(0);
+
+    if (!orders) return { paidCounts, canceledCounts };
+
+    orders.forEach((order) => {
+      if (!order.createdAt) return;
+      const month = new Date(order.createdAt).getMonth(); // 0 = Jan, 11 = Dec
+
+      if (order.is_paid && order.order_status === "Hoàn thành") {
+        paidCounts[month]++;
+      }
+
+      if (order.order_status === "Hủy hàng") {
+        canceledCounts[month]++;
+      }
+    });
+
+    return { paidCounts, canceledCounts };
+  };
+
+  const { paidCounts, canceledCounts } = getBarSeriesFromOrders();
+
   const barSeries = [
-    { name: "Đã thanh toán", data: [40, 50, 60, 70, 80, 75, 85, 90, 95] },
-    { name: "Đã hủy", data: [60, 70, 80, 90, 100, 95, 105, 110, 115] },
+    { name: "Đã thanh toán", data: paidCounts },
+    { name: "Đã hủy hàng", data: canceledCounts },
   ];
 
   // Dữ liệu cho biểu đồ tròn

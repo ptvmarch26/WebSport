@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
-import { IoHomeOutline, IoTicketOutline, IoTicketSharp } from "react-icons/io5";
+import { IoBagHandle, IoBagHandleOutline, IoHomeOutline, IoTicketOutline, IoTicketSharp } from "react-icons/io5";
 import { IoHomeSharp } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoMdNotifications } from "react-icons/io";
@@ -38,6 +38,12 @@ const BottomMenuComponent = () => {
       iconDefault: <IoTicketOutline />,
       iconActive: <IoTicketSharp />,
       label: "Voucher",
+    },
+    {
+      path: "/orders",
+      iconDefault: <IoBagHandleOutline />,
+      iconActive: <IoBagHandle />,
+      label: "Đơn hàng",
     },
   ];
 

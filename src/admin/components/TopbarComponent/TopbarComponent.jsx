@@ -13,6 +13,7 @@ function TopbarComponent({ admin_name, toggleSidebar }) {
     "/admin/customers": "Danh sách khách hàng",
     "/admin/employees": "Danh sách nhân viên",
     "/admin/discounts": "Danh sách mã giảm giá",
+    "/admin/my-store": "Thông tin cửa hàng",
   };
 
   let currentPage = "Admin Panel";

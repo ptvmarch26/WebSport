@@ -313,7 +313,7 @@ function CheckoutPage() {
       return;
     }
     const orderData = {
-      shipping_address: selectedAddress,
+      shipping_address: selectedAddress || newAddress,
       products: cartItems.map((item) => ({
         product_id: item?.product_id?._id || item?._id,
         quantity: item.quantity || quantity,
@@ -326,9 +326,11 @@ function CheckoutPage() {
     };
 
     const res = await handleCreateOrder(orderData);
-    console.log("res", res);
     if (res?.EC === 0 && selectedPayment === "Paypal") {
-      window.location.href = res.result.resultPayOS.checkoutUrl;
+      showPopup("Đặt hàng thành công, chuyển hướng tới trang thanh toán");
+      setTimeout(() => {
+        window.location.href = res.result.resultPayOS.checkoutUrl;
+      }, 2000);
       return;
     }
     if (res?.EC === 0) {

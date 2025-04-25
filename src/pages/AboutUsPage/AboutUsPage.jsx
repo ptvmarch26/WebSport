@@ -1,4 +1,3 @@
-import React from "react";
 import about1 from "../../assets/images/about1.svg";
 import about2 from "../../assets/images/about2.svg";
 import about3 from "../../assets/images/about3.svg";
@@ -9,7 +8,7 @@ import reason4 from "../../assets/images/reason4.svg";
 import reason5 from "../../assets/images/reason5.svg";
 import reason6 from "../../assets/images/reason6.svg";
 
-const AboutUs = () => {
+const AboutUsPage = () => {
     const options = [
         {
             img: about1,
@@ -73,7 +72,7 @@ const AboutUs = () => {
     return (
         <div className="container mx-auto flex flex-col items-center py-10 px-2">
             <section>
-                <h1 className="text-4xl pacifico font-medium text-primary text-center">
+                <h1 className="text-4xl font-semibold uppercase text-primary text-center">
                     WTM Sport - Về chúng tôi
                 </h1>
                 <div className="flex justify-center py-7">
@@ -92,6 +91,7 @@ const AboutUs = () => {
                             <img
                                 src={option.img}
                                 alt={option.title}
+                                className="w-20 h-20"
                             />
                             <p className="font-bold text-lg my-3 text-center">
                                 {option.title}
@@ -102,7 +102,7 @@ const AboutUs = () => {
                 </div>
             </section>
             <section className="pb-10">
-                <h2 className="text-4xl pacifico font-medium text-primary text-center">
+                <h2 className="text-4xl font-semibold uppercase text-primary text-center">
                     Thế giới thể thao
                 </h2>
                 <div className="flex justify-center py-7">
@@ -129,17 +129,12 @@ const AboutUs = () => {
 
             </section>
             <section>
-                <h2 className="text-4xl pacifico font-medium text-primary text-center">
+                <h2 className="text-4xl font-semibold uppercase text-primary text-center">
                     Tại sao nên chọn WTM Sport
                 </h2>
                 <div className="flex justify-center py-7">
                     <div className="h-[2px] w-[30%] bg-black"></div>
                 </div>
-                <p className="text-center text-xl font-bold">
-                    Với sứ mệnh tạo ra những giá trị bền vững, chúng mình luôn không ngừng
-                    nỗ lực phát triển, khẳng định dấu ấn thương hiệu handmade Việt và mang
-                    đến những giá trị lâu dài cho cộng đồng và khách hàng!
-                </p>
                 <div className="grid grid-cols-2 gap-5 py-10">
                     {reasons.map((reason, index) => (
                         <div
@@ -162,4 +157,4 @@ const AboutUs = () => {
     );
 };
 
-export default AboutUs;
+export default AboutUsPage;

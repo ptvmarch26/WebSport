@@ -118,53 +118,53 @@ const SearchPage = () => {
           </h2>
           {/* Nút Lọc Theo + Dropdown */}
           <div>
-          <div className="relative" ref={dropdownRef}>
-            <ButtonComponent
-              text={sortText}
-              color="white"
-              className="text-sm sm:text-base uppercase font-medium"
-              icon={
-                isSortOpen ? (
-                  <FaChevronUp className="w-4 h-4 ml-2" />
-                ) : (
-                  <FaChevronDown className="w-4 h-4 ml-2" />
-                )
-              }
-              onClick={() => setSortOpen(!isSortOpen)}
-            />
+            <div className="relative" ref={dropdownRef}>
+              <ButtonComponent
+                text={sortText}
+                color="white"
+                className="text-sm sm:text-base uppercase font-medium"
+                icon={
+                  isSortOpen ? (
+                    <FaChevronUp className="w-4 h-4 ml-2" />
+                  ) : (
+                    <FaChevronDown className="w-4 h-4 ml-2" />
+                  )
+                }
+                onClick={() => setSortOpen(!isSortOpen)}
+              />
 
-            {/* Dropdown Menu */}
-            {isSortOpen && (
-              <div className="absolute right-0 top-full bg-white shadow-md p-2 rounded w-48 z-10">
-                <ul className="space-y-2">
-                  <li
-                    className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
-                    onClick={() => handleSortChange("Giá: Cao đến Thấp")}
-                  >
-                    Giá: Cao đến Thấp
-                  </li>
-                  <li
-                    className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
-                    onClick={() => handleSortChange("Giá: Thấp đến Cao")}
-                  >
-                    Giá: Thấp đến Cao
-                  </li>
-                  <li
-                    className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
-                    onClick={() => handleSortChange("Mới nhất")}
-                  >
-                    Mới nhất
-                  </li>
-                  <li
-                    className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
-                    onClick={() => handleSortChange("Bán chạy")}
-                  >
-                    Bán chạy
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
+              {/* Dropdown Menu */}
+              {isSortOpen && (
+                <div className="absolute right-0 top-full bg-white shadow-md p-2 rounded w-48 z-10">
+                  <ul className="space-y-2">
+                    <li
+                      className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
+                      onClick={() => handleSortChange("Giá: Cao đến Thấp")}
+                    >
+                      Giá: Cao đến Thấp
+                    </li>
+                    <li
+                      className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
+                      onClick={() => handleSortChange("Giá: Thấp đến Cao")}
+                    >
+                      Giá: Thấp đến Cao
+                    </li>
+                    <li
+                      className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
+                      onClick={() => handleSortChange("Mới nhất")}
+                    >
+                      Mới nhất
+                    </li>
+                    <li
+                      className="p-2 hover:bg-gray-100 cursor-pointer transition duration-200 rounded"
+                      onClick={() => handleSortChange("Bán chạy")}
+                    >
+                      Bán chạy
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-5 mb-10"></div>
@@ -181,13 +181,21 @@ const SearchPage = () => {
             </AnimationScroll>
           ))}
       </div>
-      <div className="flex justify-center mt-10">
-        <PanigationComponent
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+      {sortProducts.length > 0 ? (
+        <div className="flex justify-center mt-10">
+          <PanigationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      ) : (
+        <div className="min-h-screen flex items-center justify-center">
+        <p className="text-center uppercase text-xl font-semibold text-gray-600">
+          Không tìm thấy sản phẩm phù hợp
+        </p>
       </div>
+      )}
     </div>
   );
 };

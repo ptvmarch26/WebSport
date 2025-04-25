@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import logo from "../../../assets/images/logo.png";
 import { useAuth } from "../../../context/AuthContext";
+import { IoStorefrontOutline } from "react-icons/io5";
 
 function SidebarComponent({ isOpen, toggleSidebar }) {
   const location = useLocation();
@@ -41,6 +42,11 @@ function SidebarComponent({ isOpen, toggleSidebar }) {
       name: "Quản lý khách hàng",
       path: "/admin/customers",
       icon: <FiUsers size={20} />,
+    },
+    {
+      name: "Cửa hàng của tôi",
+      path: "/admin/my-store",
+      icon: <IoStorefrontOutline size={20} />,
     },
   ];
 

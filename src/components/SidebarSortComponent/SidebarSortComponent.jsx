@@ -74,7 +74,6 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange }) => {
   useEffect(() => {
     fetchCategories();
   }, []);
-  console.log(categories);
 
   // Xử lý dữ liệu danh mục từ API
   useEffect(() => {
