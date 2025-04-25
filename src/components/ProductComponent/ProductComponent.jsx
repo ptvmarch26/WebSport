@@ -6,21 +6,36 @@ import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
 import { updateFavourite } from "../../services/api/FavouriteApi"; // import API
 import { usePopup } from "../../context/PopupContext";
 import { useAuth } from "../../context/AuthContext";
+import { useProduct } from "../../context/ProductContext";
 
 const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
   const { showPopup } = usePopup();
   const { token } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isCompared, setIsCompared] = useState(false);
+  const { fetchProductDetails } = useProduct();
 
   useEffect(() => {
     const savedCompare = JSON.parse(localStorage.getItem("compareList")) || [];
     setIsCompared(savedCompare.includes(item._id));
   }, [item._id]);
 
-  const toggleCompare = (e) => {
+  const toggleCompare = async (e) => {
     e.stopPropagation();
     let savedCompare = JSON.parse(localStorage.getItem("compareList")) || [];
+
+    if (savedCompare.length > 0) {
+      const compareItem = await fetchProductDetails(savedCompare[0]);
+      if (
+        compareItem.product_category.category_type !==
+          item.product_category.category_type ||
+        compareItem.product_category.category_gender !==
+          item.product_category.category_gender
+      ) {
+        showPopup("Bạn chỉ có thể so sánh 2 sản phẩm cùng loại", false);
+        return;
+      }
+    }
 
     if (savedCompare.includes(item._id)) {
       savedCompare = savedCompare.filter((id) => id !== item._id);

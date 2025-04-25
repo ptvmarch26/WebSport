@@ -103,7 +103,21 @@ const DefaultLayout = ({ children }) => {
     window.dispatchEvent(new CustomEvent("compareListUpdated"));
   };
 
-  // console.log("compareProducts", compareProducts);
+  const getAllImages = (product) => {
+    if (!product) return [];
+
+    let images = [];
+
+    // Lấy ảnh từ biến thể
+    product.colors?.forEach((color) => {
+      images.push(color?.imgs?.img_main);
+    });
+
+    // Lọc bỏ ảnh null hoặc undefined
+    images = images.filter((img) => img);
+
+    return images;
+  };
 
   return (
     <div>
@@ -142,7 +156,7 @@ const DefaultLayout = ({ children }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
-              <h2 className="text-xl font-bold">So sánh sản phẩm</h2>
+              <h2 className="text-xl font-bold">Đánh giá sản phẩm</h2>
               <button
                 onClick={() => setIsCompareOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-full"
@@ -197,6 +211,20 @@ const DefaultLayout = ({ children }) => {
                         </div>
 
                         <div className="border-t pt-2 mt-2">
+                          <p className="font-semibold mb-1">Biến thể:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {getAllImages(product).map((img, index) => (
+                              <img
+                                key={index}
+                                src={img}
+                                alt={`Product Variant ${index + 1}`}
+                                className="w-20 h-20 object-cover rounded-md"
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="border-t pt-2 mt-2">
                           <p className="font-semibold mb-1">Đánh giá:</p>
                           <div className="flex items-center gap-2">
                             <IoIosStar className="text-yellow-400 text-xl" />
@@ -216,29 +244,6 @@ const DefaultLayout = ({ children }) => {
                     </div>
                   ))}
                 </div>
-                {compareCount === 2 && (
-                  <div className="my-3 text-center">
-                    <h3 className="font-bold text-lg mb-2">
-                      Đánh giá của chúng tôi
-                    </h3>
-                    <p className="text-justify text-sm px-5 leading-relaxed">
-                      Cả hai đôi giày đều sở hữu thiết kế hiện đại và mang lại
-                      cảm giác thoải mái khi mang lâu, nhưng mỗi đôi có điểm
-                      mạnh riêng: - **Đôi giày A** (giả định là nhẹ, năng động):
-                      phù hợp với người hay di chuyển, vận động nhiều hoặc cần
-                      một đôi giày linh hoạt cho các hoạt động hàng ngày. Đế
-                      giày mềm, thoáng khí tốt, không gây bí chân kể cả trong
-                      thời tiết nóng. - **Đôi giày B** (giả định là sang, chắc
-                      chắn): mang vẻ ngoài cao cấp hơn, phù hợp để phối cùng đồ
-                      công sở hoặc đi chơi cuối tuần. Phần da bọc ngoài chắc
-                      chắn, dễ vệ sinh, tạo cảm giác đứng dáng hơn khi mang. 👉
-                      **Gợi ý lựa chọn:** Nếu bạn ưu tiên **thoải mái, nhẹ
-                      nhàng, dễ di chuyển**, hãy chọn **Đôi giày A**. Nếu bạn
-                      cần một đôi giày **sang trọng hơn, phù hợp nhiều dịp**,
-                      thì **Đôi giày B** là lựa chọn đáng cân nhắc.
-                    </p>
-                  </div>
-                )}
               </div>
             )}
           </div>

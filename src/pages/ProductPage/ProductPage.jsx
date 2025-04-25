@@ -100,7 +100,7 @@ const ProductPage = () => {
   }, [products, location.search]);
 
   console.log("sorrt", sortProducts);
-  console.log("selected", selectedFilters);
+  // console.log("selected", sortProducts);
 
   const handleSortChange = (sortOption) => {
     setCurrentSort(sortOption);

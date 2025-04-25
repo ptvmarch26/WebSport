@@ -24,6 +24,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
 import { usePopup } from "../../context/PopupContext";
+import { getChatBotSearch } from "../../services/api/UserApi";
 
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -81,6 +82,18 @@ const Header = () => {
     }
   }, [token, selectedUser]);
 
+  useEffect(() => {
+    if (searchOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [searchOpen]);
+
   const handleSearch = async (customQuery) => {
     const query = customQuery !== undefined ? customQuery : searchQuery;
     if (!query.trim()) return;
@@ -99,7 +112,7 @@ const Header = () => {
           parsedResult =
             typeof result === "string" ? JSON.parse(result) : result;
         } catch (err) {
-        setSearchOpen(!searchOpen);
+          setSearchOpen(!searchOpen);
           showPopup(res.result, false);
           return;
         }
@@ -615,11 +628,7 @@ const Header = () => {
                 ))}
                 <div className="py-2 px-4 mt-5 text-[#181818] w-full">
                   <p>
-                    <Link
-                      className="block"
-                      to="/about-us"
-                      onClick={toggleMenu}
-                    >
+                    <Link className="block" to="/about-us" onClick={toggleMenu}>
                       Về chúng tôi
                     </Link>
                   </p>
@@ -689,7 +698,7 @@ const Header = () => {
       )}
 
       {fullSearchHistory.length > 0 && searchOpen && (
-        <div className="absolute left-0 right-0 w-full bg-white overflow-y-auto z-30">
+        <div className="max-h-[300px] lg:max-h-[400px] absolute left-0 right-0 w-full bg-white overflow-y-auto z-30">
           <div className="w-1/2 max-w-[800px] mx-auto py-[10px]">
             <ul className="">
               {displayedHistory.map((item, index) => (

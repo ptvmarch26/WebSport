@@ -5,12 +5,28 @@ import Chart from "react-apexcharts";
 import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import { useOrder } from "../../context/OrderContext";
+import { getRevenue } from "../../services/api/OrderApi";
+import { Select } from "antd";
 
 function Dashboard() {
   const { fetchUser, fetchUsers } = useUser();
   const { fetchOrders } = useOrder();
   const [users, setUsers] = useState();
   const [orders, setOrders] = useState();
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [revenueData, setRevenueData] = useState({
+    revenueByMonth: Array(12).fill({
+      completedRevenue: 0,
+      paidRevenue: 0,
+      cancelledRevenue: 0,
+    }),
+  });
+  const { Option } = Select;
+  const years = Array.from(
+    { length: 6 },
+    (_, i) => new Date().getFullYear() - 5 + i
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       const user = await fetchUser();
@@ -21,10 +37,30 @@ function Dashboard() {
         const ordersData = await fetchOrders();
         setUsers(usersData);
         setOrders(ordersData);
+        fetchRevenueData(selectedYear);
       }
     };
     fetchData();
   }, []);
+
+  const fetchRevenueData = async (year) => {
+    try {
+      const response = await getRevenue(year);
+
+      if (response.EC === 0 && response.EM) {
+        setRevenueData(response.result);
+      }
+    } catch (error) {
+      console.error("Failed to fetch revenue data:", error);
+    }
+  };
+
+  console.log("revenueData", revenueData);
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    fetchRevenueData(year);
+  };
 
   const totalRevenue = () => {
     if (!orders) return 0;
@@ -60,7 +96,7 @@ function Dashboard() {
         "Dec",
       ],
     },
-    colors: ["#1E90FF", "#2ECC71"],
+    colors: ["#1E90FF"],
     fill: { type: "gradient" },
     dataLabels: {
       enabled: false,
@@ -71,12 +107,10 @@ function Dashboard() {
   };
   const lineSeries = [
     {
-      name: "series1",
-      data: [30, 35, 25, 40, 50, 90, 100, 85, 60, 75, 95, 110],
-    },
-    {
-      name: "series2",
-      data: [20, 30, 35, 30, 45, 60, 70, 65, 80, 90, 100, 120],
+      name: "Doanh thu hàng tháng",
+      data: revenueData.revenueByMonth.map(
+        (item) => item.completedRevenue || 0
+      ),
     },
   ];
 
@@ -85,6 +119,7 @@ function Dashboard() {
     chart: { type: "bar" },
     xaxis: {
       categories: [
+        "Jan",
         "Feb",
         "Mar",
         "Apr",
@@ -94,6 +129,8 @@ function Dashboard() {
         "Aug",
         "Sep",
         "Oct",
+        "Nov",
+        "Dec",
       ],
     },
     colors: ["#1E90FF", "#2ECC71"],
@@ -105,45 +142,23 @@ function Dashboard() {
       enabled: true,
     },
   };
-  // Hàm tạo mảng 12 phần tử ứng với 12 tháng
-  const getBarSeriesFromOrders = () => {
-    const paidCounts = new Array(12).fill(0);
-    const canceledCounts = new Array(12).fill(0);
-
-    if (!orders) return { paidCounts, canceledCounts };
-
-    orders.forEach((order) => {
-      if (!order.createdAt) return;
-      const month = new Date(order.createdAt).getMonth(); // 0 = Jan, 11 = Dec
-
-      if (order.is_paid && order.order_status === "Hoàn thành") {
-        paidCounts[month]++;
-      }
-
-      if (order.order_status === "Hủy hàng") {
-        canceledCounts[month]++;
-      }
-    });
-
-    return { paidCounts, canceledCounts };
-  };
-
-  const { paidCounts, canceledCounts } = getBarSeriesFromOrders();
 
   const barSeries = [
-    { name: "Đã thanh toán", data: paidCounts },
-    { name: "Đã hủy hàng", data: canceledCounts },
+    {
+      name: "Đã thanh toán",
+      data: revenueData.revenueByMonth.map((item) => item.paidRevenue || 0),
+    },
+    {
+      name: "Đã hủy hàng",
+      data: revenueData.revenueByMonth.map(
+        (item) => item.cancelledRevenue || 0
+      ),
+    },
   ];
 
   // Dữ liệu cho biểu đồ tròn
   const donutOptions = {
-    labels: [
-      "Clothing",
-      "Food Products",
-      "Electronics",
-      "Kitchen Utility",
-      "Gardening",
-    ],
+    labels: ["Áo", "Quần", "Giày", "Phụ kiện", "Dép"],
     colors: ["#20c997", "#007bff", "#dc3545", "#f39c12", "#8e44ad"],
     legend: { position: "bottom" },
     dataLabels: {
@@ -191,6 +206,27 @@ function Dashboard() {
         </div>
       </div>
 
+      <div className="mt-8 flex justify-end mb-4">
+        <div className="flex items-center gap-2">
+          <label htmlFor="yearFilter" className="font-medium">
+            Năm:
+          </label>
+          <Select
+            id="yearFilter"
+            value={selectedYear}
+            onChange={handleYearChange}
+            className="min-w-[100px]"
+            style={{ width: 120 }}
+          >
+            {years.map((year) => (
+              <Option key={year} value={year}>
+                {year}
+              </Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-6 mt-8">
         <div className="bg-white p-4 rounded-lg shadow-lg col-span-2">
           <h3 className="text-lg font-semibold mb-4 text-center uppercase">
@@ -206,7 +242,7 @@ function Dashboard() {
 
         <div className="bg-white p-4 rounded-lg shadow-lg col-span-2 md:col-span-1">
           <h3 className="text-lg font-semibold mb-4 text-center uppercase">
-            Đơn hàng mới
+            Doanh Thu Theo Trạng Thái Đơn Hàng
           </h3>
           <Chart
             options={barOptions}

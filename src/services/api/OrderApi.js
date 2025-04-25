@@ -67,3 +67,14 @@ export const handleCancelPayment = async (orderCode) => {
     return error.response?.data || "Lỗi kết nối đến server";
   }
 };
+
+export const getRevenue = async (year) => {
+  try {
+    const response = await AxiosInstance.get(
+      `/order/get-revenue/?year=${year}`
+    );
+    return response.data;
+  } catch (error) {
+    return error.response?.data || "Lỗi kết nối đến server";
+  }
+};

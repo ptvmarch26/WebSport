@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const OrderSummaryComponent = ({
   cart,
@@ -64,28 +64,22 @@ const OrderSummaryComponent = ({
   useEffect(() => {
     let total = subtotal;
 
-    if (vouchers.shipping.applied && vouchers.shipping.selectedVoucher) {
-      total -= shippingCost;
-    }
-
+    // Giảm giá sản phẩm
     if (vouchers.product.applied && vouchers.product.selectedVoucher) {
       total =
-        subtotal * (1 - vouchers.product.selectedVoucher.discount_number / 100);
+        total * (1 - vouchers.product.selectedVoucher.discount_number / 100);
     }
 
-    if (
-      vouchers.shipping.applied &&
-      vouchers.shipping.selectedVoucher &&
-      vouchers.product.applied &&
-      vouchers.product.selectedVoucher
-    ) {
-      total =
-        subtotal *
-          (1 - vouchers.product.selectedVoucher.discount_number / 100) -
-        shippingCost;
+    let shipping = shippingCost;
+
+    // Giảm giá vận chuyển
+    if (vouchers.shipping.applied && vouchers.shipping.selectedVoucher) {
+      shipping =
+        shipping *
+        (1 - vouchers.shipping.selectedVoucher.discount_number / 100);
     }
 
-    setFinalTotal(total + shippingCost);
+    setFinalTotal(total + shipping);
   }, [vouchers.shipping.applied, vouchers.product.applied, subtotal]);
 
   const handleVoucherChange = (type, e) => {
@@ -325,7 +319,10 @@ const OrderSummaryComponent = ({
                       <p className="text-sm font-medium">
                         {voucher.discount_code}
                       </p>
-                      <p className="text-xs">Miễn phí vận chuyển</p>
+                      <p className="text-xs">
+                        {" "}
+                        - {voucher.discount_number}% phí vận chuyển
+                      </p>
                     </div>
                     {/* <p className="text-sm text-green-600">{voucher.discount_number}%</p> */}
                   </div>
@@ -360,7 +357,15 @@ const OrderSummaryComponent = ({
         {vouchers.shipping.applied && vouchers.shipping.selectedVoucher && (
           <div className="flex justify-between text-sm mt-4">
             <span>Voucher vận chuyển</span>
-            <span>- {shippingCost.toLocaleString()}đ</span>
+            <span>
+              -{" "}
+              {(
+                (shippingCost *
+                  vouchers.shipping.selectedVoucher.discount_number) /
+                100
+              ).toLocaleString()}
+              đ
+            </span>
           </div>
         )}
         <hr className="my-4" />
