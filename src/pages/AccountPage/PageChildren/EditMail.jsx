@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import OTPComponent from "../../../components/OTPComponent/OTPComponent";
 import { Button } from "@material-tailwind/react";
-import { IoIosEye } from "react-icons/io";
-import { IoIosEyeOff } from "react-icons/io";
 import { useUser } from "../../../context/UserContext";
 import { useAuth } from "../../../context/AuthContext";
 
 const EditEmail = () => {
+  // const { t } = useTranslation();
   const { selectedUser, handleUpdateUser, fetchUser } = useUser();
   const { handleSendOTP, handleVerifyOTP } = useAuth();
 

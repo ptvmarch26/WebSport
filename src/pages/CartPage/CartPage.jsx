@@ -35,7 +35,7 @@ const CartPage = () => {
         (variant) => variant.variant_size === item.variant_name
       );
 
-      return acc + selectedVariant.variant_price * item.quantity;
+      return acc + selectedVariant?.variant_price * item.quantity;
     }, 0) || 0;
 
   const handleNavigateCheckout = () => {
@@ -47,7 +47,7 @@ const CartPage = () => {
     const item = selectedItemToRemove;
     if (item) {
       handleRemoveFromCart(
-        item.product_id._id,
+        item.product?._id,
         item.color_name,
         item.variant_name
       );
@@ -56,7 +56,7 @@ const CartPage = () => {
         products: prevCart.products.filter(
           (cartItem) =>
             !(
-              cartItem.product_id._id === item.product_id._id &&
+              cartItem.product_id?._id === item.product_id?._id &&
               cartItem.color_name === item.color_name &&
               cartItem.variant_name === item.variant_name
             )
@@ -113,7 +113,7 @@ const CartPage = () => {
                     setCart((prevCart) => ({
                       ...prevCart,
                       products: prevCart.products.map((cartItem) =>
-                        cartItem.product_id._id === item.product_id._id &&
+                        cartItem.product_id?._id === item.product_id?._id &&
                         cartItem.color_name === item.color_name &&
                         cartItem.variant_name === item.variant_name
                           ? { ...cartItem, quantity: newQuantity }
@@ -125,14 +125,14 @@ const CartPage = () => {
                 onIncrease={() => {
                   const newQuantity = item.quantity + 1;
                   handleAddToCart(
-                    item?.product_id._id,
+                    item?.product_id?._id,
                     item?.color_name,
                     item?.variant_name
                   );
                   setCart((prevCart) => ({
                     ...prevCart,
                     products: prevCart.products.map((cartItem) =>
-                      cartItem.product_id._id === item.product_id._id &&
+                      cartItem.product_id?._id === item.product_id?._id &&
                       cartItem.color_name === item.color_name &&
                       cartItem.variant_name === item.variant_name
                         ? { ...cartItem, quantity: newQuantity }
