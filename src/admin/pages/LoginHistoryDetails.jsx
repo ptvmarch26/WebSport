@@ -1,36 +1,26 @@
 import { useParams } from "react-router-dom";
-import { Card, Typography, Table } from "antd";
-
-const mockDetailData = {
-  _id: "1",
-  createdAt: "2025-04-25T08:12:45Z",
-  ip: "192.168.1.1",
-  userAgent: "Chrome on Windows",
-  activities: [
-    {
-      orderId: "ORD12345",
-      prev_status: "Processing",
-      new_status: "Shipped",
-      time: "2025-04-25T08:15:00Z",
-    },
-    {
-      orderId: "ORD12346",
-      prev_status: "Shipped",
-      new_status: "Delivered",
-      time: "2025-04-25T09:00:00Z",
-    },
-  ],
-};
+import { Table } from "antd";
+import { useEffect, useState } from "react";
+import { getActivies } from "../../services/api/LoginHistoryApi";
 
 function LoginHistoryDetail() {
   const { id } = useParams();
-  const data = mockDetailData;
+  const [activities, setActivities] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getActivies(id);
+      if (result.EC === 0) {
+        setActivities(result.result);
+      }
+    };
+    fetchData();
+  }, []);
 
   const columns = [
     {
       title: "Mã đơn hàng",
-      dataIndex: "orderId",
-      key: "orderId",
+      dataIndex: "order_id",
+      key: "order_id",
     },
     {
       title: "Trạng thái trước",
@@ -44,8 +34,8 @@ function LoginHistoryDetail() {
     },
     {
       title: "Thời gian",
-      dataIndex: "time",
-      key: "time",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (text) => new Date(text).toLocaleString("vi-VN"),
     },
   ];
@@ -55,18 +45,18 @@ function LoginHistoryDetail() {
       <div className="bg-white p-4 shadow-lg space-y-4">
         <div className="space-y-3 px-3 py-5 border rounded">
           <h3 className="font-semibold">Thông tin cơ bản</h3>
-          <p>
+          {/* <p>
             <strong>IP:</strong> {data.ip}
           </p>
           <p>
             <strong>User Agent:</strong> {data.userAgent}
-          </p>
+          </p> */}
         </div>
         <div className="space-y-3 px-3 py-5 border rounded">
           <h3 className="font-semibold">Lịch sử chỉnh sửa</h3>
           <Table
             columns={columns}
-            dataSource={data.activities}
+            dataSource={activities}
             rowKey="orderId"
             pagination={false}
             bordered
