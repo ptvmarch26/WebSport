@@ -23,28 +23,29 @@ Nhằm đáp ứng xu hướng này, nhóm quyết định thực hiện đề t
 |:---:|:-------------:|:-----:|
 |AC1	|Unauthenticated User (Người dùng chưa xác thực) |	Người dùng không có tài khoản hoặc có tài khoản nhưng chưa đăng nhập, với vai trò này người dùng được thực hiện một số chức năng như mua hàng, xem sản phẩm, xem thông tin cửa hàng, bài viết...|
 |AC2	|Authenticated User (Người dùng đã xác thực) |	Người dùng có tài khoản và đã đăng nhập, với vai trò này người dùng có thể thực hiện các chức năng mua hàng, thêm giỏ hàng, thêm yêu thích, thay đổi thông tin cá nhân...|
-|AC3 |Administrator | Là người dùng có quyền hạn cao nhất trong hệ thống. Quản trị viên chịu trách nhiệm quản lý các họat động như quản lý bán hàng, quản lý khách hàng, quản lý doanh thu, quản lý đơn hàng, quản lý kho. Ngoài ra, quản trị viên cũng đảm bảo hoạt động chung của hệ thống diễn ra suôn sẻ.|
+|AC3 |Administrator (Quản trị viên) | Là người dùng có quyền hạn cao nhất trong hệ thống. Quản trị viên chịu trách nhiệm quản lý các họat động như quản lý bán hàng, quản lý khách hàng, quản lý doanh thu, quản lý đơn hàng, quản lý kho. Ngoài ra, quản trị viên cũng đảm bảo hoạt động chung của hệ thống diễn ra suôn sẻ.|
 
 |Mã chức năng	|	Tên chức năng	|	Tác nhân	| Hoàn thành |
 |:---:|:-------------:|:-----:|:-----:|
 ||	UC1. QLBH	(Quản lý bán hàng)					||
-|	UC1.01	|	Quản lý sản phẩm	|	Admin 	| 100%|
-|	UC1.02	|	Tìm kiếm sản phẩm 	|	Unauthenticated User, Authenticated User	| 100%|
-|	UC1.03	|	Xem chi tiết sản phẩm	|	Unauthenticated User, Authenticated User 	| 100%|
-|	UC1.04	|	Thêm vào giỏ hàng	|	Authenticated User 	| 100%|
-|	UC1.05	|	Xem giỏ hàng	|	Authenticated User 	| 100%|
-|	UC1.06	|	Thêm sản phẩm vào yêu thích	|	Authenticated User 	| 100%|
-|	UC1.07	|	Xem sản phẩm yêu thích	|	Authenticated User	| 100%|
-|	UC1.08	|	Mua ngay sản phẩm	|	Authenticated User, Authenticated User	| 100%|
-|	UC1.09	|	Mua hàng	|	Authenticated User	| 100%|
-|	UC1.10	|	Thanh toán	|	Authenticated User, Authenticated User	| 100%|
-|	UC1.11	|	Đánh giá sản phẩm	|	Authenticated User	| 100%|
-|	UC1.12	|	Xem đánh giá sản phẩm	|	Unauthenticated User, Authenticated User	| 100%|
+|	UC1.01	|	Thêm sản phẩm	|	Admin	| 100%|
+|	UC1.02	| Chỉnh sửa sản phẩm	|	Admin	| 100%|
+|	UC1.03	| Thêm mã giảm giá	|	Admin	| 100%|
+|	UC1.04	| Chỉnh sửa mã giảm giá	|	Admin	| 100%|
+|	UC1.05	|	Tìm kiếm sản phẩm 	|	Unauthenticated User, Authenticated User	| 100%|
+|	UC1.06	|	Xem chi tiết sản phẩm	|	Unauthenticated User, Authenticated User 	| 100%|
+|	UC1.07	|	Thêm vào giỏ hàng	|	Authenticated User 	| 100%|
+|	UC1.08	|	Xem giỏ hàng	|	Authenticated User 	| 100%|
+|	UC1.09	|	Thêm sản phẩm vào yêu thích	|	Authenticated User 	| 100%|
+|	UC1.010	|	Xem sản phẩm yêu thích	|	Authenticated User	| 100%|
+|	UC1.011	|	Mua ngay sản phẩm	|	Authenticated User, Authenticated User	| 100%|
+|	UC1.12	|	Mua hàng	|	Authenticated User	| 100%|
+|	UC1.13	|	Thanh toán	|	Authenticated User, Authenticated User	| 100%|
+|	UC1.14	|	Đánh giá sản phẩm	|	Authenticated User	| 100%|
+|	UC1.15	|	Xem đánh giá sản phẩm	|	Unauthenticated User, Authenticated User	| 100%|
 ||	UC2. QLKHO	 (Quản lý Kho)					||
 |	UC2.01	|	Thêm danh mục sản phẩm	|	Admin	| 100%|
 |	UC2.02	|	Chỉnh sửa danh mục sản phẩm	|	Admin	| 100%|
-|	UC2.03	|	Thêm sản phẩm	|	Admin	| 100%|
-|	UC2.04	| Chỉnh sửa sản phẩm	|	Admin	| 100%|
 ||	UC3. QLKH (Quản lý khách hàng)					||
 |	UC3.01	|	Đăng ký	|	Unauthenticated User	| 100%|
 |	UC3.02	|	Đăng nhập	|	Unauthenticated User	| 100%|

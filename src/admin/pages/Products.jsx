@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Select, Button, Modal, Form, InputNumber } from "antd";
+import {
+  Table,
+  Input,
+  Select,
+  Button,
+  Modal,
+  Form,
+  InputNumber,
+} from "antd";
 import {
   DeleteOutlined,
   ExportOutlined,
@@ -168,10 +176,21 @@ const Products = () => {
   };
 
   const filteredProducts = products.filter((product) => {
-    const matchesStatus = filterStatus ? product.status === filterStatus : true;
+    let productStatus;
+    if (product.product_countInStock === 0) {
+      productStatus = "Hết hàng";
+    } else if (product.product_countInStock < 10) {
+      productStatus = "Cần nhập";
+    } else {
+      productStatus = "Còn hàng";
+    }
+
+    const matchesStatus = filterStatus ? productStatus === filterStatus : true;
+
     const matchesSearch = searchText
       ? product.product_title.toLowerCase().includes(searchText.toLowerCase())
       : true;
+
     return matchesStatus && matchesSearch;
   });
 

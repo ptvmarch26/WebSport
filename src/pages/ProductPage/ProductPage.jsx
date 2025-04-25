@@ -1,4 +1,4 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SidebarSortComponent from "../../components/SidebarSortComponent/SidebarSortComponent";
 import ProductComponent from "../../components/ProductComponent/ProductComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -6,12 +6,37 @@ import PanigationComponent from "../../components/PanigationComponent/Panigation
 import { useProduct } from "../../context/ProductContext";
 import { VscSettings } from "react-icons/vsc";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getFavourite } from "../../services/api/FavouriteApi"; // import API
 import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
 const ProductPage = () => {
+  const location = useLocation();
   const [selectedFilters, setSelectedFilters] = useState({});
+  const queryParams = new URLSearchParams(location.search);
+
+  const category = queryParams.get("category") || "";
+  const category_gender = queryParams.get("category_gender") || "";
+  const category_sub = queryParams.get("category_sub") || "";
+
+  useEffect(() => {
+    // const searchParams = {
+    //   category,
+    //   category_gender,
+    //   category_sub,
+    // };
+
+    setSelectedFilters((prev) => {
+      const newFilters = {
+        ...prev,
+        category: category ? [category] : prev.category,
+        category_gender: category_gender || prev.category_gender,
+        category_sub: category_sub || prev.category_sub,
+      };
+      fetchProducts(newFilters);
+      return newFilters;
+    });
+  }, [category, category_gender, category_sub]);
 
   useEffect(() => {
     fetchProducts(selectedFilters);
@@ -45,21 +70,44 @@ const ProductPage = () => {
   const { products, fetchProducts } = useProduct();
   const [sortProducts, setSortProducts] = useState([]);
   const [currentSort, setCurrentSort] = useState("");
-  
+
   useEffect(() => {
     if (currentSort) {
-      applySorting(currentSort, products);
+      applySorting(currentSort, sortProducts);
     } else {
       setSortProducts(products);
     }
   }, [products, currentSort]);
+
+  const type = queryParams.get("type");
+  useEffect(() => {
+    if (!products.length) return;
+
+    const now = Date.now();
+    const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+
+    if (type === "famous") {
+      setSortProducts(products.filter((p) => p.product_famous));
+    } else if (type === "selled") {
+      setSortProducts(products.filter((p) => p.product_selled >= 10));
+    } else if (type === "new") {
+      setSortProducts(
+        products.filter(
+          (p) => now - new Date(p.createdAt).getTime() <= SEVEN_DAYS
+        )
+      );
+    }
+  }, [products, location.search]);
+
+  console.log("sorrt", sortProducts);
+  console.log("selected", selectedFilters);
 
   const handleSortChange = (sortOption) => {
     setCurrentSort(sortOption);
     setSortText(sortOption);
     setSortOpen(false);
 
-    applySorting(sortOption, products);
+    applySorting(sortOption, sortProducts);
   };
 
   const applySorting = (sortOption, productsToSort) => {
@@ -87,10 +135,9 @@ const ProductPage = () => {
     setSortProducts(sortedProducts);
   };
 
-
   const navigate = useNavigate();
 
-  const totalPages = Math.ceil(products.length / 12);
+  const totalPages = Math.ceil(sortProducts.length / 12);
 
   // Đóng dropdown khi click ra ngoài
   useEffect(() => {
@@ -105,8 +152,9 @@ const ProductPage = () => {
     };
   }, [setSortOpen]);
 
-  console.log("products", products);
-  console.log("sortProducts", sortProducts);
+  // console.log("products", products);
+  console.log("selectedFilters", selectedFilters);
+  // console.log("sortProducts", sortProducts);
 
   return (
     <div className="container mx-auto px-2 my-10">
@@ -191,16 +239,26 @@ const ProductPage = () => {
 
       <SidebarSortComponent
         isOpen={isSidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        onClose={() => {
+          setSidebarOpen(false);
+        }}
         onFilterChange={setSelectedFilters}
       />
-      <div className="flex justify-center mt-10">
-        <PanigationComponent
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {sortProducts.length > 0 ? (
+        <div className="flex justify-center mt-10">
+          <PanigationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      ) : (
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-center uppercase text-xl font-semibold text-gray-600">
+            Không tìm thấy sản phẩm phù hợp
+          </p>
+        </div>
+      )}
     </div>
   );
 };

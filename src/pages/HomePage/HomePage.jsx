@@ -1,7 +1,5 @@
 // import React from 'react'
 import { useNavigate } from "react-router-dom";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import slider1 from "../../assets/images/slider1.jpg";
 import running from "../../assets/images/running.jpg";
 import gym from "../../assets/images/gym.jpg";
 import tennis from "../../assets/images/tennis.jpg";
@@ -20,25 +18,36 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { getFavourite } from "../../services/api/FavouriteApi";
 import { useUser } from "../../context/UserContext";
-import { usePopup } from "../../context/PopupContext";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import { getDetailStore } from "../../services/api/StoreApi";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const arrSlides = [slider1, slider1, slider1];
   const { products, fetchProducts } = useProduct();
   const [productFamous, setProductFamous] = useState([]);
   const [productSelled, setProductSelled] = useState([]);
   const { fetchUser } = useUser();
   const [productNew, setProductNew] = useState([]);
-  const { showPopup } = usePopup();
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // console.log(products);
   const [favourites, setFavourites] = useState([]);
   const { token } = useAuth();
+
+  const storeId = "680a5a2fe8930a6de2ee81d2";
+    const [banners, setBanners] = useState([]);
+  
+    useEffect(() => {
+      const fetchBanner = async () => {
+        const res = await getDetailStore(storeId);
+        if (res.EC === 0 && res.EM) {
+          const { store_banner } = res.EM;
+          setBanners(store_banner);
+        }
+      };
+  
+      fetchBanner();
+    }, []);
 
   const fetchFavourites = async () => {
     if (token) {
@@ -60,6 +69,22 @@ const HomePage = () => {
       fetchFavourites();
     }
   }, [token]);
+
+  useEffect(() => {
+    fetchProducts();
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const productsToShow = windowWidth > 1280 ? 8 : 6;
 
   useEffect(() => {
     const productFamous = products.filter(
@@ -87,23 +112,14 @@ const HomePage = () => {
     {
       name: "Sản phẩm nổi bật",
       products: productFamous,
-      onClick: () => {
-        navigate("/");
-      },
     },
     {
       name: "Sản phẩm bán chạy",
       products: productSelled,
-      onClick: () => {
-        navigate("/");
-      },
     },
     {
       name: "Sản phẩm mới về",
       products: productNew,
-      onClick: () => {
-        navigate("/");
-      },
     },
   ];
 
@@ -211,7 +227,7 @@ const HomePage = () => {
           loop
           autoplay
         >
-          {arrSlides.map((slide, index) => (
+          {banners.map((slide, index) => (
             <div
               key={index}
               className="w-full h-full flex items-center justify-center"
@@ -236,20 +252,34 @@ const HomePage = () => {
                   {productStatus.name}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {productStatus.products.slice(0, 8).map((product) => (
-                    <AnimationScroll
-                      key={product._id}
-                      type="fadeUp"
-                      delay={0.1}
-                    >
-                      <ProductComponent
-                        item={product}
-                        favourites={favourites}
-                        onFavouriteChange={fetchFavourites}
-                        onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
-                      />
-                    </AnimationScroll>
-                  ))}
+                  {productStatus.products
+                    .slice(0, productsToShow)
+                    .map((product) => (
+                      <AnimationScroll
+                        key={product._id}
+                        type="fadeUp"
+                        delay={0.1}
+                      >
+                        <ProductComponent
+                          item={product}
+                          favourites={favourites}
+                          onFavouriteChange={fetchFavourites}
+                          onClick={() => navigate(`/product/${product._id}`)} // Chuyển đến trang chi tiết sản phẩm
+                        />
+                      </AnimationScroll>
+                    ))}
+                </div>
+                <div className="flex justify-center mt-6">
+                  <ButtonComponent
+                    color="white"
+                    onClick={() => {
+                      const queryMap = ["famous", "selled", "new"];
+                      navigate(`/product?type=${queryMap[index]}`);
+                    }}
+                    className="w-[200px]"
+                  >
+                    Xem thêm
+                  </ButtonComponent>
                 </div>
               </div>
             );

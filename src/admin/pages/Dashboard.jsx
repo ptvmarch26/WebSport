@@ -163,7 +163,7 @@ function Dashboard() {
             <LiaUsersSolid className="text-white text-[40px]" />
           </div>
           <div className="flex flex-col justify-between">
-            <p className="text-xl font-Smedium">Khách hàng</p>
+            <p className="text-xl font-medium">Khách hàng</p>
             <p className="text-[26px] font-bold">{dashboardData.totalUsers}</p>
           </div>
         </div>
