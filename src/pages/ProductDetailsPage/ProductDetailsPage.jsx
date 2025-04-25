@@ -40,11 +40,11 @@ const ProductDetailsPage = () => {
   const relatedProducts = products
     .filter(
       (p) =>
-        p._id !== productDetails._id &&
-        p.product_category.category_type ===
-          productDetails.product_category.category_type &&
-        p.product_category.category_gender ===
-          productDetails.product_category.category_gender
+        p?._id !== productDetails?._id &&
+        p?.product_category.category_type ===
+          productDetails?.product_category.category_type &&
+        p?.product_category.category_gender ===
+          productDetails?.product_category.category_gender
     )
     .slice(0, itemsToShow);
 
@@ -59,10 +59,10 @@ const ProductDetailsPage = () => {
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {relatedProducts.map((product) => (
-            <AnimationScroll key={product._id} type="fadeUp" delay={0.1}>
+            <AnimationScroll key={product?._id} type="fadeUp" delay={0.1}>
               <ProductComponent
                 item={product}
-                onClick={() => navigate(`/product/${product._id}`)}
+                onClick={() => navigate(`/product/${product?._id}`)}
               />
             </AnimationScroll>
           ))}

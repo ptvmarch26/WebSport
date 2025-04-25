@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import axios from "axios";
 import {
   FaHeart,
   FaShoppingCart,
@@ -23,7 +24,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { useCart } from "../../context/CartContext";
 import { useNotifications } from "../../context/NotificationContext";
 import { usePopup } from "../../context/PopupContext";
-import { getChatBotSearch } from "../../services/api/UserApi";
+
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -212,7 +213,7 @@ const Header = () => {
       params.append("category_sub", category_sub);
     }
 
-    const url = `/search?${params.toString()}`;
+    const url = `/product?${params.toString()}`;
     return url;
   };
 

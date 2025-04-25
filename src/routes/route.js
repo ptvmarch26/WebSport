@@ -34,6 +34,7 @@ import SearchPage from "../pages/SearchPage/SearchPage";
 import AboutUsPage from "../pages/AboutUsPage/AboutUsPage";
 import PrivatePolicyPage from "../pages/PrivatePolicyPage/PrivatePolicyPage";
 import TermOfUsePage from "../pages/TermOfUsePage/TermOfUsePage";
+import MyStore from "../admin/pages/MyStore";
 
 const publicRoutes = [
   {
@@ -195,6 +196,11 @@ const adminRoutes = [
   {
     path: "/admin/discounts",
     component: Discounts,
+    Layout: AdminLayout,
+  },
+  {
+    path: "/admin/my-store",
+    component: MyStore,
     Layout: AdminLayout,
   },
 ];

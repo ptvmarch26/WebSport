@@ -23,7 +23,7 @@ Nhằm đáp ứng xu hướng này, nhóm quyết định thực hiện đề t
 |:---:|:-------------:|:-----:|
 |AC1	|Unauthenticated User (Người dùng chưa xác thực) |	Người dùng không có tài khoản hoặc có tài khoản nhưng chưa đăng nhập, với vai trò này người dùng được thực hiện một số chức năng như mua hàng, xem sản phẩm, xem thông tin cửa hàng, bài viết...|
 |AC2	|Authenticated User (Người dùng đã xác thực) |	Người dùng có tài khoản và đã đăng nhập, với vai trò này người dùng có thể thực hiện các chức năng mua hàng, thêm giỏ hàng, thêm yêu thích, thay đổi thông tin cá nhân...|
-|AC3 |Administrator | Là người dùng có quyền hạn cao nhất trong hệ thống. Quản trị viên chịu trách nhiệm quản lý các họat động như quản lý bán hàng, quản lý khách hàng, quản lý doanh thu, quản lý đơn hàng, quản lý kho. Ngoài ra, quản trị viên cũng đảm bảo hoạt động chung của hệ thống diễn ra suôn sẻ.|
+|AC3 |Administrator (Quản trị viên) | Là người dùng có quyền hạn cao nhất trong hệ thống. Quản trị viên chịu trách nhiệm quản lý các họat động như quản lý bán hàng, quản lý khách hàng, quản lý doanh thu, quản lý đơn hàng, quản lý kho. Ngoài ra, quản trị viên cũng đảm bảo hoạt động chung của hệ thống diễn ra suôn sẻ.|
 
 |Mã chức năng	|	Tên chức năng	|	Tác nhân	| Hoàn thành |
 |:---:|:-------------:|:-----:|:-----:|
