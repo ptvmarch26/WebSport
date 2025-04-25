@@ -125,8 +125,8 @@ const OrderStatusPage = () => {
       (c) => c.color_name === product.color
     );
 
-    let variantPrice = product.product_id.product_price;
-    let productImage = product.product_id.product_img;
+    let variantPrice = product.product_id?.product_price;
+    let productImage = product.product_id?.product_img;
 
     if (colorOption) {
       productImage = colorOption.imgs.img_main;
@@ -211,9 +211,9 @@ const OrderStatusPage = () => {
                 const { variantPrice, productImage } =
                   findProductDetails(product);
                 const discountedPrice =
-                  product.product_id.product_percent_discount > 0
+                  product.product_id?.product_percent_discount > 0
                     ? (variantPrice *
-                        (100 - product.product_id.product_percent_discount)) /
+                        (100 - product.product_id?.product_percent_discount)) /
                       100
                     : variantPrice;
 
@@ -225,12 +225,12 @@ const OrderStatusPage = () => {
                   >
                     <img
                       src={productImage}
-                      alt={product.product_id.product_title}
+                      alt={product.product_id?.product_title}
                       className="w-16 h-16 object-cover border border-gray-300 rounded"
                     />
                     <div className="flex-1">
                       <p className="text-sm font-semibold line-clamp-2">
-                        {product.product_id.product_title}
+                        {product.product_id?.product_title}
                       </p>
                       <p className="text-sm text-gray-500">
                         {product.color} - {product.variant}
@@ -239,13 +239,13 @@ const OrderStatusPage = () => {
                     </div>
                     <div className="flex space-x-2">
                       {discountedPrice &&
-                        product.product_id.product_percent_discount > 0 && (
+                        product.product_id?.product_percent_discount > 0 && (
                           <p className="text-[#9ca3af] line-through">
-                            {discountedPrice.toLocaleString()}đ
+                            {discountedPrice?.toLocaleString()}đ
                           </p>
                         )}
                       <p className="font-medium text-[#ba2b20]">
-                        {variantPrice.toLocaleString()}đ
+                        {variantPrice?.toLocaleString()}đ
                       </p>
                     </div>
                   </div>
@@ -254,7 +254,7 @@ const OrderStatusPage = () => {
               <div className="flex justify-end space-x-4">
                 <p className="font-medium">Thành tiền:</p>
                 <p className="font-bold text-[#ba2b20]">
-                  {order.order_total_final.toLocaleString()}đ
+                  {order.order_total_final?.toLocaleString()}đ
                 </p>
               </div>
 

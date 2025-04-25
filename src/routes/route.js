@@ -35,6 +35,8 @@ import AboutUsPage from "../pages/AboutUsPage/AboutUsPage";
 import PrivatePolicyPage from "../pages/PrivatePolicyPage/PrivatePolicyPage";
 import TermOfUsePage from "../pages/TermOfUsePage/TermOfUsePage";
 import MyStore from "../admin/pages/MyStore";
+import LoginHistory from "../admin/pages/LoginHistory";
+import LoginHistoryDetails from "../admin/pages/LoginHistoryDetails";
 
 const publicRoutes = [
   {
@@ -201,6 +203,16 @@ const adminRoutes = [
   {
     path: "/admin/my-store",
     component: MyStore,
+    Layout: AdminLayout,
+  },
+  {
+    path: "/admin/history",
+    component: LoginHistory,
+    Layout: AdminLayout,
+  },
+  {
+    path: "/admin/history/:id",
+    component: LoginHistoryDetails,
     Layout: AdminLayout,
   },
 ];

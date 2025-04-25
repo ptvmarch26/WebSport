@@ -9,7 +9,7 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
   const navigate = useNavigate();
   const decreaseQuantity = () => {
     if (item.quantity > 1) {
-      onDecrease(item._id, item.quantity - 1);
+      onDecrease(item?._id, item.quantity - 1);
     }
   };
 
@@ -18,20 +18,20 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
       const favouritesData = await getFavourite();
 
       if (favouritesData && favouritesData.result) {
-        setIsFavorite(favouritesData.result.includes(item.product_id._id));
+        setIsFavorite(favouritesData.result.includes(item.product_id?._id));
       }
     };
 
     fetchFavoriteStatus();
-  }, [item.product_id._id]);
+  }, [item.product_id?._id]);
 
   const toggleFavorite = async () => {
     setIsFavorite(!isFavorite);
-    await updateFavourite(item.product_id._id);
+    await updateFavourite(item.product_id?._id);
   };
 
   const increaseQuantity = () => {
-    onIncrease(item._id, item.quantity + 1);
+    onIncrease(item?._id, item.quantity + 1);
   };
 
   const selectedColor = item?.product_id?.colors.find(
@@ -50,7 +50,7 @@ const CartItemComponent = ({ item, onRemove, onIncrease, onDecrease }) => {
   return (
     <>
       <div
-        onClick={() => navigate(`/product/${item.product_id._id}`)}
+        onClick={() => navigate(`/product/${item.product_id?._id}`)}
         className="flex gap-4 cursor-pointer"
       >
         <img

@@ -20,8 +20,8 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
       <div className="flex gap-10 mt-10 sm:my-10">
         <Link to={`/product/${productDetails?._id}`}>
           <img
-            src={productDetails.product_img}
-            alt={productDetails.title}
+            src={productDetails?.product_img}
+            alt={productDetails?.title}
             className="max-w-[128px] w-[128px] h-[128px] sm:max-w-[256px] sm:w-52 sm:h-52 md:w-64 md:h-64 object-cover"
           />
         </Link>
@@ -29,16 +29,16 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
           <div className="flex justify-between">
             <div>
               <h2 className="font-semibold line-clamp-2">
-                {productDetails.product_title}
+                {productDetails?.product_title}
               </h2>
               <div className="flex productDetailss-center">
                 <p className="text-md font-weight text-[#9ca3af] line-through mr-4">
-                  {productDetails.product_price.toLocaleString()}₫
+                  {productDetails?.product_price.toLocaleString()}₫
                 </p>
                 <p className="text-md font-bold text-[#ba2b20] mr-4">
                   {(
-                    productDetails.product_price *
-                    (1 - productDetails.product_percent_discount / 100)
+                    productDetails?.product_price *
+                    (1 - productDetails?.product_percent_discount / 100)
                   ).toLocaleString()}
                   ₫
                 </p>
@@ -63,7 +63,7 @@ const FavoriteItemComponent = ({ productDetails, onRemove }) => {
           onClose={handleOpenDialog}
           onConfirm={handleConfirmRemove}
           title="Xác nhận xóa"
-          message={`Bạn có chắc chắn muốn xóa "${productDetails.product_title}" khỏi danh sách yêu thích không?`}
+          message={`Bạn có chắc chắn muốn xóa "${productDetails?.product_title}" khỏi danh sách yêu thích không?`}
         />
       </div>
     </div>

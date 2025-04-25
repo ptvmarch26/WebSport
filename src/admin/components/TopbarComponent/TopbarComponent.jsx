@@ -14,11 +14,15 @@ function TopbarComponent({ admin_name, toggleSidebar }) {
     "/admin/employees": "Danh sách nhân viên",
     "/admin/discounts": "Danh sách mã giảm giá",
     "/admin/my-store": "Thông tin cửa hàng",
+    "/admin/history": "Lịch sử đăng nhập",
+    "/admin/history/:id": "Chi tiết lịch sử",
   };
 
   let currentPage = "Admin Panel";
   if (location.pathname.startsWith("/admin/order-details/")) {
     currentPage = "Chi tiết đơn hàng";
+  } else if (location.pathname.startsWith("/admin/history/")) {
+    currentPage = "Chi tiết lịch sử";
   } else if (pageTitles[location.pathname]) {
     currentPage = pageTitles[location.pathname];
   }
