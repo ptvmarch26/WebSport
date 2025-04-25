@@ -30,7 +30,7 @@ const AboutUs = () => {
                 "Đóng gói kỹ lưỡng, vận chuyển nhanh toàn quốc. Đảm bảo sản phẩm đến tay bạn nguyên vẹn, đúng hẹn – mang đến trải nghiệm mua sắm thể thao tiện lợi và chuyên nghiệp.",
         },
     ];
-    
+
 
     const reasons = [
         {
@@ -80,8 +80,8 @@ const AboutUs = () => {
                     <div className="h-[2px] w-[30%] bg-black"></div>
                 </div>
                 <p className="text-center text-xl font-bold">
-                Chào mừng bạn đến với <strong>WTM Sport</strong> – Nơi hội tụ những trang phục và phụ kiện thể thao chất lừ, 
-                giúp bạn bứt phá giới hạn và thể hiện chất riêng trên mọi hành trình!
+                    Chào mừng bạn đến với <strong>WTM Sport</strong> – Nơi hội tụ những trang phục và phụ kiện thể thao chất lừ,
+                    giúp bạn bứt phá giới hạn và thể hiện chất riêng trên mọi hành trình!
                 </p>
                 <div className="flex justify-evenly flex-wrap lg:flex-nowrap py-10">
                     {options.map((option, index) => (
@@ -108,22 +108,25 @@ const AboutUs = () => {
                 <div className="flex justify-center py-7">
                     <div className="h-[2px] w-[30%] bg-black"></div>
                 </div>
-                <p className="text-justify text-lg"> Tại <strong>WTM Sport</strong>, chúng mình tin rằng thể thao không chỉ là hoạt động rèn luyện sức khỏe,
-                    mà còn là cách bạn thể hiện bản lĩnh, cá tính và tinh thần sống tích cực. Với niềm đam mê thể thao và khát khao mang lại những sản phẩm chất lượng,
-                    <strong>WTM Sport</strong> đem đến một thế giới đồ thể thao đa dạng, hiện đại và đầy cảm hứng,
-                    giúp bạn tự tin chinh phục mọi giới hạn mỗi ngày. <br /> <br />
-                    Chúng mình tin rằng mỗi bộ đồ hay phụ kiện thể thao đều mang một thông điệp riêng, vì thế các sản phẩm tại <strong>WTM Sport</strong> không chỉ được
-                    chọn lọc kỹ lưỡng về chất lượng, mà còn đảm bảo tính thời trang và phù hợp với nhiều phong cách – từ năng động, khỏe khoắn đến trẻ trung, cá tính.
-                    Chúng mình luôn cập nhật xu hướng mới nhất và liên tục bổ sung các thiết kế mới,
-                    giúp bạn luôn tìm thấy sản phẩm phù hợp với nhu cầu tập luyện cũng như gu thẩm mỹ của mình. <br /> <br />
-                    Nếu bạn đang tìm kiếm một địa chỉ đáng tin cậy để sở hữu trang phục, giày dép hoặc phụ kiện thể thao chất
-                    lượng, hãy đến với <strong>WTM Sport</strong> – nơi mang đến trải nghiệm mua sắm chuyên nghiệp và truyền cảm hứng cho lối sống năng động, khỏe mạnh. <br /> <br />
-                    Thế mạnh của chúng mình là sự phong phú trong danh mục sản phẩm và sự thấu hiểu nhu cầu của người yêu thể thao. <strong>WTM Sport</strong>
-                    tự hào có đội ngũ nhân viên am hiểu chuyên môn, luôn sẵn sàng hỗ trợ và tư vấn để bạn chọn được sản phẩm phù hợp nhất với mục tiêu rèn luyện hay thi đấu. <br /> <br />
-                    Không chỉ là một cửa hàng bán đồ thể thao thông thường, <strong>WTM Sport</strong> còn là nơi kết nối cộng đồng yêu thể thao. Chúng mình luôn chia sẻ những kiến thức hữu ích về chăm sóc,
-                    bảo quản thiết bị và lựa chọn sản phẩm phù hợp với từng bộ môn. Bên cạnh đó, <strong>WTM Sport</strong> cam kết mang đến mức giá hợp lý cùng chất lượng tốt nhất,
-                    để mỗi khách hàng đều cảm thấy hài lòng khi lựa chọn sản phẩm của chúng mình. <br /> <br /> Sự uy tín, chất lượng dịch vụ và phong cách chuyên nghiệp chính là điều khiến <strong>WTM Sport</strong>
-                    trở thành điểm đến yêu thích của những ai đam mê thể thao. Hãy để <strong>WTM Sport</strong> đồng hành cùng bạn trên hành trình bứt phá giới hạn và sống trọn đam mê thể thao mỗi ngày! </p>
+                <p className="text-justify text-lg">
+                    Tại <strong>WTM Sport</strong>, chúng mình tin rằng thể thao không chỉ là hoạt động rèn luyện sức khỏe, mà còn là cách bạn thể hiện bản lĩnh, cá tính và tinh thần sống tích cực.
+                    Với niềm đam mê thể thao và mong muốn mang đến những sản phẩm chất lượng từ các thương hiệu uy tín, <strong>WTM Sport</strong> tự hào là nơi cung cấp đồ thể thao chính hãng đa dạng, hiện đại và đầy cảm hứng, giúp bạn tự tin chinh phục mọi giới hạn mỗi ngày. <br /><br />
+
+                    Mỗi bộ đồ hay phụ kiện thể thao đều mang một thông điệp riêng. Vì vậy, tại <strong>WTM Sport</strong>, các sản phẩm đều được chọn lọc kỹ lưỡng về nguồn gốc, chất lượng và thương hiệu – đảm bảo đáp ứng cả về tính thời trang lẫn hiệu năng sử dụng.
+                    Dù bạn theo đuổi phong cách năng động, khỏe khoắn hay trẻ trung, cá tính, chúng mình đều có sản phẩm phù hợp với gu thẩm mỹ và nhu cầu tập luyện của bạn. <br /><br />
+
+                    <strong>WTM Sport</strong> thường xuyên cập nhật các bộ sưu tập mới từ các thương hiệu thể thao nổi tiếng trong và ngoài nước, giúp bạn dễ dàng tìm thấy sản phẩm yêu thích, chính hãng và bắt kịp xu hướng. <br /><br />
+
+                    Nếu bạn đang tìm kiếm một địa chỉ uy tín để sở hữu trang phục, giày dép hay phụ kiện thể thao chính hãng, hãy đến với <strong>WTM Sport</strong> – nơi mang đến trải nghiệm mua sắm chuyên nghiệp và truyền cảm hứng cho lối sống năng động, khỏe mạnh. <br /><br />
+
+                    Thế mạnh của chúng mình là sự đa dạng về sản phẩm và sự am hiểu sâu sắc về nhu cầu của người yêu thể thao. Đội ngũ nhân viên <strong>WTM Sport</strong> luôn sẵn sàng hỗ trợ và tư vấn tận tình, giúp bạn lựa chọn sản phẩm phù hợp nhất với bộ môn, mục tiêu và ngân sách của mình. <br /><br />
+
+                    Không chỉ là một cửa hàng bán đồ thể thao, <strong>WTM Sport</strong> còn là nơi kết nối cộng đồng yêu thể thao. Chúng mình chia sẻ những kiến thức hữu ích về lựa chọn sản phẩm, cách sử dụng và bảo quản thiết bị thể thao.
+                    Bên cạnh đó, <strong>WTM Sport</strong> cam kết mang đến mức giá hợp lý và sản phẩm chính hãng chất lượng, để mỗi khách hàng đều an tâm và hài lòng khi mua sắm tại đây. <br /><br />
+
+                    Uy tín, chất lượng dịch vụ và sự chuyên nghiệp chính là điều khiến <strong>WTM Sport</strong> trở thành điểm đến yêu thích của những ai đam mê thể thao. Hãy để <strong>WTM Sport</strong> đồng hành cùng bạn trên hành trình bứt phá giới hạn và sống trọn đam mê mỗi ngày!
+                </p>
+
             </section>
             <section>
                 <h2 className="text-4xl pacifico font-medium text-primary text-center">
