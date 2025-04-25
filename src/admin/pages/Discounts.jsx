@@ -9,6 +9,7 @@ import {
   Form,
   DatePicker,
   InputNumber,
+  Divider,
 } from "antd";
 import {
   DeleteOutlined,
@@ -161,12 +162,13 @@ const Discounts = () => {
     { title: "Code", dataIndex: "discount_code", key: "discount_code" },
     { title: "Loại", dataIndex: "discount_type", key: "discount_type" },
     { title: "Mô tả", dataIndex: "description", key: "description" },
+    { title: "Số lượng giảm giá", dataIndex: "discount_amount", key: "discount_amount" },
     {
       title: "Hạn sử dụng",
       dataIndex: "discount_end_day",
       key: "discount_end_day",
       render: (text) => {
-        return text ? moment(text).format("YYYY-MM-DD") : ""; // Định dạng lại ngày
+        return text ? moment(text).format("YYYY-MM-DD") : ""; 
       },
     },
     {
@@ -339,11 +341,39 @@ const Discounts = () => {
             name="applicable_categories"
             rules={[{ required: true, message: "Danh mục là bắt buộc" }]}
           >
-            <Select mode="multiple">
+            <Select
+              mode="multiple"
+              placeholder="Chọn danh mục"
+              dropdownRender={(menu) => (
+                <>
+                  <div 
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      const allCategoryIds = categories.map((c) => c._id);
+                      form.setFieldsValue({ applicable_categories: allCategoryIds });
+                    }}
+                  >
+                    Chọn tất cả
+                  </div>
+                  <div 
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      form.setFieldsValue({ applicable_categories: [] });
+                    }}
+                  >
+                    Bỏ chọn tất cả
+                  </div>
+                  <Divider style={{ margin: '4px 0' }} />
+                  {menu}
+                </>
+              )}
+            >
               {categories?.map((category) => (
-                <Option key={category._id} value={category._id}>
+                <Select.Option key={category._id} value={category._id}>
                   {category.category_type} - {category.category_gender}
-                </Option>
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
@@ -352,11 +382,40 @@ const Discounts = () => {
             name="applicable_products"
             rules={[{ required: true, message: "Sản phẩm là bắt buộc" }]}
           >
-            <Select mode="multiple">
+            <Select 
+              mode="multiple"
+
+              placeholder="Chọn danh mục"
+              dropdownRender={(menu) => (
+                <>
+                  <div 
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      const allProducts = products.map((c) => c._id);
+                      form.setFieldsValue({ applicable_products: allProducts });
+                    }}
+                  >
+                    Chọn tất cả
+                  </div>
+                  <div 
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      form.setFieldsValue({ applicable_products: [] });
+                    }}
+                  >
+                    Bỏ chọn tất cả
+                  </div>
+                  <Divider style={{ margin: '4px 0' }} />
+                  {menu}
+                </>
+              )}
+            >
               {products?.map((product) => (
-                <Option key={product._id} value={product._id}>
+                <Select.Option key={product._id} value={product._id}>
                   {product.product_title}
-                </Option>
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
