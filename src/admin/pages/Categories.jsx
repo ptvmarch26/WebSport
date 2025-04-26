@@ -32,7 +32,6 @@ const Categories = () => {
     useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { fetchUser } = useUser();
-  const { showPopup } = usePopup();
 
   const {
     categories,
@@ -197,7 +196,7 @@ const Categories = () => {
       <div className="space-y-3 mb-4">
         <div className="flex flex-wrap sm:flex-nowrap gap-4">
           <Input
-            placeholder="Tìm kiếm theo..."
+            placeholder="Tìm kiếm theo loại danh mục"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />

@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import "./index.css";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 function App() {
   const { token } = useAuth();
@@ -13,6 +14,7 @@ function App() {
   };
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {publicRoutes.map((route, index) => {
           const Layout = route.Layout === null ? Fragment : DefaultLayout;

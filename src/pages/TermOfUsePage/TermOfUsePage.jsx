@@ -2,7 +2,7 @@ const TermOfUsePage = () => {
     const terms = [
         {
           title: "Giới thiệu",
-          content: `Chào mừng quý khách đến với WTM Sport – Thế giới phụ kiện và trang phục thể thao chính hãng, năng động và cá tính.\n\nChúng tôi có địa chỉ giao dịch tại khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành phố Hồ Chí Minh và website chính thức tại www.wtmsport.vn.\n\nKhi truy cập website, quý khách đồng ý với các điều khoản sử dụng được nêu dưới đây. WTM Sport có quyền thay đổi, điều chỉnh hoặc cập nhật các điều khoản này bất kỳ lúc nào mà không cần thông báo trước. Việc tiếp tục sử dụng website sau khi có thay đổi đồng nghĩa với việc quý khách chấp nhận các cập nhật đó.\n\nVui lòng kiểm tra thường xuyên để cập nhật các điều khoản mới nhất từ chúng tôi.`,
+          content: `Chào mừng quý khách đến với WTM Sport – Thế giới phụ kiện và trang phục thể thao chính hãng, năng động và cá tính.\n\nChúng tôi có địa chỉ giao dịch tại Linh Trung, Thủ Đức, HCM và website chính thức tại www.wtmsport.id.vn.\n\nKhi truy cập website, quý khách đồng ý với các điều khoản sử dụng được nêu dưới đây. WTM Sport có quyền thay đổi, điều chỉnh hoặc cập nhật các điều khoản này bất kỳ lúc nào mà không cần thông báo trước. Việc tiếp tục sử dụng website sau khi có thay đổi đồng nghĩa với việc quý khách chấp nhận các cập nhật đó.\n\nVui lòng kiểm tra thường xuyên để cập nhật các điều khoản mới nhất từ chúng tôi.`,
         },
         {
           title: "Hướng dẫn sử dụng website",
@@ -22,7 +22,7 @@ const TermOfUsePage = () => {
         {
           title: "Thay đổi hoặc hủy bỏ giao dịch",
           content:
-            "Khách hàng có thể yêu cầu hủy giao dịch nếu đáp ứng một trong các điều kiện sau:\n\n- Gửi yêu cầu hủy qua hotline 059 527 56 88 hoặc email wtmsport.contact@gmail.vn\n\n- Trả lại sản phẩm trong tình trạng chưa qua sử dụng và còn nguyên vẹn.",
+            "Khách hàng có thể yêu cầu hủy giao dịch nếu đáp ứng một trong các điều kiện sau:\n\n- Gửi yêu cầu hủy qua hotline 059 527 56 88 hoặc email wtmsport.contact@gmail.vn.\n\n- Trả lại sản phẩm trong tình trạng chưa qua sử dụng và còn nguyên vẹn.",
         },
         {
           title: "Giải quyết hậu quả do lỗi nhập sai thông tin",

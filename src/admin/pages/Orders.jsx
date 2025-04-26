@@ -60,6 +60,8 @@ const Orders = () => {
     return matchesStatus && matchesSearch;
   });
 
+  console.log("pr", product)
+
   const columns = [
     {
       title: "Mã đơn",
