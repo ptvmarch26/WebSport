@@ -43,7 +43,7 @@ const ProductInfoComponent = ({ product }) => {
   const thumbSliderSettings = {
     infinite: true,
     speed: 500,
-    slidesToShow: Math.min(5),
+    slidesToShow: 5,
     slidesToScroll: 1,
     nextArrow: (
       <NextComponent
@@ -188,13 +188,13 @@ const ProductInfoComponent = ({ product }) => {
     const mainColorImg = color.imgs?.img_main;
     const index = allImages.findIndex((img) => img === mainColorImg);
 
-    if (index !== -1 && mainSliderRef.current) {
+    if (index !== -1 && mainSliderRef.current && mainSliderRef.current.slickGoTo) {
       mainSliderRef.current.slickGoTo(index);
       setCurrentIndex(index);
     }
 
     // Cập nhật vị trí thumbnail
-    if (thumbSliderRef.current) {
+    if (thumbSliderRef.current && thumbSliderRef.current.slickGoTo) {
       thumbSliderRef.current.slickGoTo(index);
     }
   };
