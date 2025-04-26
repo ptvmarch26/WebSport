@@ -9,7 +9,7 @@ export const getLoginHistory = async () => {
   }
 };
 
-export const getActivies = async (id) => {
+export const getLoginHistoryById = async (id) => {
   try {
     const res = await AxiosInstance.get(`/login_history/${id}`);
     return res.data;

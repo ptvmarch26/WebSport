@@ -224,7 +224,7 @@ const OrderDetails = () => {
       const order = await fetchOrderDetail(id);
       if (order.order_payment_method === "Paypal" && order.is_paid) {
         const res = await getPaymentInfoByOrderCode(order.order_code);
-        if (res.EC === 0 && res.result.transaction) {
+        if (res.EC === 0 && res.result.transactions) {
           setPaymentInfo(res.result);
         }
       }

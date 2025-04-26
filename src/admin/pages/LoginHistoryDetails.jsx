@@ -1,16 +1,17 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Table } from "antd";
 import { useEffect, useState } from "react";
-import { getActivies } from "../../services/api/LoginHistoryApi";
+import { getLoginHistoryById } from "../../services/api/LoginHistoryApi";
 
 function LoginHistoryDetail() {
   const { id } = useParams();
-  const [activities, setActivities] = useState();
+  const navigate = useNavigate();
+  const [loginHistory, setLoginHistory] = useState();
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getActivies(id);
+      const result = await getLoginHistoryById(id);
       if (result.EC === 0) {
-        setActivities(result.result);
+        setLoginHistory(result.result);
       }
     };
     fetchData();
@@ -21,6 +22,14 @@ function LoginHistoryDetail() {
       title: "Mã đơn hàng",
       dataIndex: "order_id",
       key: "order_id",
+      render: (text) => (
+        <a
+          onClick={() => navigate(`/admin/order-details/${text}`)}
+          className="text-blue-600 hover:underline cursor-pointer"
+        >
+          {text}
+        </a>
+      ),
     },
     {
       title: "Trạng thái trước",
@@ -45,18 +54,18 @@ function LoginHistoryDetail() {
       <div className="bg-white p-4 shadow-lg space-y-4">
         <div className="space-y-3 px-3 py-5 border rounded">
           <h3 className="font-semibold">Thông tin cơ bản</h3>
-          {/* <p>
-            <strong>IP:</strong> {data.ip}
+          <p>
+            <strong>IP:</strong> {loginHistory?.ip}
           </p>
           <p>
-            <strong>User Agent:</strong> {data.userAgent}
-          </p> */}
+            <strong>User Agent:</strong> {loginHistory?.user_agent}
+          </p>
         </div>
         <div className="space-y-3 px-3 py-5 border rounded">
           <h3 className="font-semibold">Lịch sử chỉnh sửa</h3>
           <Table
             columns={columns}
-            dataSource={activities}
+            dataSource={loginHistory?.activities}
             rowKey="orderId"
             pagination={false}
             bordered
