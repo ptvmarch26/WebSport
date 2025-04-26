@@ -1,36 +1,35 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Table } from "antd";
-
-const mockDetailData = {
-  _id: "1",
-  createdAt: "2025-04-25T08:12:45Z",
-  ip: "192.168.1.1",
-  userAgent: "Chrome on Windows",
-  activities: [
-    {
-      orderId: "ORD12345",
-      prev_status: "Processing",
-      new_status: "Shipped",
-      time: "2025-04-25T08:15:00Z",
-    },
-    {
-      orderId: "ORD12346",
-      prev_status: "Shipped",
-      new_status: "Delivered",
-      time: "2025-04-25T09:00:00Z",
-    },
-  ],
-};
+import { useEffect, useState } from "react";
+import { getLoginHistoryById } from "../../services/api/LoginHistoryApi";
 
 function LoginHistoryDetail() {
   const { id } = useParams();
-  const data = mockDetailData;
+  const navigate = useNavigate();
+  const [loginHistory, setLoginHistory] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getLoginHistoryById(id);
+      if (result.EC === 0) {
+        setLoginHistory(result.result);
+      }
+    };
+    fetchData();
+  }, []);
 
   const columns = [
     {
       title: "Mã đơn hàng",
-      dataIndex: "orderId",
-      key: "orderId",
+      dataIndex: "order_id",
+      key: "order_id",
+      render: (text) => (
+        <a
+          onClick={() => navigate(`/admin/order-details/${text}`)}
+          className="text-blue-600 hover:underline cursor-pointer"
+        >
+          {text}
+        </a>
+      ),
     },
     {
       title: "Trạng thái trước",
@@ -44,8 +43,8 @@ function LoginHistoryDetail() {
     },
     {
       title: "Thời gian",
-      dataIndex: "time",
-      key: "time",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (text) => new Date(text).toLocaleString("vi-VN"),
     },
   ];
@@ -56,17 +55,17 @@ function LoginHistoryDetail() {
         <div className="space-y-3 px-3 py-5 border rounded">
           <h3 className="font-semibold">Thông tin cơ bản</h3>
           <p>
-            <strong>IP:</strong> {data.ip}
+            <strong>IP:</strong> {loginHistory?.ip}
           </p>
           <p>
-            <strong>User Agent:</strong> {data.userAgent}
+            <strong>User Agent:</strong> {loginHistory?.user_agent}
           </p>
         </div>
         <div className="space-y-3 px-3 py-5 border rounded">
           <h3 className="font-semibold">Lịch sử chỉnh sửa</h3>
           <Table
             columns={columns}
-            dataSource={data.activities}
+            dataSource={loginHistory?.activities}
             rowKey="orderId"
             pagination={false}
             bordered

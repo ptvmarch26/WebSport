@@ -10,7 +10,6 @@ import facebook from "../../assets/images/logo_facebook.png";
 import google from "../../assets/images/logo_google.png";
 import { useAuth } from "../../context/AuthContext";
 import { usePopup } from "../../context/PopupContext";
-import { signUpWithGoogle } from "../../services/api/AuthApi";
 
 const SignInSignUp = () => {
   const navigate = useNavigate();
@@ -107,7 +106,13 @@ const SignInSignUp = () => {
     return isValid;
   };
 
-  const { handleSignUp, handleLogin, handlLoginWithGoogle, token } = useAuth();
+  const {
+    handleSignUp,
+    handleLogin,
+    handlLoginWithGoogle,
+    handleSignUpGoogle,
+    token,
+  } = useAuth();
   useEffect(() => {
     if (token) {
       navigate("/", { replace: true });
@@ -168,13 +173,11 @@ const SignInSignUp = () => {
       localStorage.removeItem("compareList");
       window.dispatchEvent(new CustomEvent("compareListUpdated"));
       navigate("/");
-    } else {
-      showPopup(result.EM, false);
-    }
+    } else showPopup(result.EM, false);
   };
 
   const handleSignUpWithGoogle = async () => {
-    const result = await signUpWithGoogle();
+    const result = await handleSignUpGoogle();
     if (result.EC === 0 && result?.result?.accessToken) {
       showPopup(result.EM);
       localStorage.removeItem("compareList");
@@ -256,7 +259,7 @@ const SignInSignUp = () => {
                     type="text"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    placeholder="Số điện thoại/Email/Tên đăng nhập"
+                    placeholder="Tên đăng nhập"
                     className={`mb-4 peer w-full bg-transparent text-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 border focus:border-2 border-t-gray-200 focus:border-t-primary placeholder:opacity-100 focus:placeholder:opacity-100 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-900 pl-10 `}
                   />
                 </div>

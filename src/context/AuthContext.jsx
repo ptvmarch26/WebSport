@@ -6,6 +6,7 @@ import {
   verifyOTP,
   resetPassword,
   loginWithGoogle,
+  signUpWithGoogle,
 } from "../services/api/AuthApi";
 
 const AuthContext = createContext();
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(
     localStorage.getItem("accessToken") || null
   );
-  
+
   useEffect(() => {
     if (token) {
       localStorage.setItem("accessToken", token);
@@ -58,11 +59,19 @@ export const AuthProvider = ({ children }) => {
 
   const handlLoginWithGoogle = async () => {
     const data = await loginWithGoogle();
-    if (data?.result?.accessToken) {
+    if (data.EC === 0 && data?.result?.accessToken) {
       setToken(data?.result?.accessToken);
       localStorage.setItem("accessToken", data.result.accessToken);
     }
+    return data;
+  };
 
+  const handleSignUpGoogle = async () => {
+    const data = await signUpWithGoogle();
+    if (data.EC === 0 && data?.result?.accessToken) {
+      setToken(data?.result?.accessToken);
+      localStorage.setItem("accessToken", data.result.accessToken);
+    }
     return data;
   };
 
@@ -77,6 +86,7 @@ export const AuthProvider = ({ children }) => {
         handleVerifyOTP,
         handleResetPassword,
         handlLoginWithGoogle,
+        handleSignUpGoogle,
       }}
     >
       {children}

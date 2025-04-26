@@ -1,29 +1,7 @@
 import { Table } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const mockData = [
-  {
-    _id: "1",
-    createdAt: "2025-04-25T08:12:45Z",
-    ip: "192.168.1.1",
-    userAgent: "Chrome on Windows",
-    activities: ["login", "view_dashboard", "logout"],
-  },
-  {
-    _id: "2",
-    createdAt: "2025-04-24T10:30:21Z",
-    ip: "192.168.1.22",
-    userAgent: "Firefox on MacOS",
-    activities: ["login"],
-  },
-  {
-    _id: "3",
-    createdAt: "2025-04-23T15:00:00Z",
-    ip: "192.168.2.5",
-    userAgent: "Safari on iPhone",
-    activities: ["login", "update_profile"],
-  },
-];
+import { getLoginHistory } from "../../services/api/LoginHistoryApi";
 
 const columns = [
   {
@@ -33,8 +11,8 @@ const columns = [
   },
   {
     title: "User Agent",
-    dataIndex: "userAgent",
-    key: "userAgent",
+    dataIndex: "user_agent",
+    key: "user_agent",
   },
   {
     title: "Thời gian",
@@ -50,13 +28,23 @@ const columns = [
 ];
 
 function LoginHistory() {
+  const [loginHistories, setLoginHistories] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getLoginHistory();
+      if (result.EC === 0) {
+        setLoginHistories(result.result);
+      }
+    };
+    fetchData();
+  }, []);
   const navigate = useNavigate();
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen bg-gray-50">
       <div className="bg-white p-4 shadow-lg">
         <Table
           columns={columns}
-          dataSource={mockData}
+          dataSource={loginHistories}
           pagination={{ pageSize: 5 }}
           rowKey="_id"
           scroll={{ x: "max-content" }}

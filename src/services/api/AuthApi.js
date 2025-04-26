@@ -96,7 +96,6 @@ export const loginWithGoogle = async () => {
     const user = result.user;
     const res = await AxiosInstance.post("/auth/login_with_google", {
       email: user.email,
-      user_name: user.email,
       uid: user.uid,
     });
     return res.data;

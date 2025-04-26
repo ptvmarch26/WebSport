@@ -55,9 +55,7 @@ const Orders = () => {
       ? order.order_status === filterStatus
       : true;
     const matchesSearch = searchText
-      ? order.products.some((product) =>
-          product.name.toLowerCase().includes(searchText.toLowerCase())
-        )
+      ? order._id.toLowerCase().includes(searchText.toLowerCase())
       : true;
     return matchesStatus && matchesSearch;
   });
@@ -135,7 +133,7 @@ const Orders = () => {
       <div className="space-y-3 mb-4">
         <div className="flex gap-4">
           <Input
-            placeholder="Tìm kiếm theo tên sản phẩm..."
+            placeholder="Tìm kiếm theo mã đơn hàng..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             className="rounded-none"
