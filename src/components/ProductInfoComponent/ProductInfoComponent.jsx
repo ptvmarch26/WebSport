@@ -121,10 +121,11 @@ const ProductInfoComponent = ({ product }) => {
     }
   };
 
-  setSelectedSize(null);
-  setSelectedColor(null);
-  setAvailableVariants([]);
   useEffect(() => {
+    setSelectedSize(null);
+    setSelectedColor(null);
+    setAvailableVariants([]);
+    
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
 
