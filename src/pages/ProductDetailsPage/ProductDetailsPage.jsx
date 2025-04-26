@@ -11,18 +11,21 @@ const ProductDetailsPage = () => {
   const { id } = useParams();
   const { fetchProductDetails, productDetails, fetchProducts, products } =
     useProduct();
+
   useEffect(() => {
-    fetchProductDetails(id);
+    const fetchData = async () => {
+      await fetchProductDetails(id);
+    }
+    fetchData();
     window.scrollTo(0, 0);
   }, [id]);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    const fetchData = async () => {
+      await fetchProducts();
+    }
+    fetchData();
 
-  const [itemsToShow, setItemsToShow] = useState(6);
-
-  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setItemsToShow(8); 
@@ -36,6 +39,10 @@ const ProductDetailsPage = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const [itemsToShow, setItemsToShow] = useState(6);
+
+  
 
   const relatedProducts = products
     .filter(
