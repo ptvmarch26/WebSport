@@ -121,6 +121,9 @@ const ProductInfoComponent = ({ product }) => {
     }
   };
 
+  setSelectedSize(null);
+  setSelectedColor(null);
+  setAvailableVariants([]);
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
@@ -217,13 +220,12 @@ const ProductInfoComponent = ({ product }) => {
                 <img
                   src={img}
                   alt={`Thumbnail ${index}`}
-                  className={`w-full h-20 object-cover cursor-pointer border-2 ${
-                    index === currentIndex
+                  className={`w-full h-20 object-cover cursor-pointer border-2 ${index === currentIndex
                       ? "border-black"
                       : "border-transparent"
-                  }`}
+                    }`}
                   onClick={() => handleThumbClick(index)}
-                  // onMouseEnter={() => handleThumbClick(index)}
+                // onMouseEnter={() => handleThumbClick(index)}
                 />
               </div>
             ))}
@@ -283,11 +285,10 @@ const ProductInfoComponent = ({ product }) => {
                 <Button
                   key={index}
                   color="white"
-                  className={`w-24 h-14 border-gray-400 flex items-center justify-center p-2 border rounded-md shadow-md ${
-                    selectedColor === color.color_name
+                  className={`w-24 h-14 border-gray-400 flex items-center justify-center p-2 border rounded-md shadow-md ${selectedColor === color.color_name
                       ? "border-2 border-black"
                       : ""
-                  }`}
+                    }`}
                   onClick={() => handleColorSelect(color)}
                 >
                   {color.color_name}
@@ -306,11 +307,10 @@ const ProductInfoComponent = ({ product }) => {
                     <Button
                       key={variant._id}
                       color="white"
-                      className={`w-14 h-14 border-gray-400 flex items-center justify-center border rounded-md shadow-md ${
-                        selectedSize === variant.variant_size
+                      className={`w-14 h-14 border-gray-400 flex items-center justify-center border rounded-md shadow-md ${selectedSize === variant.variant_size
                           ? "border-2 border-black"
                           : ""
-                      }`}
+                        }`}
                       onClick={() => setSelectedSize(variant.variant_size)}
                       disabled={variant.variant_countInStock === 0}
                     >
@@ -406,9 +406,8 @@ const ProductInfoComponent = ({ product }) => {
           )}
         </div>
         <div
-          className={`mt-4 text-sm text-black transition-all ${
-            isDetailsVisible ? "max-h-[500px]" : "max-h-0 opacity-0"
-          }`}
+          className={`mt-4 text-sm text-black transition-all ${isDetailsVisible ? "max-h-[500px]" : "max-h-0 opacity-0"
+            }`}
         >
           <p className="text-justify leading-loose">
             {product?.product_description}
