@@ -78,7 +78,7 @@ const Customers = () => {
       <div className="space-y-3 mb-4">
         <div className="flex flex-wrap sm:flex-nowrap gap-4">
           <Input
-            placeholder="Tìm kiếm theo tên khách hàng..."
+            placeholder="Tìm kiếm theo tên, email, số điện thoại khách hàng"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             className="rounded-none"

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Card, Typography, Table } from "antd";
+import { Table } from "antd";
 
 const mockDetailData = {
   _id: "1",

@@ -54,14 +54,15 @@ const Orders = () => {
     const matchesStatus = filterStatus
       ? order.order_status === filterStatus
       : true;
-    // const matchesSearch = searchText
-    //   ? order.products.some((product) =>
-    //       product.name.toLowerCase().includes(searchText.toLowerCase())
-    //     )
-    //   : true;
-    // return matchesStatus && matchesSearch;
-    return matchesStatus;
+    const matchesSearch = searchText
+      ? order.products.some((product) =>
+          product.name.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : true;
+    return matchesStatus && matchesSearch;
   });
+
+  console.log("pr", product)
 
   const columns = [
     {

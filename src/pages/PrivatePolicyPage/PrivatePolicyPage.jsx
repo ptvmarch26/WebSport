@@ -18,7 +18,7 @@ const PrivatePolicyPage = () => {
         {
             title: "Địa chỉ của đơn vị thu thập và quản lý thông tin cá nhân",
             content:
-                "Cửa hàng kinh doanh trang phục & phụ kiện thể thao WTM Sport\n\n- Địa chỉ: Khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành phố Hồ Chí Minh\n\n- Email: contact@wtmsport.vn\n\n- Hotline: 093 234 55 10",
+                "Cửa hàng kinh doanh trang phục & phụ kiện thể thao WTM Sport\n\n- Địa chỉ: Linh Trung, Thủ Đức, HCM\n\n- Email: wtmsport.contact@gmail.com\n\n- Hotline: 0595 275 688",
         },
         {
             title: "Phương tiện và công cụ để người dùng tiếp cận và chỉnh sửa dữ liệu cá nhân của mình",
