@@ -69,7 +69,7 @@ const ProductDetailsPage = () => {
             <AnimationScroll key={product?._id} type="fadeUp" delay={0.1}>
               <ProductComponent
                 item={product}
-                onClick={() => navigate(`/product/${product?._id}`)}
+                onClick={() => navigate(/product/${product?._id})}
               />
             </AnimationScroll>
           ))}
