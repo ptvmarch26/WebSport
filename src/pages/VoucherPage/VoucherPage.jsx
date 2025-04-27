@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
 import voucherShipping from "../../assets/images/voucher_shipping.png";
 import voucherProduct from "../../assets/images/voucher_product.png";

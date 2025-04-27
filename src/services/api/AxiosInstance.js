@@ -31,8 +31,8 @@ AxiosInstance.interceptors.response.use(
           error.config.headers["Authorization"] = `Bearer ${res.accessToken}`;
           return AxiosInstance(error.config);  // Thực hiện lại request với token mới
         }
-      } catch (err) {
-        console.error("Error refreshing token", err);
+      } catch {
+        return;
       }
     }
     return Promise.reject(error);

@@ -122,6 +122,10 @@ const ProductInfoComponent = ({ product }) => {
   };
 
   useEffect(() => {
+    setSelectedSize(null);
+    setSelectedColor(null);
+    setAvailableVariants([]);
+
     const fetchFavoriteStatus = async () => {
       const favouritesData = await getFavourite();
 

@@ -11,8 +11,6 @@ const ProductDetails = () => {
     fetchProductDetails(id);
   }, [id]);
 
-  console.log("productDetails", productDetails);
-
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen bg-gray-50">
       <div className="space-y-6">

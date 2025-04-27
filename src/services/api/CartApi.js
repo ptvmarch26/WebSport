@@ -29,7 +29,6 @@ export const addToCart = async (
 };
 
 export const removeFromCart = async (productId, color_name, variant_name) => {
-  console.log(productId, color_name, variant_name);
   try {
     const res = await AxiosInstance.delete(`/cart/${productId}`, {
       data: { color_name, variant_name },

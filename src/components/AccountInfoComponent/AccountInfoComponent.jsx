@@ -82,17 +82,17 @@ const AccountInfoComponent = () => {
   return (
     <div className="relative w-full lg:w-72 bg-white lg:bg-[#f6f7f8] shadow-none lg:shadow-md p-0 lg:p-6">
       <div className="hidden lg:flex flex-col items-center">
-        <label className="cursor-pointer">
+        <label>
           <img
             className="w-20 h-20 rounded-full object-cover shadow-md"
             src={selectedUser?.avt_img || defaultAvatar}
             alt="avatar"
           />
         </label>
-        <h2 className="text-lg font-semibold mt-3 text-gray-800">
+        <h2 className="text-lg font-semibold mt-3 text-gray-800 truncate overflow-hidden whitespace-nowrap w-full text-center">
           {selectedUser?.full_name || "Chưa cập nhật"}
         </h2>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm truncate overflow-hidden whitespace-nowrap w-full text-center">
           {selectedUser?.user_name || "Chưa cập nhật"}
         </p>
       </div>

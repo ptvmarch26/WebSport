@@ -20,7 +20,7 @@ const shippingMethods = [
 ];
 
 const paymentMethods = [
-  { id: "Cod", label: "Thanh toán khi nhận hàng (COD)" },
+  { id: "Cod", label: "Phương thức thanh toán khi nhận hàng (COD)" },
   { id: "Paypal", label: "Phương Thức Chuyển Khoản" },
   { id: "Momo", label: "Phương Thức Momo" },
 ];
@@ -303,7 +303,22 @@ function CheckoutPage() {
 
   const navigate = useNavigate();
 
+  const validateAddressBeforeOrder = () => {
+    if (selectedAddress) return true;
+
+    if (addresses.length === 0) {
+      return validateForm();
+    }
+
+    return false;
+  };
+
   const CreateOrder = async () => {
+    if (!validateAddressBeforeOrder()) {
+      showPopup("Vui lòng nhập đầy đủ thông tin địa chỉ giao hàng", false);
+      return;
+    }
+
     if (selectedPayment === "Momo") {
       showPopup(
         "Chức năng thanh toán Momo đang được phát triển, vui lòng chọn phương thức khác",

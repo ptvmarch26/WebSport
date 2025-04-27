@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, IconButton } from "@material-tailwind/react";
 import { HiArrowSmRight, HiArrowSmLeft } from "react-icons/hi";
 

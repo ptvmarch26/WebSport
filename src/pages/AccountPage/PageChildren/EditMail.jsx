@@ -24,7 +24,7 @@ const EditEmail = () => {
       }));
       return;
     }
-    const res = await handleSendOTP(selectedUser?.email);
+    await handleSendOTP(selectedUser?.email);
     setStep(2);
   };
 

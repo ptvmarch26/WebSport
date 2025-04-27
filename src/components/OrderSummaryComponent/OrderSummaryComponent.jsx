@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePopup } from "../../context/PopupContext";
 
 const OrderSummaryComponent = ({
   cart,
@@ -7,7 +8,7 @@ const OrderSummaryComponent = ({
   onClick,
   handleApplyVoucher,
 }) => {
-  // console.log("cart", cart);
+    const { showPopup } = usePopup();
   const [vouchers, setVouchers] = useState({
     product: {
       code: "",
@@ -130,7 +131,7 @@ const OrderSummaryComponent = ({
           },
         }));
       } else {
-        alert("Mã giảm giá sản phẩm không tồn tại.");
+        showPopup("Mã giảm giá sản phẩm không tồn tại", false);
       }
     } else if (type === "shipping") {
       const foundVoucher = shippingVouchers.find(
@@ -150,7 +151,7 @@ const OrderSummaryComponent = ({
           },
         }));
       } else {
-        alert("Mã giảm giá vận chuyển không tồn tại.");
+        showPopup("Mã giảm giá vận chuyển không tồn tại", false);
       }
     }
   };
@@ -166,7 +167,6 @@ const OrderSummaryComponent = ({
     }));
   };
 
-  // console.log("voucer", vouchers);
   return (
     <div className="space-y-4 lg:sticky lg:top-24">
       {cartDetails.map((item, index) => (

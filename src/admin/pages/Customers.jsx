@@ -12,7 +12,6 @@ const statusColors = {
 const Customers = () => {
   const { fetchUsers, fetchUser } = useUser();
   const [users, setUsers] = useState();
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
 
@@ -108,10 +107,6 @@ const Customers = () => {
 
       <div className="bg-white p-4 shadow-lg">
         <Table
-          rowSelection={{
-            selectedRowKeys,
-            onChange: setSelectedRowKeys,
-          }}
           dataSource={filteredUsers}
           columns={columns}
           pagination={{ pageSize: 8 }}

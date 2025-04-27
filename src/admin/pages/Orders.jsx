@@ -37,7 +37,6 @@ const Orders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     const result = await handleUpdateOrderStatus(orderId, newStatus);
-    console.log(result);
     if (result.EC === 0) {
       const updatedOrders = ordersState.map((order) => {
         if (order._id === orderId) {
@@ -59,8 +58,6 @@ const Orders = () => {
       : true;
     return matchesStatus && matchesSearch;
   });
-
-  console.log("pr", product)
 
   const columns = [
     {

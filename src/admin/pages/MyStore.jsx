@@ -119,12 +119,10 @@ const MyStore = () => {
       } else {
         showPopup(res.EM, false);
       }
-    } catch (error) {
+    } catch {
       showPopup("Có lỗi xảy ra khi lưu thông tin", false);
     }
   };
-
-  console.log("st", storeInfo)
 
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen bg-gray-50">

@@ -74,8 +74,8 @@ const DefaultLayout = ({ children }) => {
           );
           const products = await Promise.all(productPromises);
           setCompareProducts(products.filter(Boolean));
-        } catch (error) {
-          console.error("Lỗi khi lấy danh sách sản phẩm so sánh", error);
+        } catch {
+          return;
         } finally {
           setLoading(false);
         }

@@ -1,4 +1,3 @@
-// import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Button } from "@material-tailwind/react";
 import { FaFlag } from "react-icons/fa6";

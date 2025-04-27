@@ -1,7 +1,6 @@
 import AxiosInstance from "./AxiosInstance";
 
 export const createOrder = async (orderData) => {
-  console.log("orderData", orderData);
   try {
     const response = await AxiosInstance.post("/order/create", orderData);
     return response.data;
@@ -45,7 +44,6 @@ export const getOrderDetail = async (orderId) => {
 };
 
 export const updateOrderStatus = async (orderId, status) => {
-  console.log(orderId, status);
   try {
     const response = await AxiosInstance.patch(
       `/order/update-status/${orderId}`,

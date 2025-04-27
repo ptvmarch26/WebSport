@@ -8,30 +8,10 @@
     ],
     theme: {
       extend: {
-        screens: {
-          mb: { max: "739px" },
-          tl: { min: "740px", max: "1023px" },
-          pc: { min: "1024px", max: "1239px" },
-        },
         colors: {
           primary: 'black', 
           secondary: '#181818',
         },
       },
     },
-    plugins: [
-      function ({ addComponents }) {
-        addComponents({
-          ".res": {
-            maxWidth: "1200px", margin: "0 auto",
-            "@screen tl": {
-              width: "644px", margin: "0 auto",
-            },
-            "@screen pc": {
-              width: "983px", margin: "0 auto",
-            },
-          },
-        });
-      },
-    ],
   };

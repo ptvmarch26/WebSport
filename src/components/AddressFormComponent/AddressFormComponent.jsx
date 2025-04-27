@@ -28,7 +28,7 @@ function AddressFormComponent({
   useEffect(() => {
     apiGetProvinces()
       .then((res) => setProvinces(res))
-      .catch((err) => console.error("Error fetching provinces:", err));
+      .catch(() => {});
   }, []);
 
   const handleBlur = (field) => {
@@ -62,8 +62,8 @@ function AddressFormComponent({
     try {
       const res = await apiGetDistricts(provinceId);
       setDistricts(res);
-    } catch (err) {
-      console.error("Error fetching districts:", err);
+    } catch {
+      return;
     }
   };
 
@@ -85,8 +85,8 @@ function AddressFormComponent({
     try {
       const res = await apiGetWards(districtId);
       setWards(res);
-    } catch (err) {
-      console.error("Error fetching wards:", err);
+    } catch {
+      return;
     }
   };
 

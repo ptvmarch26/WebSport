@@ -40,7 +40,6 @@ export const updateUser = async (userData) => {
 };
 
 export const addAddress = async (addressData) => {
-  console.log("addressData", addressData);
   try {
     const response = await AxiosInstance.post(
       "/user/address",

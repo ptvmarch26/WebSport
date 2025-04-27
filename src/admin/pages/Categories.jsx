@@ -1,13 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Table,
-  Input,
-  Select,
-  Button,
-  Modal,
-  Form,
-  InputNumber,
-} from "antd";
+import { Table, Input, Select, Button, Modal, Form, InputNumber } from "antd";
 import {
   DeleteOutlined,
   ExportOutlined,
@@ -32,6 +24,7 @@ const Categories = () => {
     useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { fetchUser } = useUser();
+  const { showPopup } = usePopup();
 
   const {
     categories,
@@ -66,8 +59,9 @@ const Categories = () => {
       fetchCategories();
       setSelectedRowKeys([]);
       setIsModalVisible(false);
-    } catch (error) {
-      console.error("Lỗi khi xóa danh mục:", error);
+      showPopup("Xóa danh mục thành công");
+    } catch {
+      showPopup("Lỗi khi xóa danh mục", false);
     }
   };
 
@@ -81,10 +75,10 @@ const Categories = () => {
         fetchCategories();
         form.resetFields();
         setIsAddDadCategoryModalVisible(false);
-        console.log("Thêm danh mục cha thành công:", res);
+        showPopup("Thêm danh mục cha thành công");
       }
-    } catch (error) {
-      console.error("Lỗi khi thêm danh mục:", error);
+    } catch {
+      showPopup("Lỗi khi thêm danh mục cha", false);
     }
   };
 
@@ -96,22 +90,18 @@ const Categories = () => {
       const parentCategory = categories.find(
         (cat) => cat._id === newCategory.category_parent_id
       );
-
-      console.log("parentCategory", parentCategory);
       newCategory.category_gender = parentCategory?.category_gender || null;
       const res = await addCategory(newCategory);
       if (res?.data?.EC === 0) {
         fetchCategories();
         form.resetFields();
         setIsAddChildCategoryModalVisible(false);
-        console.log("Thêm danh mục con thành công:", res);
+        showPopup("Thêm danh mục con thành công");
       }
-    } catch (error) {
-      console.error("Lỗi khi thêm danh mục:", error);
+    } catch {
+      showPopup("Lỗi khi thêm danh mục con", false);
     }
   };
-
-  console.log(categories);
 
   const handleEditCategory = (record) => {
     if (record) {
@@ -119,7 +109,7 @@ const Categories = () => {
       form.setFieldsValue(record); // Điền thông tin discount vào form
       setIsEditCategoryModalVisible(true); // Mở modal chỉnh sửa
     } else {
-      console.error("Không có danh mục được chọn");
+      showPopup("Không có danh mục được chọn", false);
     }
   };
 
@@ -127,12 +117,12 @@ const Categories = () => {
     try {
       await form.validateFields();
       const updateData = form.getFieldsValue();
-      console.log("updateData", updateData);
       if (
         updateData.category_level === 1 &&
         updateData.category_parent_id !== null
       ) {
-        console.error("Danh mục cấp 1 không thể có danh mục cha");
+        setIsEditCategoryModalVisible(false);
+        showPopup("Danh mục cấp 1 không thể có danh mục cha", false);
         return;
       }
 
@@ -140,7 +130,7 @@ const Categories = () => {
         updateData.category_level >= 2 &&
         updateData.category_parent_id === null
       ) {
-        console.error("Danh mục cấp 2 phải có danh mục cha");
+        showPopup("Danh mục cấp 2 phải có danh mục cha", false);
         return;
       }
 
@@ -149,10 +139,10 @@ const Categories = () => {
         fetchCategories();
         form.resetFields();
         setIsEditCategoryModalVisible(false);
-        console.log("Sửa danh mục thành công:", res);
+        showPopup("Sửa danh mục thành công");
       }
-    } catch (error) {
-      console.error("Lỗi khi cập nhật danh mục:", error);
+    } catch {
+      showPopup("Lỗi khi cập nhật danh mục", false);
     }
   };
 

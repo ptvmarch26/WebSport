@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import axios from "axios";
 import {
   FaHeart,
   FaShoppingCart,
@@ -12,7 +11,6 @@ import {
 import logo from "../../assets/images/logo.png";
 import { AiOutlineClose } from "react-icons/ai";
 import { useEffect } from "react";
-import userScrollHandling from "../../hooks/userScrollHandling";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdNavigateNext, MdExpandMore, MdExpandLess } from "react-icons/md";
 import flag_vn from "../../assets/images/flag_vn.jpg";
@@ -75,9 +73,9 @@ const Header = () => {
           setFullSearchHistory(parsedHistory);
           setSearchHistory(parsedHistory.slice(0, 5));
         }
-      } catch (error) {
-        console.error("Lỗi khi parse lịch sử tìm kiếm:", error);
+      } catch {
         localStorage.removeItem("searchHistory");
+        return;
       }
     }
   }, [token, selectedUser]);
@@ -88,7 +86,7 @@ const Header = () => {
     } else {
       document.body.style.overflow = "auto";
     }
-  
+
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -102,8 +100,6 @@ const Header = () => {
 
       const res = await getChatBotSearch(query);
 
-      console.log("res", res);
-
       if (res.EC === 0) {
         const result = res.result;
 
@@ -111,7 +107,7 @@ const Header = () => {
         try {
           parsedResult =
             typeof result === "string" ? JSON.parse(result) : result;
-        } catch (err) {
+        } catch {
           setSearchOpen(!searchOpen);
           showPopup(res.result, false);
           return;
@@ -146,8 +142,8 @@ const Header = () => {
           },
         });
       }
-    } catch (err) {
-      console.error("Lỗi tìm kiếm:", err);
+    } catch {
+      return;
     }
   };
 
@@ -156,23 +152,19 @@ const Header = () => {
     const historyItem = targetArray[index];
 
     if (token && historyItem?.originalIndex !== undefined) {
-      try {
-        await handleDeleteSearch(historyItem.originalIndex);
+      await handleDeleteSearch(historyItem.originalIndex);
 
-        const updatedFullHistory = [...fullSearchHistory];
-        const fullIndex = isFullView
-          ? index
-          : fullSearchHistory.findIndex(
-              (item) => item.originalIndex === historyItem.originalIndex
-            );
+      const updatedFullHistory = [...fullSearchHistory];
+      const fullIndex = isFullView
+        ? index
+        : fullSearchHistory.findIndex(
+            (item) => item.originalIndex === historyItem.originalIndex
+          );
 
-        if (fullIndex !== -1) {
-          updatedFullHistory.splice(fullIndex, 1);
-          setFullSearchHistory(updatedFullHistory);
-          setSearchHistory(updatedFullHistory.slice(0, 5));
-        }
-      } catch (error) {
-        console.error("Xóa lịch sử thất bại:", error);
+      if (fullIndex !== -1) {
+        updatedFullHistory.splice(fullIndex, 1);
+        setFullSearchHistory(updatedFullHistory);
+        setSearchHistory(updatedFullHistory.slice(0, 5));
       }
     } else {
       const updatedFullHistory = [...fullSearchHistory];
@@ -225,23 +217,6 @@ const Header = () => {
   };
 
   const options = [
-    // {
-    //   name: "Hàng mới về",
-    //   subOptions: [
-    //     {
-    //       name: "Giày mới",
-    //       subCategories: ["Giày đá bóng", "Giày chạy bộ", "Giày thể thao"],
-    //     },
-    //     {
-    //       name: "Áo mới",
-    //       subCategories: ["Áo thun", "Áo polo", "Áo khoác"],
-    //     },
-    //     {
-    //       name: "Phụ kiện mới",
-    //       subCategories: ["Túi xách", "Mũ nón", "Tất vớ"],
-    //     },
-    //   ],
-    // },
     {
       name: "Nam",
       subOptions: [
@@ -312,17 +287,6 @@ const Header = () => {
       ],
     },
   ];
-
-  const { scrollDirection } = userScrollHandling();
-  const [hidden, setHidden] = useState(false);
-
-  useEffect(() => {
-    if (scrollDirection === "down") {
-      setHidden(true);
-    } else {
-      setHidden(false);
-    }
-  }, [scrollDirection]);
 
   useEffect(() => {
     if (menuOpen) {
@@ -481,7 +445,7 @@ const Header = () => {
                     </Link>
                   </div>
                   <div
-                    className="before:content-['']  before:absolute before:top-[-15px] before:right-0 before:w-[40px] before:h-4
+                    className="hidden lg:block before:content-['']  before:absolute before:top-[-15px] before:right-0 before:w-[40px] before:h-4
   text-sm absolute top-[35px] right-0 w-[150px] bg-white shadow-lg text-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
                   >
                     <Link

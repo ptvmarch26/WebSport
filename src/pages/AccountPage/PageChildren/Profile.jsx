@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import { useUser } from "../../../context/UserContext";
 import avt_false from "../../../assets/images/avatar-false.jpg";
@@ -36,8 +36,6 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const updatedData = { ...formData, [e.target.name]: e.target.value };
-    console.log("updatedData", updatedData);
-    console.log("e", e);
     setFormData(updatedData);
     setIsChanged(JSON.stringify(updatedData) !== JSON.stringify(originalData));
   };
@@ -61,7 +59,7 @@ const Profile = () => {
       setIsChanged(false);
       setIsEditing(false);
     } else {
-      console.error("Lỗi khi cập nhật thông tin:", res);
+      return;
     }
     setLoading(false);
   };
@@ -114,7 +112,7 @@ const Profile = () => {
       </div>
       <div className="w-full flex flex-col items-center gap-y-2 mb-4">
         <img
-          className="w-20 h-20 rounded-full object-cover shadow-md"
+          className="w-20 h-20 rounded-full object-cover shadow-md cursor-pointer"
           src={formData.avt_img}
           alt="avatar"
           onClick={() => {

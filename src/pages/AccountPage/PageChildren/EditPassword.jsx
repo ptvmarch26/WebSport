@@ -44,7 +44,6 @@ const EditPassword = () => {
     }
 
     const response = await handleChangePassword(oldPassword, newPassword);
-    console.log(response);
     if (response?.EC === 0) {
       showPopup(response?.EM);
       setOldPassword("");

@@ -21,6 +21,7 @@ import { useProduct } from "../../context/ProductContext";
 import { useCategories } from "../../context/CategoriesContext";
 import moment from "moment";
 import { useUser } from "../../context/UserContext";
+import { usePopup } from "../../context/PopupContext";
 
 const { Option } = Select;
 
@@ -41,10 +42,10 @@ const Discounts = () => {
   const [isEditDiscountModalVisible, setIsEditDiscountModalVisible] =
     useState(false);
   const [selectedDiscount, setSelectedDiscount] = useState(null);
+  const { showPopup } = usePopup();
 
   const {
     discounts,
-    setDiscounts,
     fetchDiscounts,
     handleCreateDiscount,
     handleDeleteDiscount,
@@ -53,9 +54,6 @@ const Discounts = () => {
   const { products, fetchProducts } = useProduct();
   const { categories, fetchCategories } = useCategories();
   const { fetchUser } = useUser();
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, []);
 
   useEffect(() => {
     const fetchDiscountsData = async () => {
@@ -80,8 +78,9 @@ const Discounts = () => {
       fetchDiscounts();
       setSelectedRowKeys([]);
       setIsModalVisible(false);
-    } catch (error) {
-      console.error("Lỗi khi xóa mã:", error);
+      showPopup("Xóa mã giảm giá thành công");
+    } catch {
+      showPopup("Lỗi khi xóa mã giảm giá", false);
     }
   };
 
@@ -101,7 +100,6 @@ const Discounts = () => {
       const newDiscount = form.getFieldsValue();
 
       if (!newDiscount.discount_start_day || !newDiscount.discount_end_day) {
-        console.error("Ngày bắt đầu hoặc ngày kết thúc không hợp lệ");
         return;
       }
 
@@ -111,8 +109,8 @@ const Discounts = () => {
         form.resetFields();
         setIsAddDiscountModalVisible(false);
       }
-    } catch (error) {
-      console.log("Lỗi khi xác thực form:", error.message || error);
+    } catch {
+      return;
     }
   };
 
@@ -132,7 +130,7 @@ const Discounts = () => {
       form.setFieldsValue(formattedRecord); // Điền thông tin discount vào form
       setIsEditDiscountModalVisible(true); // Mở modal chỉnh sửa
     } else {
-      console.error("Không có discount được chọn");
+      return;
     }
   };
 
@@ -146,14 +144,13 @@ const Discounts = () => {
         selectedDiscount._id,
         updatedDiscount
       );
-      console.log(res);
       if (res?.EC === 0) {
         fetchDiscounts();
         form.resetFields();
         setIsEditDiscountModalVisible(false);
       }
-    } catch (error) {
-      console.error("Lỗi khi cập nhật mã giảm giá:", error);
+    } catch {
+      showPopup("Lỗi khi cập nhật mã giảm giá", false);
     }
   };
 
@@ -162,13 +159,17 @@ const Discounts = () => {
     { title: "Code", dataIndex: "discount_code", key: "discount_code" },
     { title: "Loại", dataIndex: "discount_type", key: "discount_type" },
     { title: "Mô tả", dataIndex: "description", key: "description" },
-    { title: "Số lượng giảm giá", dataIndex: "discount_amount", key: "discount_amount" },
+    {
+      title: "Số lượng giảm giá",
+      dataIndex: "discount_amount",
+      key: "discount_amount",
+    },
     {
       title: "Hạn sử dụng",
       dataIndex: "discount_end_day",
       key: "discount_end_day",
       render: (text) => {
-        return text ? moment(text).format("YYYY-MM-DD") : ""; 
+        return text ? moment(text).format("YYYY-MM-DD") : "";
       },
     },
     {
@@ -346,17 +347,19 @@ const Discounts = () => {
               placeholder="Chọn danh mục"
               dropdownRender={(menu) => (
                 <>
-                  <div 
+                  <div
                     className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
                       const allCategoryIds = categories.map((c) => c._id);
-                      form.setFieldsValue({ applicable_categories: allCategoryIds });
+                      form.setFieldsValue({
+                        applicable_categories: allCategoryIds,
+                      });
                     }}
                   >
                     Chọn tất cả
                   </div>
-                  <div 
+                  <div
                     className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
@@ -365,7 +368,7 @@ const Discounts = () => {
                   >
                     Bỏ chọn tất cả
                   </div>
-                  <Divider style={{ margin: '4px 0' }} />
+                  <Divider style={{ margin: "4px 0" }} />
                   {menu}
                 </>
               )}
@@ -382,13 +385,12 @@ const Discounts = () => {
             name="applicable_products"
             rules={[{ required: true, message: "Sản phẩm là bắt buộc" }]}
           >
-            <Select 
+            <Select
               mode="multiple"
-
               placeholder="Chọn danh mục"
               dropdownRender={(menu) => (
                 <>
-                  <div 
+                  <div
                     className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
@@ -398,7 +400,7 @@ const Discounts = () => {
                   >
                     Chọn tất cả
                   </div>
-                  <div 
+                  <div
                     className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
@@ -407,7 +409,7 @@ const Discounts = () => {
                   >
                     Bỏ chọn tất cả
                   </div>
-                  <Divider style={{ margin: '4px 0' }} />
+                  <Divider style={{ margin: "4px 0" }} />
                   {menu}
                 </>
               )}

@@ -50,12 +50,10 @@ function Dashboard() {
       if (response.EC === 0 && response.EM) {
         setRevenueData(response.result);
       }
-    } catch (error) {
-      console.error("Failed to fetch revenue data:", error);
+    } catch {
+      return;
     }
   };
-
-  console.log("revenueData", revenueData);
 
   const handleYearChange = (year) => {
     setSelectedYear(year);

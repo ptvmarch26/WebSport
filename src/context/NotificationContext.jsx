@@ -12,7 +12,7 @@ export const NotificationProvider = ({ children }) => {
     const res = await getUserNotifications();
     if (res.EC === 0) {
       setNotifications(res.result);
-    } else console.log("fetch notifications thất bại");
+    } else return;
   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
