@@ -14,7 +14,8 @@ const ProductDetailsPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchProductDetails(id);
+      const res =await fetchProductDetails(id);
+      console.log(res);
     }
     fetchData();
     window.scrollTo(0, 0);
@@ -46,18 +47,17 @@ const ProductDetailsPage = () => {
 
   const [itemsToShow, setItemsToShow] = useState(6);
 
-  
-
   const relatedProducts = products
-    .filter(
-      (p) =>
-        p?._id !== productDetails?._id &&
-        p?.product_category.category_type ===
-          productDetails?.product_category.category_type &&
-        p?.product_category.category_gender ===
-          productDetails?.product_category.category_gender
-    )
-    .slice(0, itemsToShow);
+  .filter((p) => {
+    if (!p || !p.product_category || !productDetails || !productDetails.product_category) return false;
+    return (
+      p._id !== productDetails._id &&
+      p.product_category.category_type === productDetails.product_category.category_type &&
+      p.product_category.category_gender === productDetails.product_category.category_gender
+    );
+  })
+  .slice(0, itemsToShow);
+
 
   return (
     <div className="container mx-auto px-2">
