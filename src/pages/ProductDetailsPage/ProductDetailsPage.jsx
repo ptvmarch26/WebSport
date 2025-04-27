@@ -27,6 +27,10 @@ const ProductDetailsPage = () => {
     }
     fetchData();
 
+    
+  }, []);
+
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setItemsToShow(8); 
@@ -39,7 +43,7 @@ const ProductDetailsPage = () => {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  },[]);
 
   const [itemsToShow, setItemsToShow] = useState(6);
 

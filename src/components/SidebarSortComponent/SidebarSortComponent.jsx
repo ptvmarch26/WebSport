@@ -191,7 +191,10 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange }) => {
           return {
             ...prev,
             category: currentList.filter((item) => item !== value),
-            category_sub: [],
+            category_sub: (prev.category_sub || []).filter((sub) => {
+              const firstWord = sub.split('_')[0];
+              return firstWord !== value;
+            }),
           };
         }
 
