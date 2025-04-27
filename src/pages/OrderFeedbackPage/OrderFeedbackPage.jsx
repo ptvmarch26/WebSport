@@ -154,10 +154,6 @@ const OrderFeedbackPage = () => {
           formData.append("files", video);
         });
 
-        // for (let pair of formData.entries()) {
-        //   console.log(pair[0] + ":", pair[1]);
-        // }
-
         const result = await createFeedback(formData);
 
         if (!result || result.EC !== 0) {
@@ -169,8 +165,7 @@ const OrderFeedbackPage = () => {
 
       showPopup("Đánh giá sản phẩm thành công", true);
       navigate("/orders");
-    } catch (error) {
-      console.error("Lỗi khi gửi đánh giá:", error);
+    } catch {
       showPopup("Có lỗi xảy ra khi gửi đánh giá", false);
     } finally {
       setIsSubmitting(false);

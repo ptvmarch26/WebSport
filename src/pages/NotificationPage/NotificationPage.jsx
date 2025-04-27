@@ -1,5 +1,4 @@
 import clsx from "clsx";
-// import { useState } from "react";
 import { Button } from "@material-tailwind/react";
 import AccountInfoComponent from "../../components/AccountInfoComponent/AccountInfoComponent";
 import { IoTrashOutline } from "react-icons/io5";
@@ -109,7 +108,7 @@ const NotificationPage = () => {
                         className="w-20 h-20 rounded-md object-cover border"
                       />
                       <div>
-                        <h6 className="font-semibold">
+                        <h6 className="font-semibold mr-10 sm:mr-0">
                           {notification.notify_title}
                         </h6>
                         <p className="text-sm text-gray-600">

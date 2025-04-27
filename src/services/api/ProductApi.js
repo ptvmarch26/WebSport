@@ -30,7 +30,7 @@ export const createProduct = async (productData) => {
   // Xử lý danh sách màu sắc
   if (productData.colors && productData.colors.length > 0) {
     // Tạo một bản sao của dữ liệu màu để gửi dưới dạng JSON
-    const colorsPayload = productData.colors.map((color, colorIndex) => {
+    const colorsPayload = productData.colors.map((color) => {
       // Chuẩn bị dữ liệu màu sắc (không bao gồm file ảnh)
       return {
         color_name: color.color_name,
@@ -54,7 +54,7 @@ export const createProduct = async (productData) => {
 
       // Xử lý các ảnh phụ của màu
       if (color.imgs?.img_subs?.length > 0) {
-        color.imgs.img_subs.forEach((subImg, subIndex) => {
+        color.imgs.img_subs.forEach((subImg) => {
           const subImageFile = subImg.originFileObj || subImg;
           if (subImageFile instanceof File) {
             formData.append(`color_img_${colorIndex}_subs`, subImageFile);
@@ -63,10 +63,6 @@ export const createProduct = async (productData) => {
       }
     });
   }
-
-  formData.entries().forEach(([key, value]) => {
-    console.log(`Key: ${key}, Value: ${value}`);
-  });
 
   try {
     const response = await AxiosInstance.post("/product/create", formData);
@@ -78,7 +74,6 @@ export const createProduct = async (productData) => {
 
 // Hàm cập nhật sản phẩm
 export const updateProduct = async (productId, productData) => {
-  console.log("productData", productData);
   const formData = new FormData();
   // Thông tin cơ bản của sản phẩm
   formData.append("product_title", productData.product_title);
@@ -107,7 +102,7 @@ export const updateProduct = async (productId, productData) => {
   // Xử lý danh sách màu sắc
   if (productData.colors && productData.colors.length > 0) {
     // Tạo một bản sao của dữ liệu màu để gửi dưới dạng JSON
-    const colorsPayload = productData.colors.map((color, colorIndex) => {
+    const colorsPayload = productData.colors.map((color) => {
       // Chuẩn bị dữ liệu màu sắc
       return {
         color_name: color.color_name,
@@ -131,7 +126,7 @@ export const updateProduct = async (productId, productData) => {
 
       // Xử lý các ảnh phụ của màu
       if (color.imgs?.img_subs?.length > 0) {
-        color.imgs.img_subs.forEach((subImg, subIndex) => {
+        color.imgs.img_subs.forEach((subImg) => {
           const subImageFile = subImg.originFileObj || subImg;
           if (subImageFile instanceof File) {
             formData.append(`color_img_${colorIndex}_subs`, subImageFile);
@@ -140,10 +135,6 @@ export const updateProduct = async (productId, productData) => {
       }
     });
   }
-
-  formData.entries().forEach(([key, value]) => {
-    console.log(`Key: ${key}, Value: ${value}`);
-  });
 
   try {
     const response = await AxiosInstance.patch(

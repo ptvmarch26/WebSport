@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext } from "react";
 import {
   getAllDiscounts,
   getDetailDiscount,
@@ -16,10 +16,10 @@ export const DiscountProvider = ({ children }) => {
   
   const fetchDiscounts = async () => {
     const response = await getAllDiscounts();
-    if (response?.EM === "Get all discount successfully") {
+    if (response?.EC === 0) {
       setDiscounts(response.result);
     } else {
-      console.error(response?.EM || "Lỗi khi lấy danh sách mã giảm giá");
+      return;
     }
   };
 
@@ -63,11 +63,6 @@ export const DiscountProvider = ({ children }) => {
     const response = await getDiscountForOrder(product_id);
     setDiscounts(response?.result);
     return response;
-    // if (response?.EM === "Get all discount successfully") {
-    //   setDiscounts(response.result);
-    // } else {
-    //   console.error(response?.EM || "Lỗi khi lấy danh sách mã giảm giá");
-    // }
   }
 
   return (

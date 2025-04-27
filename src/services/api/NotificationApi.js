@@ -1,7 +1,6 @@
 import AxiosInstance from "../api/AxiosInstance";
 
 export const createNotificationForAll = async (notificationData) => {
-  console.log("notificationData", notificationData);
   try {
     const response = await AxiosInstance.post(
       "/notification/create",
@@ -42,7 +41,6 @@ export const deleteNotification = async (notificationId) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
     return error.response?.data || null;
   }
 };

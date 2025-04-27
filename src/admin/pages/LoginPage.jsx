@@ -1,8 +1,8 @@
 import { Button } from "@material-tailwind/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { usePopup } from "../../context/PopupContext";
 
 const LoginPage = () => {

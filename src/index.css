@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* @import './grid.css'; */
 
 body {
   font-family: "Inter", serif;
@@ -49,12 +48,12 @@ h6 {
 }
 
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: #d1d5db; 
+  background-color: #d1d5db;
   border-radius: 9999px;
 }
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: #9ca3af; 
+  background-color: #9ca3af;
 }
 
 .custom-scroll {

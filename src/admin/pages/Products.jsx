@@ -20,6 +20,7 @@ import { useCategories } from "../../context/CategoriesContext";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "antd";
 import { useLoading } from "../../context/LoadingContext";
+import { usePopup } from "../../context/PopupContext";
 
 const { Option } = Select;
 
@@ -38,7 +39,7 @@ const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
   const { setLoading } = useLoading();
-
+  const { showPopup } = usePopup();
   const { categories, fetchCategories } = useCategories();
 
   useEffect(() => {
@@ -52,8 +53,10 @@ const Products = () => {
       fetchProducts();
       setSelectedRowKeys([]);
       setIsModalVisible(false);
-    } catch (error) {
-      console.error("Lỗi khi xóa sản phẩm:", error);
+      showPopup("Xóa sản phẩm thành công");
+    } catch {
+      showPopup("Lỗi khi xóa sản phẩm", false);
+
     }
   };
 
@@ -74,8 +77,8 @@ const Products = () => {
         form.resetFields();
         setIsAddProductModalVisible(false);
       }
-    } catch (error) {
-      console.log("Lỗi khi xác thực form:", error);
+    } catch {
+      return;
     }
     setLoading(false);
   };
@@ -161,16 +164,14 @@ const Products = () => {
     try {
       await form.validateFields();
       const updatedFields = form.getFieldsValue();
-      console.log("Updated Fields:", updatedFields);
       const res = await editProduct(selectedProduct._id, updatedFields);
-      // console.log(res);
       if (res?.EC === 0) {
         fetchProducts();
         form.resetFields();
         setIsEditProductgModalVisible(false);
       }
-    } catch (error) {
-      console.error("Lỗi khi cập nhật sản phẩm:", error);
+    } catch {
+      showPopup("Lỗi khi cập nhật sản phẩm", false);
     }
     setLoading(false);
   };

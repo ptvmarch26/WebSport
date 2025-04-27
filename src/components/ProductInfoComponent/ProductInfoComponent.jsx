@@ -125,7 +125,7 @@ const ProductInfoComponent = ({ product }) => {
     setSelectedSize(null);
     setSelectedColor(null);
     setAvailableVariants([]);
-    
+
     const fetchFavoriteStatus = async () => {
       if(token){
         const favouritesData = await getFavourite();

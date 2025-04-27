@@ -1,9 +1,8 @@
-// import React from "react";
 import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
-import { updateFavourite } from "../../services/api/FavouriteApi"; // import API
+import { updateFavourite } from "../../services/api/FavouriteApi"; 
 import { usePopup } from "../../context/PopupContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProduct } from "../../context/ProductContext";

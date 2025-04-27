@@ -53,7 +53,6 @@ const ForgotPasswordPage = () => {
     setOtpError("");
 
     const res = await handleVerifyOTP(email, otpString);
-    console.log(res);
     if (res?.EM === "OTP verified successfully") {
       setStep(2);
     } else if (res?.EM === "Invalid OTP") {

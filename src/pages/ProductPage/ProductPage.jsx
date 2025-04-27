@@ -46,13 +46,9 @@ const ProductPage = () => {
   const [favourites, setFavourites] = useState([]);
   const fetchFavourites = async () => {
     if (token) {
-      try {
-        const res = await getFavourite();
-        if (res?.result) {
-          setFavourites(res.result);
-        }
-      } catch (error) {
-        console.error("Lỗi khi fetch danh sách yêu thích:", error);
+      const res = await getFavourite();
+      if (res?.result) {
+        setFavourites(res.result);
       }
     }
   };
@@ -98,7 +94,6 @@ const ProductPage = () => {
       );
     }
   }, [products, location.search]);
-
 
   const handleSortChange = (sortOption) => {
     setCurrentSort(sortOption);
@@ -149,10 +144,6 @@ const ProductPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [setSortOpen]);
-
-  // console.log("products", products);
-  console.log("selectedFilters", selectedFilters);
-  // console.log("sortProducts", sortProducts);
 
   return (
     <div className="container mx-auto px-2 my-10">

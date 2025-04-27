@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Checkbox } from "@material-tailwind/react";
 import { useCategories } from "../../context/CategoriesContext";

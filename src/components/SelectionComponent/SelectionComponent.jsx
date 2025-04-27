@@ -1,5 +1,3 @@
-import React from "react";
-
 const SelectionComponent = ({ title, options, selected, setSelected }) => {
   return (
     <div className="space-y-2">

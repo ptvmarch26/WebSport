@@ -22,7 +22,6 @@ export const UserProvider = ({ children }) => {
   const [discounts, setDiscounts] = useState([]);
   const { token } = useAuth();
   const fetchUsers = async () => {
-    try {
       const data = await getAllUsers();
 
       if (
@@ -37,10 +36,6 @@ export const UserProvider = ({ children }) => {
       } else {
         message.error("Không thể tải danh sách người dùng!");
       }
-    } catch (error) {
-      console.error("Lỗi khi gọi API:", error);
-      message.error("Không thể tải danh sách người dùng!");
-    }
   };
 
   const fetchUser = async () => {

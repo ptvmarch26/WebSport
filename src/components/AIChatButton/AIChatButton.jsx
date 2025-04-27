@@ -43,30 +43,24 @@ const CompactChatBot = ({ onClose }) => {
   const { token } = useAuth();
   const { handleGetChatHistory } = useUser();
 
-
-
   useEffect(() => {
     const fetchHistory = async () => {
       if (token) {
-        try {
-          const data = await handleGetChatHistory();
-          if (data?.EC === 0 && Array.isArray(data.result)) {
-            const formattedMessages = data.result.slice(1).map((msg) => ({
-              text: msg.content,
-              sender: msg.role === "assistant" ? "bot" : "user",
-              timestamp: new Date(msg.timestamp).toLocaleString(),
-            }));
-            setMessages([
-              {
-                text: "Chào bạn, tôi có thể giúp gì cho bạn hôm nay?",
-                sender: "bot",
-                timestamp: new Date().toLocaleString(),
-              },
-              ...formattedMessages,
-            ]);
-          }
-        } catch (error) {
-          console.error("Lỗi khi tải lịch sử chat:", error);
+        const data = await handleGetChatHistory();
+        if (data?.EC === 0 && Array.isArray(data.result)) {
+          const formattedMessages = data.result.slice(1).map((msg) => ({
+            text: msg.content,
+            sender: msg.role === "assistant" ? "bot" : "user",
+            timestamp: new Date(msg.timestamp).toLocaleString(),
+          }));
+          setMessages([
+            {
+              text: "Chào bạn, tôi có thể giúp gì cho bạn hôm nay?",
+              sender: "bot",
+              timestamp: new Date().toLocaleString(),
+            },
+            ...formattedMessages,
+          ]);
         }
       } else {
         const savedMessages = localStorage.getItem("chatMessages");
@@ -139,8 +133,7 @@ const CompactChatBot = ({ onClose }) => {
       };
 
       setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error(error);
+    } catch {
       setMessages((prev) => [
         ...prev,
         {

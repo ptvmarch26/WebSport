@@ -1,17 +1,17 @@
 // import React from 'react'
 import { useNavigate } from "react-router-dom";
-import running from "../../assets/images/running.jpg";
-import gym from "../../assets/images/gym.jpg";
-import tennis from "../../assets/images/tennis.jpg";
-import soccer from "../../assets/images/soccer.jpg";
-import basketball from "../../assets/images/basketball.jpg";
+// import running from "../../assets/images/running.jpg";
+// import gym from "../../assets/images/gym.jpg";
+// import tennis from "../../assets/images/tennis.jpg";
+// import soccer from "../../assets/images/soccer.jpg";
+// import basketball from "../../assets/images/basketball.jpg";
+// import CardComponent from "../../components/CardComponent/CardComponent";
+// import Slider from "react-slick";
+// import NextComponent from "../../components/NextComponent/NextComponent";
+// import BackComponent from "../../components/BackComponent/BackComponent";
 import { Carousel } from "@material-tailwind/react";
 import ProductComponent from "../../components/ProductComponent/ProductComponent";
 import AnimationScroll from "../../components/AnimationScroll/AnimationScroll";
-import CardComponent from "../../components/CardComponent/CardComponent";
-import Slider from "react-slick";
-import NextComponent from "../../components/NextComponent/NextComponent";
-import BackComponent from "../../components/BackComponent/BackComponent";
 import { useAuth } from "../../context/AuthContext";
 import { useProduct } from "../../context/ProductContext";
 import { useEffect } from "react";
@@ -30,34 +30,29 @@ const HomePage = () => {
   const [productNew, setProductNew] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  // console.log(products);
   const [favourites, setFavourites] = useState([]);
   const { token } = useAuth();
 
   const storeId = "680a5a2fe8930a6de2ee81d2";
-    const [banners, setBanners] = useState([]);
-  
-    useEffect(() => {
-      const fetchBanner = async () => {
-        const res = await getDetailStore(storeId);
-        if (res.EC === 0 && res.EM) {
-          const { store_banner } = res.EM;
-          setBanners(store_banner);
-        }
-      };
-  
-      fetchBanner();
-    }, []);
+  const [banners, setBanners] = useState([]);
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      const res = await getDetailStore(storeId);
+      if (res.EC === 0 && res.EM) {
+        const { store_banner } = res.EM;
+        setBanners(store_banner);
+      }
+    };
+
+    fetchBanner();
+  }, []);
 
   const fetchFavourites = async () => {
     if (token) {
-      try {
-        const res = await getFavourite();
-        if (res?.result) {
-          setFavourites(res.result);
-        }
-      } catch (error) {
-        console.error("Lỗi khi fetch danh sách yêu thích:", error);
+      const res = await getFavourite();
+      if (res?.EC === 0) {
+        setFavourites(res.result);
       }
     }
   };
@@ -123,88 +118,88 @@ const HomePage = () => {
     },
   ];
 
-  const typeSports = [
-    {
-      image: running,
-      type: "Chạy bộ",
-      onClick: () => {
-        navigate("/");
-      },
-    },
-    {
-      image: soccer,
-      type: "Bóng đá",
-      onClick: () => {
-        navigate("/");
-      },
-    },
-    {
-      image: gym,
-      type: "Thể hình",
-      onClick: () => {
-        navigate("/");
-      },
-    },
-    {
-      image: basketball,
-      type: "Bóng rổ",
-      onClick: () => {
-        navigate("/");
-      },
-    },
-    {
-      image: tennis,
-      type: "Tennis",
-      onClick: () => {
-        navigate("/");
-      },
-    },
-  ];
+  // const typeSports = [
+  //   {
+  //     image: running,
+  //     type: "Chạy bộ",
+  //     onClick: () => {
+  //       navigate("/");
+  //     },
+  //   },
+  //   {
+  //     image: soccer,
+  //     type: "Bóng đá",
+  //     onClick: () => {
+  //       navigate("/");
+  //     },
+  //   },
+  //   {
+  //     image: gym,
+  //     type: "Thể hình",
+  //     onClick: () => {
+  //       navigate("/");
+  //     },
+  //   },
+  //   {
+  //     image: basketball,
+  //     type: "Bóng rổ",
+  //     onClick: () => {
+  //       navigate("/");
+  //     },
+  //   },
+  //   {
+  //     image: tennis,
+  //     type: "Tennis",
+  //     onClick: () => {
+  //       navigate("/");
+  //     },
+  //   },
+  // ];
 
-  const settings = {
-    dots: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    nextArrow: (
-      <NextComponent
-        position="absolute"
-        zIndex="1"
-        top="50%"
-        right="10px"
-        transform="translateY(-50%)"
-        fontSize="2rem"
-        color="white"
-      />
-    ),
-    prevArrow: (
-      <BackComponent
-        position="absolute"
-        zIndex="1"
-        top="50%"
-        left="10px"
-        transform="translateY(-50%)"
-        fontSize="2rem"
-        color="white"
-      />
-    ),
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
+  // const settings = {
+  //   dots: true,
+  //   speed: 500,
+  //   slidesToShow: 3,
+  //   slidesToScroll: 1,
+  //   nextArrow: (
+  //     <NextComponent
+  //       position="absolute"
+  //       zIndex="1"
+  //       top="50%"
+  //       right="10px"
+  //       transform="translateY(-50%)"
+  //       fontSize="2rem"
+  //       color="white"
+  //     />
+  //   ),
+  //   prevArrow: (
+  //     <BackComponent
+  //       position="absolute"
+  //       zIndex="1"
+  //       top="50%"
+  //       left="10px"
+  //       transform="translateY(-50%)"
+  //       fontSize="2rem"
+  //       color="white"
+  //     />
+  //   ),
+  //   responsive: [
+  //     {
+  //       breakpoint: 1024,
+  //       settings: {
+  //         slidesToShow: 2,
+  //         slidesToScroll: 1,
+  //       },
+  //     },
+  //     {
+  //       breakpoint: 640,
+  //       settings: {
+  //         slidesToShow: 1,
+  //         slidesToScroll: 1,
+  //       },
+  //     },
+  //   ],
+  // };
 
   return (
     <div className="">
@@ -285,7 +280,7 @@ const HomePage = () => {
             );
           })}
         </div>
-        <div>
+        {/* <div>
           <div className="border-t-2 border-[rgba(0, 0, 0, 0.1)] w-full my-8 mb-10">
             <p className="uppercase text-4xl font-extrabold text-center my-8">
               Theo môn thể thao
@@ -298,7 +293,7 @@ const HomePage = () => {
               ))}
             </Slider>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

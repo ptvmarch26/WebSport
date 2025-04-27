@@ -28,7 +28,6 @@ const FavoriteProductPage = () => {
 
   useEffect(() => {
     const fetchAllProductDetails = async () => {
-      console.log("cart", cart);
       const productDetails = await Promise.all(
         cart.map(async (item) => {
           return await fetchProductDetails(item);
@@ -56,7 +55,6 @@ const FavoriteProductPage = () => {
 
   const handleClearAll = async () => {
     const result = await clearFavourites();
-    console.log("result", result);
     if (result) {
       setCart([]);
       setProducts([]);

@@ -1,11 +1,10 @@
 import { Button } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "../../../context/UserContext";
 
 const EditPhone = () => {
   const { selectedUser, handleUpdateUser, fetchUser } = useUser();
 
-  // console.log(selectedUser);
   useEffect(() => {
     setCurrentPhone(selectedUser?.phone || "Chưa cập nhật");
   }, [selectedUser]);
@@ -37,7 +36,6 @@ const EditPhone = () => {
       await fetchUser();
       setNewPhone("");
       setError("");
-      alert("Cập nhật số điện thoại thành công!");
     }
   };
 

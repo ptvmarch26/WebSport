@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import success from "../../assets/images/success.png";
 import fail from "../../assets/images/fail.png";

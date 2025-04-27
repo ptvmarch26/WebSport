@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { getAllProducts, createProduct, updateProduct, deleteProduct, getDetailsProduct } from "../services/api/ProductApi";
 
 const ProductContext = createContext();
@@ -9,10 +9,10 @@ export const ProductProvider = ({ children }) => {
 
   const fetchProducts = async (filters = {}) => {
     const res = await getAllProducts(filters);
-    if (res?.EM === "Lấy danh sách sản phẩm thành công") {
+    if (res?.EC === 0) {
         setProducts(res.result.products);
     } else {
-        console.error(res);
+        return;
     }
     return res;
   };
@@ -22,7 +22,7 @@ export const ProductProvider = ({ children }) => {
     if (res?.EC === 0) {
         setProductDetails(res.result);
     } else {
-        console.error(res?.EM || "Lỗi khi lấy thông tin sản phẩm");
+        return;
     }
     return res.result;
     
