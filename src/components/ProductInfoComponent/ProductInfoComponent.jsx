@@ -127,10 +127,11 @@ const ProductInfoComponent = ({ product }) => {
     setAvailableVariants([]);
     
     const fetchFavoriteStatus = async () => {
-      const favouritesData = await getFavourite();
-
-      if (favouritesData && favouritesData.result) {
-        setIsFavorite(favouritesData.result.includes(product._id));
+      if(token){
+        const favouritesData = await getFavourite();
+        if (favouritesData && favouritesData.result) {
+          setIsFavorite(favouritesData.result.includes(product._id));
+        }
       }
     };
 
