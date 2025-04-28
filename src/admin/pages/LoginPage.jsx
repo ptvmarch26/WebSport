@@ -1,5 +1,5 @@
 import { Button } from "@material-tailwind/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { usePopup } from "../../context/PopupContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { handleLogin } = useAuth();
+  const { handleLogin, token } = useAuth();
   const [passwordShown, setPasswordShown] = useState(false);
   const [error, setError] = useState({ username: "", password: "" });
   const [username, setUsername] = useState("");
@@ -15,6 +15,12 @@ const LoginPage = () => {
   const { showPopup } = usePopup();
 
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [token, navigate]);
 
   const handleSubmitLogin = async () => {
     let newError = {};
@@ -35,8 +41,10 @@ const LoginPage = () => {
       showPopup(`${response.EM}, Chào mừng bạn đến với trang quản trị`);
       navigate("/admin/dashboard");
     } else {
-      showPopup(response.EM, false);
-      // window.location.href = "/sign-in";
+      showPopup("Bạn không có quyền truy cập trang này", false);
+      setTimeout(() => {
+        window.location.href = "/sign-in";
+      }, 2000);
       return;
     }
   };

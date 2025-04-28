@@ -188,13 +188,18 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange }) => {
 
       if (["category", "category_sub", "product_color", "product_brand"].includes(type)) {
         if (type === "category" && isSelected) {
-          return {
-            ...prev,
-            category: currentList.filter((item) => item !== value),
-            category_sub: (prev.category_sub || []).filter((sub) => {
+          const newCategoryList = currentList.filter((item) => item !== value);
+          const newCategorySubList = newCategoryList.length > 0
+            ? (prev.category_sub || []).filter((sub) => {
               const firstWord = sub.split('_')[0];
               return firstWord !== value;
-            }),
+            })
+            : [];
+
+          return {
+            ...prev,
+            category: newCategoryList,
+            category_sub: newCategorySubList,
           };
         }
 
@@ -212,6 +217,7 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange }) => {
       };
     });
   };
+
 
 
   const handlePriceChange = (e, type) => {
@@ -294,8 +300,8 @@ const SidebarSortComponent = ({ isOpen, onClose, onFilterChange }) => {
                     >
                       <div
                         className={`w-7 h-7 rounded-full border ${selectedFilters?.product_color?.includes(colorOption.name)
-                            ? "ring-2 ring-black"
-                            : ""
+                          ? "ring-2 ring-black"
+                          : ""
                           }`}
                         style={{ backgroundColor: colorOption.color }}
                         onClick={() => handleSelect("product_color", colorOption.name)}
