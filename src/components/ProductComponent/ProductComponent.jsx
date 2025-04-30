@@ -2,7 +2,7 @@ import { IoIosStar, IoIosStarHalf } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
-import { updateFavourite } from "../../services/api/FavouriteApi"; 
+import { updateFavourite } from "../../services/api/FavouriteApi";
 import { usePopup } from "../../context/PopupContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProduct } from "../../context/ProductContext";
@@ -140,11 +140,11 @@ const ProductComponent = ({ item, favourites, onFavouriteChange, onClick }) => {
           </div>
         </div>
 
-        <div className="text-sm text-[#158857] font-semibold">
-          {item.product_percent_discount > 0 && (
-            <span>{item.product_percent_discount}% Off</span>
-          )}
-        </div>
+        {item.product_percent_discount > 0 && (
+          <div className="absolute top-5 left-0 text-sm text-white font-semibold opacity-100 transition-all duration-300 bg-[#158857] p-1">
+            <span>-{item.product_percent_discount}%</span>
+          </div>
+        )}
 
         {
           <div

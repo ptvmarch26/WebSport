@@ -127,6 +127,8 @@ const OrderDetails = () => {
     },
   ];
 
+  console.log("paymentInfo", paymentInfo)
+
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen bg-gray-100">
       <div className="bg-white flex flex-col sm:flex-row gap-5 justify-between sm:items-center p-6 shadow-lg rounded-lg mt-4">
@@ -169,32 +171,34 @@ const OrderDetails = () => {
             {new Date(received_date).toLocaleString()}
           </p>
         </div>
-        <h3 className="font-semibold">Thông tin thanh toán</h3>
-        {paymentInfo && (
-          <div className="space-y-3 px-3 py-5 border rounded">
-            <p>
-              <strong>Tên:</strong>{" "}
-              {paymentInfo.transactions[0].counterAccountName}
-            </p>
-            <p>
-              <strong>Số tài khoản:</strong>{" "}
-              {paymentInfo.transactions[0].counterAccountNumber}
-            </p>
-            <p>
-              <strong>ID Ngân hàng:</strong>{" "}
-              {paymentInfo.transactions[0].counterAccountBankId ??
-                "Không xác định"}
-            </p>
-            <p>
-              <strong>Nội dung:</strong>{" "}
-              {paymentInfo.transactions[0].description}
-            </p>
-            <p>
-              <strong>Thời gian giao dịch:</strong>{" "}
-              {new Date(
-                paymentInfo.transactions[0].transactionDateTime
-              ).toLocaleString()}
-            </p>
+        {paymentInfo?.transactions.length > 0 && (
+          <div>
+            <h3 className="font-semibold">Thông tin thanh toán</h3>
+            <div className="space-y-3 px-3 py-5 border rounded">
+              <p>
+                <strong>Tên:</strong>{" "}
+                {paymentInfo.transactions[0]?.counterAccountName}
+              </p>
+              <p>
+                <strong>Số tài khoản:</strong>{" "}
+                {paymentInfo.transactions[0]?.counterAccountNumber}
+              </p>
+              <p>
+                <strong>ID Ngân hàng:</strong>{" "}
+                {paymentInfo.transactions[0]?.counterAccountBankId ??
+                  "Không xác định"}
+              </p>
+              <p>
+                <strong>Nội dung:</strong>{" "}
+                {paymentInfo.transactions[0]?.description}
+              </p>
+              <p>
+                <strong>Thời gian giao dịch:</strong>{" "}
+                {new Date(
+                  paymentInfo.transactions[0]?.transactionDateTime
+                ).toLocaleString()}
+              </p>
+            </div>
           </div>
         )}
       </div>
