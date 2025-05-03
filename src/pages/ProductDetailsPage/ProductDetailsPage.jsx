@@ -14,8 +14,7 @@ const ProductDetailsPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res =await fetchProductDetails(id);
-      console.log(res);
+      await fetchProductDetails(id);
     }
     fetchData();
     window.scrollTo(0, 0);

@@ -20,7 +20,6 @@ const VoucherCard = ({ voucher, image }) => {
         </p>
         <p className="line-clamp-1 md:line-clamp-2">{voucher.discount_title}</p>
         <p className="line-clamp-1 md:line-clamp-2">{voucher.description}</p>
-        {/* <p className="text-md">x1</p> */}
       </div>
     </div>
   );
