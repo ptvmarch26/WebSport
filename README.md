@@ -22,7 +22,7 @@ Nhằm đáp ứng xu hướng này, nhóm quyết định thực hiện đề t
 |:---:|:-------------:|:-----:|
 |AC1	|Unauthenticated User (Người dùng chưa đăng nhập) |	Người sử dụng trang web không có tài khoản hoặc có tài khoản mà chưa đăng nhập, chỉ được thực hiện một số chức năng như xem sản phẩm, chi tiết thông tin sản phẩm, xem đánh giá của các sản phẩm, xem thông tin cửa hàng, thực hiện đặt hàng ngay với từng sản phẩm, thanh toán bằng mã qr, xem chi tiết đơn hàng vừa đặt.|
 |AC2	|Authenticated User (Người dùng đã đăng nhập) |	Ngoài các chức năng của khách vãng lai, người sử dụng trang web với tài khoản đã đăng ký để đăng nhập còn có thể sử dụng them một số chức năng khác như quản lý giỏ hàng, quản lý sản phẩm yêu thích, sử dụng mã giảm giá, quản lý đơn hàng, quản lý thông báo, quản lý thông tin cá nhân.|
-|AC3 |Administrator (Quản trị viên) | LLà người dùng có quyền hạn cao nhất trong hệ thống. Quản trị viên có thể quản lý người dùng, quản lý đơn hàng, quản lý thông tin cửa hàng, quản lý sản phẩm,…Quản trị viên đảm bảo hoạt động chung của hệ thống, bảo mật.|
+|AC3 |Administrator (Quản trị viên) | Là người dùng có quyền hạn cao nhất trong hệ thống. Quản trị viên có thể quản lý người dùng, quản lý đơn hàng, quản lý thông tin cửa hàng, quản lý sản phẩm,…Quản trị viên đảm bảo hoạt động chung của hệ thống, bảo mật.|
 
 | Mã chức năng | Tên chức năng | Tác nhân | Hoàn thành |
 |:---:|:-------------:|:-----:|:-----:|
