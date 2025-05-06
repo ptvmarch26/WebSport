@@ -178,9 +178,9 @@ const Products = () => {
 
   const filteredProducts = products.filter((product) => {
     let productStatus;
-    if (product.product_countInStock === 0) {
+    if (product?.product_countInStock === 0) {
       productStatus = "Hết hàng";
-    } else if (product.product_countInStock < 10) {
+    } else if (product?.product_countInStock < 10) {
       productStatus = "Cần nhập";
     } else {
       productStatus = "Còn hàng";
