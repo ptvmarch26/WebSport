@@ -25,7 +25,7 @@ export const UserProvider = ({ children }) => {
       const data = await getAllUsers();
 
       if (
-        data?.EM === "Get all users successfully" &&
+        data?.EC === 0 &&
         Array.isArray(data.result)
       ) {
         const processedUsers = data.result.map((user) => ({

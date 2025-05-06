@@ -278,11 +278,13 @@ const Header = () => {
         },
         {
           name: "Quần",
-          subCategories: ["Quần đá bóng", "Quần chạy bộ"],
+          subCategories: ["Quần chạy bộ"],
+          // subCategories: ["Quần đá bóng", "Quần chạy bộ"],
         },
         {
           name: "Áo",
-          subCategories: ["Áo thun", "Áo đá bóng"],
+          subCategories: ["Áo thun"],
+          // subCategories: ["Áo thun", "Áo đá bóng"],
         },
       ],
     },
